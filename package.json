@@ -1,0 +1,41 @@
+{
+  "name": "koa-web-kit",
+  "version": "0.0.1",
+  "description": "Node koa web starter kit for quick development",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">= 4.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JasonBoy/koa-web-kit.git"
+  },
+  "keywords": [
+    "koa",
+    "es6",
+    "webpack",
+    "sass",
+    "react",
+    "bootstrap"
+  ],
+  "author": "jasonlikenfs@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JasonBoy/koa-web-kit/issues"
+  },
+  "homepage": "https://github.com/JasonBoy/koa-web-kit#readme",
+  "readme": "README.md",
+  "dependencies": {
+    "koa": "^1.2.0",
+    "koa-bodyparser": "^2.0.1",
+    "koa-compress": "^1.0.9",
+    "koa-mount": "^1.3.0",
+    "koa-router": "^5.4.0",
+    "koa-session": "^3.3.1",
+    "koa-static": "^2.0.0"
+  }
+}

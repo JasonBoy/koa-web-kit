@@ -31,3 +31,18 @@ node_modules
 
 # Optional REPL history
 .node_repl_history
+
+*.csv
+*.dat
+*.out
+*.gz
+.idea
+results
+build
+public/build
+npm-debug.log
+*.map
+--no-cache
+.Ds_Store
+.sass-cache
+config.json
