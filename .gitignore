@@ -46,3 +46,4 @@ npm-debug.log
 .Ds_Store
 .sass-cache
 config.json
+bundle*.js
