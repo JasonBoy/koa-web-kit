@@ -32,7 +32,7 @@ module.exports = {
   ],
   resolve: {
     extensions: ['', '.js', '.jsx']
-  },
+  }
   // devServer: {
   //   historyApiFallback: true,
   //   hot: true,
@@ -46,5 +46,5 @@ module.exports = {
   //   //   }
   //   // }
   // },
-  devtool: 'eval-source-map'
+  // devtool: 'eval-source-map'
 };

@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 var HtmlwebpackPlugin = require('html-webpack-plugin');
 
-const ROOT_PATH = path.resolve(__dirname);
+var REACT_PATH = path.join(__dirname, 'react');
 
 module.exports = {
   entry: './react/main.js',
@@ -11,15 +11,18 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
+    preLoaders: [
+      {
+        test: /\.jsx?$/,
+        loaders: ['eslint'],
+        exclude: /node_modules/
+      }
+    ],
     loaders: [
       {
         test: /.jsx?$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
-        // ,
-        // query: {
-        //   presets: ['es2015', 'react']
-        // }
+        include: REACT_PATH
       }
     ]
   },

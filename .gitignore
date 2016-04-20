@@ -47,3 +47,4 @@ npm-debug.log
 .sass-cache
 config.json
 bundle*.js
+*cache
