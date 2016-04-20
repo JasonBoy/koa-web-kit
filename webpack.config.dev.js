@@ -8,8 +8,7 @@ module.exports = {
   entry: './react/main.js',
   output: {
     path: path.join(__dirname, 'react'),
-    filename: 'bundle.js',
-    publicPath: '/react'
+    filename: 'bundle.js'
   },
   module: {
     loaders: [

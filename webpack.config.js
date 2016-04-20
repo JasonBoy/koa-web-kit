@@ -33,18 +33,18 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.jsx']
   },
-  devServer: {
-    historyApiFallback: true,
-    hot: true,
-    inline: true,
-    progress: true
-    // ,
-    // proxy: {
-    //   '/api/*': {
-    //     target: 'http://localhost:5000',
-    //     secure: false
-    //   }
-    // }
-  },
+  // devServer: {
+  //   historyApiFallback: true,
+  //   hot: true,
+  //   inline: true,
+  //   progress: true
+  //   // ,
+  //   // proxy: {
+  //   //   '/api/*': {
+  //   //     target: 'http://localhost:5000',
+  //   //     secure: false
+  //   //   }
+  //   // }
+  // },
   devtool: 'eval-source-map'
 };
