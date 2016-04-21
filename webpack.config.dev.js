@@ -20,16 +20,20 @@ module.exports = {
     ],
     loaders: [
       {
-        test: /.jsx?$/,
+        test: /\.jsx?$/,
         loader: 'babel-loader',
         include: REACT_PATH
+      },
+      {
+        test: /\.scss$/,
+        loader: ['style', 'css?sourceMap', 'sass?sourceMap']
       }
     ]
   },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(), // recommanded by webpack
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(), // recommanded by webpack
+    // new webpack.NoErrorsPlugin(), // recommanded by webpack
     new HtmlwebpackPlugin({
       title: 'Hello World app',
       template: path.resolve('./react/index.html'),
