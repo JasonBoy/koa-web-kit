@@ -29,23 +29,17 @@ module.exports = {
       template: path.resolve('./react/index.html'),
       // chunks: ['app', 'vendors'],
       inject: 'body'
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false,
+        drop_console: true,
+        dead_code: true,
+        drop_debugger: true
+      }
     })
   ],
   resolve: {
     extensions: ['', '.js', '.jsx']
   }
-  // devServer: {
-  //   historyApiFallback: true,
-  //   hot: true,
-  //   inline: true,
-  //   progress: true
-  //   // ,
-  //   // proxy: {
-  //   //   '/api/*': {
-  //   //     target: 'http://localhost:5000',
-  //   //     secure: false
-  //   //   }
-  //   // }
-  // },
-  // devtool: 'eval-source-map'
 };
