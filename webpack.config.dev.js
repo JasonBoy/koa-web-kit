@@ -1,32 +1,39 @@
-var path = require('path');
-var webpack = require('webpack');
-var HtmlwebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-var REACT_PATH = path.join(__dirname, 'react');
+const APP_PATH = path.join(__dirname, 'app');
+const APP_BUILD_PATH = path.join(__dirname, 'build', 'app');
 
 module.exports = {
-  entry: './react/main.js',
+  entry: path.join(APP_PATH, 'index.jsx'),
   output: {
-    path: path.join(__dirname, 'react'),
+    path: APP_BUILD_PATH,
+    publicPath: '/public/',
     filename: 'bundle.js'
   },
   module: {
-    preLoaders: [
-      {
-        test: /\.jsx?$/,
-        loaders: ['eslint'],
-        exclude: /node_modules/
-      }
-    ],
+    // preLoaders: [
+    //   {
+    //     test: /\.jsx?$/,
+    //     loaders: ['eslint'],
+    //     exclude: /node_modules/
+    //   }
+    // ],
     loaders: [
       {
         test: /\.jsx?$/,
-        loader: 'babel-loader',
-        include: REACT_PATH
+        loaders: ['babel'],
+        include: APP_PATH
       },
       {
         test: /\.scss$/,
-        loader: ['style', 'css?sourceMap', 'sass?sourceMap']
+        loaders: [
+          // 'isomorphic-style-loader',
+          'style',
+          'css?sourceMap',
+          'sass?sourceMap'
+        ]
       }
     ]
   },
@@ -34,9 +41,9 @@ module.exports = {
     new webpack.optimize.OccurenceOrderPlugin(), // recommanded by webpack
     new webpack.HotModuleReplacementPlugin(),
     // new webpack.NoErrorsPlugin(), // recommanded by webpack
-    new HtmlwebpackPlugin({
+    new HtmlWebpackPlugin({
       title: 'Hello World app',
-      template: path.resolve('./react/index.html'),
+      template: path.resolve('./app/views/index.html'),
       // chunks: ['app', 'vendors'],
       inject: 'body'
     })

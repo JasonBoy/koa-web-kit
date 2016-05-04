@@ -1,31 +1,38 @@
 import React from 'react';
-import 'header.scss';
+import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import s from './header.scss';
 
-export default class Header extends React.Component {
+class Header extends React.Component {
   constructor(props){
     super(props);
-    this.state= [
-      {
-        name: 'Home',
-        url: '/'
-      },
-      {
-        name: 'About',
-        url: '/about'
-      }
-    ];
+    this.state= {
+      nav: [
+        {
+          name: 'Home',
+          url: '/'
+        },
+        {
+          name: 'About',
+          url: '/about'
+        }
+      ]
+    };
   }
   render() {
     return (
       <header>
+        <p>NIHAO</p>
         <ul>
           {
-            this.state.map((item) => {
-              return <li><a href={item.url}>{item.name}</a></li>;
+            this.state.nav.map((item, index) => {
+              return <li key={index}><a className="link" href={item.url}>{item.name}</a></li>;
             })
           }
         </ul>
       </header>
     );
   }
-};
+}
+
+// export default withStyles(s)(Header);
+export default Header;

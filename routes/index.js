@@ -9,8 +9,13 @@ router.use(function *(next) {
 });
 
 router.get('/', function *(next) {
-  console.log('in index');
-  this.body = 'OK';
+  // console.log('in index');
+  // this.body = 'OK';
+  this.state = {
+    title: 'app'
+  };
+
+  yield this.render('index');
 });
 
 router.get('/market/mall', function *(next) {

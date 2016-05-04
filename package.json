@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "build": "webpack",
+    "build": "webpack --config webpack.config.dev.js",
     "dev": "webpack-dev-server --hot --inline --port 3000 --config webpack.config.dev.js",
     "lint": "eslint . --ext .js --ext .jsx --ignore-path .gitignore --cache"
   },
@@ -39,6 +39,7 @@
     "koa-router": "^5.4.0",
     "koa-session": "^3.3.1",
     "koa-static": "^2.0.0",
+    "koa-views": "^4.1.0",
     "react": "^15.0.1",
     "react-dom": "^15.0.1"
   },
@@ -56,6 +57,7 @@
     "eslint-plugin-react": "^5.0.1",
     "express": "^4.13.4",
     "html-webpack-plugin": "^2.15.0",
+    "isomorphic-style-loader": "^1.0.0",
     "node-sass": "^3.4.2",
     "sass-loader": "^3.2.0",
     "style-loader": "^0.13.1",

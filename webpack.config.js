@@ -1,32 +1,37 @@
-var path = require('path');
-var webpack = require('webpack');
-var HtmlwebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const ROOT_PATH = path.resolve(__dirname);
+const APP_PATH = path.join(__dirname, 'app');
+const APP_BUILD_PATH = path.join(__dirname, 'build', 'app');
 
 module.exports = {
-  entry: './react/main.js',
+  entry: path.join(APP_PATH, 'index.jsx'),
   output: {
-    path: path.join(__dirname, 'react'),
+    path: APP_BUILD_PATH,
     filename: 'bundle.js'
   },
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
-        loader: ['uglify', 'babel-loader'],
+        loaders: ['babel'],
         exclude: /node_modules/
       },
       {
         test: /\.scss$/,
-        loader: ['style', 'css?minimize', 'sass']
+        loaders: [
+          'style',
+          'css?minimize',
+          'sass'
+        ]
       }
     ]
   },
   plugins: [
-    new HtmlwebpackPlugin({
+    new HtmlWebpackPlugin({
       title: 'Hello World app',
-      template: path.resolve('./react/index.html'),
+      template: path.resolve('./app/views/index.html'),
       // chunks: ['app', 'vendors'],
       inject: 'body'
     }),
