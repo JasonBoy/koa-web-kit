@@ -33,6 +33,7 @@
   "homepage": "https://github.com/JasonBoy/koa-web-kit#readme",
   "readme": "README.md",
   "dependencies": {
+    "dot": "^1.0.3",
     "koa": "^1.2.0",
     "koa-bodyparser": "^2.0.1",
     "koa-compress": "^1.0.9",
