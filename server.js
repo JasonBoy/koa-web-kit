@@ -26,10 +26,9 @@ app.use(session(app));
 app.use(bodyParser());
 
 app.use(views(path.join(process.cwd(), 'build/app'), {
-  // map: {
-  //   html: 'html'
-  // },
-  extension: 'html'
+  map: {
+    html: 'dot'
+  }
 }));
 app.use(index.routes());
 app.use(user.routes());
