@@ -1,16 +1,22 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const cssExtract = new ExtractTextPlugin('styles.css');
+const scssExtract = new ExtractTextPlugin('main.css');
 
 const APP_PATH = path.join(__dirname, 'app');
 const APP_BUILD_PATH = path.join(__dirname, 'build', 'app');
 
 module.exports = {
-  entry: path.join(APP_PATH, 'index.jsx'),
+  entry: {
+    vendors: ['react', 'react-dom'],
+    app: path.join(APP_PATH, 'index.jsx')
+  },
   output: {
     path: APP_BUILD_PATH,
     publicPath: '/public/',
-    filename: 'bundle.js'
+    filename: '[name].js'
   },
   module: {
     // preLoaders: [
@@ -28,25 +34,44 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loaders: [
-          // 'isomorphic-style-loader',
-          'style',
-          'css?sourceMap',
-          'sass?sourceMap'
-        ]
+        loader: scssExtract.extract(['css?sourceMap', 'sass?sourceMap'])
+        // loaders: [
+        //   // 'isomorphic-style-loader',
+        //   'style',
+        //   'css?sourceMap',
+        //   'sass?sourceMap'
+        // ]
+      },
+      {
+        test: /\.css$/,
+        loader: cssExtract.extract(['css'])
       }
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      VERSION: JSON.stringify('1.0.0'),
+      PROD_MODE: false
+    }),
     new webpack.optimize.OccurenceOrderPlugin(), // recommanded by webpack
     new webpack.HotModuleReplacementPlugin(),
-    // new webpack.NoErrorsPlugin(), // recommanded by webpack
+    new webpack.EnvironmentPlugin([
+      "NODE_ENV"
+    ]),
+    new webpack.optimize.CommonsChunkPlugin({
+      names: ['vendors'],
+      minChunks: Infinity
+    }),
+    cssExtract,
+    scssExtract,
     new HtmlWebpackPlugin({
-      title: 'Hello World app',
-      template: path.resolve('./app/views/index.html'),
-      // chunks: ['app', 'vendors'],
+      title: 'my title',
+      template: './app/views/index.html',
+      filename: 'index.html',
       inject: 'body'
     })
+    // ,
+    // new ExtractTextPlugin("styles.css")
   ],
   resolve: {
     extensions: ['', '.js', '.jsx']

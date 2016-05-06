@@ -6,10 +6,14 @@ const APP_PATH = path.join(__dirname, 'app');
 const APP_BUILD_PATH = path.join(__dirname, 'build', 'app');
 
 module.exports = {
-  entry: path.join(APP_PATH, 'index.jsx'),
+  entry: {
+    vendors: ['react', 'react-dom'],
+    app: path.join(APP_PATH, 'index.jsx')
+  },
   output: {
-    path: APP_BUILD_PATH,
-    filename: 'bundle.js'
+    path: path.join(APP_BUILD_PATH, '[hash]'),
+    publicPath: '/public/',
+    filename: '[name]-[chunkhash:8].js'
   },
   module: {
     loaders: [
@@ -29,8 +33,11 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      VERSION: JSON.stringify('1.0.0'),
+      PROD_MODE: false
+    }),
     new HtmlWebpackPlugin({
-      title: 'Hello World app',
       template: path.resolve('./app/views/index.html'),
       // chunks: ['app', 'vendors'],
       inject: 'body'
@@ -42,6 +49,13 @@ module.exports = {
         dead_code: true,
         drop_debugger: true
       }
+    }),
+    new webpack.EnvironmentPlugin([
+      "NODE_ENV"
+    ]),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendors',
+      minChunks: Infinity
     })
   ],
   resolve: {
