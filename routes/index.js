@@ -12,7 +12,7 @@ router.get('/', function *(next) {
   // console.log('in index');
   // this.body = 'OK';
   this.state = {
-    title: 'app'
+    title: 'using handlebars template'
   };
 
   yield this.render('index');

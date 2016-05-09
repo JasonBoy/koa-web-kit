@@ -27,7 +27,7 @@ app.use(bodyParser());
 
 app.use(views(path.join(process.cwd(), 'build/app'), {
   map: {
-    html: 'dot'
+    html: 'handlebars'
   }
 }));
 app.use(index.routes());

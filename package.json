@@ -34,6 +34,7 @@
   "readme": "README.md",
   "dependencies": {
     "dot": "^1.0.3",
+    "handlebars": "^4.0.5",
     "koa": "^1.2.0",
     "koa-bodyparser": "^2.0.1",
     "koa-compress": "^1.0.9",
