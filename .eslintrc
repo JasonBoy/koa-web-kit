@@ -1,4 +1,4 @@
-module.exports = {
+{
   "extends": "eslint:recommended",
   "parserOptions": {
     "ecmaVersion": 6,
@@ -30,4 +30,4 @@ module.exports = {
     "no-unused-vars": 1,
     "semi": 2
   }
-};
+}
