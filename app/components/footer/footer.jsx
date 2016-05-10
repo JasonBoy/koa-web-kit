@@ -2,13 +2,13 @@ import React from 'react';
 import 'footer.scss';
 
 export default ({copyright, ...links}) => {
-  "use strict";
+  'use strict';
   return (
     <footer>
       <ul>
         {
           links.map((ele) => {
-            return <li><a href={ele.href}>{ele.text}</a></li>
+            return <li><a href={ele.href}>{ele.text}</a></li>;
           })
         }
       </ul>
@@ -17,4 +17,4 @@ export default ({copyright, ...links}) => {
       </p>
     </footer>
   );
-}
+};

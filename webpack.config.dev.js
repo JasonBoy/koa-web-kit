@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const cssExtract = new ExtractTextPlugin('styles.css');
 const scssExtract = new ExtractTextPlugin('main.css');
 
@@ -56,7 +56,7 @@ module.exports = {
     new webpack.optimize.OccurenceOrderPlugin(), // recommanded by webpack
     new webpack.HotModuleReplacementPlugin(),
     new webpack.EnvironmentPlugin([
-      "NODE_ENV"
+      'NODE_ENV'
     ]),
     new webpack.optimize.CommonsChunkPlugin({
       names: ['vendors'],

@@ -1,6 +1,6 @@
 import React from 'react';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './header.scss';
+// import withStyles from 'isomorphic-style-loader/lib/withStyles';
+// import s from './header.scss';
 
 class Header extends React.Component {
   constructor(props){
