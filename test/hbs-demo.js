@@ -1,17 +1,17 @@
-var Handlebars = require('handlebars');
+const Handlebars = require('handlebars');
 
 Handlebars.registerHelper('link', function(text, url) {
   text = Handlebars.Utils.escapeExpression(text);
   url  = Handlebars.Utils.escapeExpression(url);
 
-  var result = '<a href="' + url + '">' + text + '</a>';
+  let result = '<a href="' + url + '">' + text + '</a>';
 
   return new Handlebars.SafeString(result);
 });
 Handlebars.registerHelper('list', function(items, options) {
-  var out = '<ul>';
+  let out = '<ul>';
 
-  for(var i=0, l=items.length; i<l; i++) {
+  for(let i=0, l=items.length; i<l; i++) {
     out = out + '\n<li>' + options.fn(items[i]) + '</li>';
   }
 
@@ -19,13 +19,13 @@ Handlebars.registerHelper('list', function(items, options) {
 });
 
 
-var template = '<h3>{{link title "http://a.com" }}</h3>\n' +
+const template = '<h3>{{link title "http://a.com" }}</h3>\n' +
   '<section>{{#list people }}<a>{{ firstName }}{{ lastName }}</a>{{/list}}</section>'
   ;
 
-var c = Handlebars.compile(template);
+const c = Handlebars.compile(template);
 
-var context = {
+const context = {
   title: '<span>jason</span>',
   people: [
     {firstName: 'Yehuda', lastName: 'Katz'},
@@ -34,6 +34,6 @@ var context = {
   ]
 };
 
-var result = c(context);
+const result = c(context);
 
 console.log(result);

@@ -1,4 +1,4 @@
-var router = require('koa-router')({
+const router = require('koa-router')({
   // prefix: '/i'
 });
 
@@ -35,7 +35,7 @@ router.post('/login', function *(next) {
 });
 
 router.get('/session', function *(next) {
-  var n = this.session.views || 0;
+  let n = this.session.views || 0;
   this.session.views = ++n;
   this.body = n + ' views';
 });

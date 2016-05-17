@@ -1,4 +1,4 @@
-var router = require('koa-router')({
+const router = require('koa-router')({
   prefix: '/user'
 });
 

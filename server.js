@@ -10,8 +10,8 @@ const app = koa();
 const bodyParser = require('koa-bodyparser');
 const serveStatic = require('koa-static');
 
-var index = require('./routes/index');
-var user = require('./routes/user');
+const index = require('./routes/index');
+const user = require('./routes/user');
 
 // app.use(compress());
 app.use(mount('/public', serveStatic(path.join(process.cwd(), 'public'))));
