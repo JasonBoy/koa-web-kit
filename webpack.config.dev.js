@@ -30,7 +30,10 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loaders: ['babel'],
-        include: APP_PATH
+        include: APP_PATH,
+        query: {
+          presets: ['es2015', 'react']
+        }
       },
       {
         test: /\.scss$/,
