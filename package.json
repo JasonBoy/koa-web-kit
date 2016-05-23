@@ -9,7 +9,7 @@
     "prod": "webpack --config webpack.config.js",
     "dev": "webpack-dev-server --hot --inline --port 3000 --config webpack.config.dev.js",
     "lint": "eslint . --ext .js --ext .jsx --ignore-path .gitignore --cache",
-    "es6-module-to-commonjs": "babel test/es6-modules -d build/test/es6-modules --plugins transform-es2015-modules-commonjs"
+    "es6-module-to-commonjs": "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs"
   },
   "engines": {
     "node": ">= 6.0.0"
