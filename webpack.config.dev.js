@@ -5,7 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const cssExtract = new ExtractTextPlugin('styles.css');
 const scssExtract = new ExtractTextPlugin('main.css');
 
-const APP_PATH = path.join(__dirname, 'app');
+const APP_PATH = path.join(__dirname, 'src');
 const APP_BUILD_PATH = path.join(__dirname, 'build', 'app');
 
 module.exports = {
@@ -69,7 +69,7 @@ module.exports = {
     scssExtract,
     new HtmlWebpackPlugin({
       title: 'my title',
-      template: './app/views/index.html',
+      template: './views/index.html',
       filename: 'index.html',
       inject: 'body'
     })

@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const APP_PATH = path.join(__dirname, 'app');
+const APP_PATH = path.join(__dirname, 'src');
 const APP_BUILD_PATH = path.join(__dirname, 'build', 'app');
 
 module.exports = {
@@ -41,7 +41,7 @@ module.exports = {
       PROD_MODE: false
     }),
     new HtmlWebpackPlugin({
-      template: path.resolve('./app/views/index.html'),
+      template: path.resolve('./views/index.html'),
       // chunks: ['app', 'vendors'],
       inject: 'body'
     }),

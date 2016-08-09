@@ -14,7 +14,7 @@ const index = require('./routes/index');
 const user = require('./routes/user');
 
 // app.use(compress());
-app.use(mount('/public', serveStatic(path.join(process.cwd(), 'public'))));
+// app.use(mount('/public', serveStatic(path.join(process.cwd(), 'public'))));
 app.use(mount('/public', serveStatic(path.join(process.cwd(), 'build', 'app'))));
 
 app.use(function *(next) {
