@@ -14,7 +14,7 @@ router.get('/', function *(next) {
   // console.log('in index');
   // this.body = 'OK';
   this.state = {
-    title: 'using handlebars template'
+    title: 'using nunjucks template'
   };
 
   yield this.render('index');

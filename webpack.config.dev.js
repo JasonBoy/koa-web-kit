@@ -2,8 +2,8 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const cssExtract = new ExtractTextPlugin('styles.css');
-const scssExtract = new ExtractTextPlugin('main.css');
+const bootstrapCSSExtract = new ExtractTextPlugin('bootstrap.css');
+const scssExtract = new ExtractTextPlugin('[name].css');
 
 const APP_PATH = path.join(__dirname, 'src');
 const APP_BUILD_PATH = path.join(__dirname, 'build', 'app');
@@ -37,17 +37,20 @@ module.exports = {
       },
       {
         test: /\.scss$/,
+        exclude: /node_modules/,
         loader: scssExtract.extract(['css?sourceMap', 'sass?sourceMap'])
+        // ,
         // loaders: [
         //   // 'isomorphic-style-loader',
         //   'style',
         //   'css?sourceMap',
         //   'sass?sourceMap'
         // ]
-      },
+      }
+      ,
       {
-        test: /\.css$/,
-        loader: cssExtract.extract(['css'])
+        test: /bootstrap-flex\.scss$/,
+        loader: bootstrapCSSExtract.extract(['css?sourceMap', 'sass?sourceMap'])
       }
     ]
   },
@@ -65,7 +68,7 @@ module.exports = {
       names: ['vendors'],
       minChunks: Infinity
     }),
-    cssExtract,
+    bootstrapCSSExtract,
     scssExtract,
     new HtmlWebpackPlugin({
       title: 'my title',
@@ -92,5 +95,5 @@ module.exports = {
   //   //   }
   //   // }
   // },
-  devtool: 'eval-source-map'
+  devtool: 'source-map'
 };

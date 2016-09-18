@@ -1,6 +1,6 @@
+import "../node_modules/bootstrap/scss/bootstrap-flex.scss";
 import React from 'react';
 import ReactDOM from 'react-dom';
-import '../node_modules/bootstrap/dist/css/bootstrap.css';
 import Header from './components/header/header.jsx';
 
 if(process.env.NODE_ENV) {

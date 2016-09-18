@@ -27,13 +27,13 @@ app.use(bodyParser());
 
 app.use(views(path.join(process.cwd(), 'build/app'), {
   map: {
-    html: 'handlebars'
+    html: 'nunjucks'
   }
 }));
 app.use(index.routes());
 app.use(user.routes());
 
 //and then give it a port to listen for
-const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+const port = process.env.PORT || 3000;
 app.listen(port);
 console.log('Koa listening on port %d', port);
