@@ -5,6 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const bootstrapCSSExtract = new ExtractTextPlugin('bootstrap.css');
 const scssExtract = new ExtractTextPlugin('[name].css');
 
+const DEV_MODE = !(process.env.NODE_ENV === 'production');
 const APP_PATH = path.join(__dirname, 'src');
 const APP_BUILD_PATH = path.join(__dirname, 'build', 'app');
 
@@ -39,12 +40,29 @@ module.exports = {
         test: /\.scss$/,
         exclude: /node_modules/,
         loader: scssExtract.extract(['css?sourceMap', 'sass?sourceMap'])
-      }
-      ,
+      },
       {
         test: /bootstrap\/scss\/\S+\.scss$/,
         loader: bootstrapCSSExtract.extract(['css?sourceMap', 'sass?sourceMap'])
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
+        loader: 'url-loader',
+        query: {
+          context: './src/content/',
+          name: DEV_MODE ? '[path][name].[ext]' : '[path][name]-[hash].[ext]',
+          limit: 10000,
+        },
+      },
+      {
+        test: /\.(eot|ttf|wav|mp3)$/,
+        loader: 'file-loader',
+        query: {
+          context: './src/content/',
+          name: DEV_MODE ? '[path][name].[ext]?[hash]' : '[hash].[ext]',
+        },
       }
+
     ]
   },
   plugins: [
@@ -73,6 +91,7 @@ module.exports = {
     // new ExtractTextPlugin("styles.css")
   ],
   resolve: {
+    root: [path.resolve('./src')],
     extensions: ['', '.js', '.jsx']
   },
   // devServer: {

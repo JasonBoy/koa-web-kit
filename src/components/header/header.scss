@@ -1,8 +1,9 @@
 $brand-primary: red;
 
 header {
-  background-color: $brand-primary;
+  background: $brand-primary url('~content/img/node.png');
 }
 .link {
   color: blue !important;
+  background: url('~content/img/node-2.png');
 }

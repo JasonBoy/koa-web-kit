@@ -1,11 +1,12 @@
 import React from 'react';
 // import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import './header.scss';
+// import 'content/img/node.png';
 
 class Header extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state= {
+    this.state = {
       nav: [
         {
           name: 'Home',
@@ -18,6 +19,7 @@ class Header extends React.Component {
       ]
     };
   }
+
   render() {
     return (
       <header>
