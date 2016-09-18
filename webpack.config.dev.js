@@ -39,17 +39,10 @@ module.exports = {
         test: /\.scss$/,
         exclude: /node_modules/,
         loader: scssExtract.extract(['css?sourceMap', 'sass?sourceMap'])
-        // ,
-        // loaders: [
-        //   // 'isomorphic-style-loader',
-        //   'style',
-        //   'css?sourceMap',
-        //   'sass?sourceMap'
-        // ]
       }
       ,
       {
-        test: /bootstrap-flex\.scss$/,
+        test: /bootstrap\/scss\/\S+\.scss$/,
         loader: bootstrapCSSExtract.extract(['css?sourceMap', 'sass?sourceMap'])
       }
     ]
