@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {Component} from 'react';
+import RaisedButton from 'material-ui/RaisedButton';
 // import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import './header.scss';
 // import 'content/img/node.png';
 
-class Header extends React.Component {
+class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,6 +25,7 @@ class Header extends React.Component {
     return (
       <header>
         <p>NIHAO</p>
+        <RaisedButton label="Default" />
         <ul>
           {
             this.state.nav.map((item, index) => {

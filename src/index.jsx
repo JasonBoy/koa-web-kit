@@ -1,9 +1,13 @@
 //import bootstrap css
-import './content/bootstrap-css';
+// import './content/bootstrap-css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Header from './components/header/header';
+
+injectTapEventPlugin();
 
 if (process.env.NODE_ENV) {
   console.log('console env');
@@ -15,5 +19,13 @@ if (PROD_MODE) {
 } else {
   console.log('not prod mode');
 }
-console.log('yyyy');
-ReactDOM.render(<Header />, document.getElementById('header'));
+const App = () => (
+  <MuiThemeProvider>
+    <Header />
+  </MuiThemeProvider>
+);
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('app')
+);

@@ -33,7 +33,7 @@ module.exports = {
         loader: 'babel',
         include: APP_PATH,
         query: {
-          presets: ['es2015', 'react']
+          presets: ['es2015', 'react', 'stage-1']
         }
       },
       {
@@ -41,10 +41,10 @@ module.exports = {
         exclude: /node_modules/,
         loader: scssExtract.extract(['css?sourceMap', 'sass?sourceMap'])
       },
-      {
-        test: /bootstrap\/scss\/\S+\.scss$/,
-        loader: bootstrapCSSExtract.extract(['css?sourceMap', 'sass?sourceMap'])
-      },
+      // {
+      //   test: /bootstrap\/scss\/\S+\.scss$/,
+      //   loader: bootstrapCSSExtract.extract(['css?sourceMap', 'sass?sourceMap'])
+      // },
       {
         test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
         loader: 'url-loader',
