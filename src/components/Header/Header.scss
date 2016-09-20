@@ -1,9 +1,27 @@
-$brand-primary: red;
+@import "../../content/scss/variables";
 
-header {
-  background: $brand-primary url('~content/img/node.png');
-}
-.link {
-  color: blue !important;
-  background: url('~content/img/node-2.png');
+.app-header {
+  //background: $brand-primary url('~content/img/node.png');
+  background-color: $primary1Color;
+  color: white;
+  a {
+    color: white;
+  }
+  .logo {
+    float: left;
+    margin: 1rem;
+    color: $accent1Color;
+  }
+  .menu-wrapper {
+    float: right;
+  }
+  ul.menu {
+    list-style: none;
+    padding-left: 0;
+    margin: 1rem 2rem 1rem 1rem;
+    > li {
+      display: inline-block;
+      padding:0 1rem;
+    }
+  }
 }

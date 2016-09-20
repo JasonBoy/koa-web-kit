@@ -1,14 +1,19 @@
 //import bootstrap css
-// import './content/bootstrap-css';
+import './content/bootstrap-css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import defaultTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
 injectTapEventPlugin();
+console.log(defaultTheme);
+const muiTheme = getMuiTheme(defaultTheme);
+
 
 class App extends React.Component {
   constructor(props, context) {
@@ -22,12 +27,12 @@ class App extends React.Component {
       links: [
         {
           id: 1,
-          href: 'http://baidu.com',
+          href: 'http://xxx.com',
           text: 'xxx'
         },
         {
           id: 2,
-          href: 'http://baidu.com/2',
+          href: 'http://yyy.com/2',
           text: 'yyy'
         }
       ]
@@ -36,10 +41,10 @@ class App extends React.Component {
 
   render() {
     return (
-      <MuiThemeProvider>
+      <MuiThemeProvider muiTheme={muiTheme}>
         <div>
           <Header />
-          <Footer links={this.state.links} copyright={"eju2016"}/>
+          <Footer links={this.state.links} copyright={"2016"}/>
         </div>
       </MuiThemeProvider>
     );
