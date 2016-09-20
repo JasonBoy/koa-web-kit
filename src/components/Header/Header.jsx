@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 // import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import './header.scss';
+import './Header.scss';
 // import 'content/img/node.png';
 
 class Header extends Component {

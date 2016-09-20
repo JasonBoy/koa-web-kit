@@ -1,18 +1,18 @@
 import React from 'react';
-import 'footer.scss';
+import './Footer.scss';
 
-export default ({copyright, ...links}) => {
+export default ({copyright, links}) => {
   'use strict';
   return (
     <footer>
       <ul>
         {
           links.map((ele) => {
-            return <li><a href={ele.href}>{ele.text}</a></li>;
+            return <li key={ele.id}><a href={ele.href}>{ele.text}</a></li>;
           })
         }
       </ul>
-      <p class="text-center">
+      <p className="text-center">
         {copyright}
       </p>
     </footer>
