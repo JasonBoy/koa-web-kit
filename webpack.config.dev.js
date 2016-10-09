@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const bootstrapCSSExtract = new ExtractTextPlugin('bootstrap.css');
 const scssExtract = new ExtractTextPlugin('[name].css');
+const scssExtracted = scssExtract.extract("css?sourceMap!sass?sourceMap");
 
 const DEV_MODE = !(process.env.NODE_ENV === 'production');
 const APP_PATH = path.join(__dirname, 'src');
@@ -43,13 +44,19 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        exclude: /node_modules/,
-        loader: scssExtract.extract(['css?sourceMap', 'sass?sourceMap'])
+        include: APP_PATH,
+        // exclude: /node_modules/,
+        exclude: [/node_modules/, /content\/scss\/bootstrap\.scss$/],
+        loader: scssExtracted
       },
-      // {
-      //   test: /bootstrap\/scss\/\S+\.scss$/,
-      //   loader: bootstrapCSSExtract.extract(['css?sourceMap', 'sass?sourceMap'])
-      // },
+      {
+        test: /content\/scss\/bootstrap\.scss$/,
+        loader: bootstrapCSSExtract.extract(['css?sourceMap', 'sass?sourceMap'])
+      },
+      {
+        test: /\.css$/,
+        loader: bootstrapCSSExtract.extract(['css?sourceMap'])
+      },
       {
         test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
         loader: 'url-loader',
@@ -84,10 +91,9 @@ module.exports = {
       names: ['vendors'],
       minChunks: Infinity
     }),
-    // bootstrapCSSExtract,
+    bootstrapCSSExtract,
     scssExtract,
     new HtmlWebpackPlugin({
-      title: 'my title',
       template: './views/index.html',
       filename: 'index.html',
       inject: 'body'
@@ -101,7 +107,7 @@ module.exports = {
   },
   vue: {
     loaders: {
-      sass: scssExtract.extract("css?sourceMap!sass?sourceMap")
+      sass: scssExtracted,
     },
     postcss: [
       require('autoprefixer')({

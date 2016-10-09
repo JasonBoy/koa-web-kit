@@ -37,6 +37,7 @@
   "readme": "README.md",
   "dependencies": {
     "bootstrap": "^4.0.0-alpha.4",
+    "consolidate": "^0.14.1",
     "dot": "^1.0.3",
     "handlebars": "^4.0.5",
     "koa": "^1.2.0",

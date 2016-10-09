@@ -23,6 +23,9 @@
 </template>
 
 <script>
+  import './content/scss/bootstrap.scss';
+//  import './content/scss/common.scss';
+//  import './content/scss/demo.css';
   import Hello from './components/Hello/Hello';
   console.log(process.env.NODE_ENV);
   export default {

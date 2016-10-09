@@ -9,6 +9,8 @@ const views = require('koa-views');
 const app = koa();
 const bodyParser = require('koa-bodyparser');
 const serveStatic = require('koa-static');
+const cons = require('consolidate');
+const nunjucks = require('nunjucks');
 
 const index = require('./routes/index');
 const user = require('./routes/user');
@@ -25,7 +27,17 @@ app.keys = ['app'];
 app.use(session(app));
 app.use(bodyParser());
 
-app.use(views(path.join(process.cwd(), 'build/app'), {
+var viewsPath = path.join(process.cwd(), 'build/app');
+cons.requires.nunjucks = nunjucks.configure(viewsPath, {
+  autoescape: true,
+  noCache: true,
+  tags: {
+    variableStart: '{=',
+    variableEnd: '=}'
+  }
+});
+
+app.use(views(viewsPath, {
   map: {
     html: 'nunjucks'
   }
