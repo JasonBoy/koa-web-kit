@@ -11,8 +11,8 @@ const APP_BUILD_PATH = path.join(__dirname, 'build', 'app');
 
 module.exports = {
   entry: {
-    vendors: ['react', 'react-dom'],
-    app: path.join(APP_PATH, 'index.jsx')
+    vendors: ['vue'],
+    app: path.join(APP_PATH, 'main.js')
   },
   output: {
     path: APP_BUILD_PATH,
@@ -29,11 +29,16 @@ module.exports = {
     // ],
     loaders: [
       {
-        test: /\.jsx?$/,
+        test: /\.vue$/,
+        loader: 'vue'
+      },
+      {
+        test: /\.js$/,
         loader: 'babel',
         include: APP_PATH,
+        exclude: /node_modules/,
         query: {
-          presets: ['es2015', 'react', 'stage-1']
+          presets: ['es2015', 'stage-2']
         }
       },
       {
@@ -41,10 +46,10 @@ module.exports = {
         exclude: /node_modules/,
         loader: scssExtract.extract(['css?sourceMap', 'sass?sourceMap'])
       },
-      {
-        test: /bootstrap\/scss\/\S+\.scss$/,
-        loader: bootstrapCSSExtract.extract(['css?sourceMap', 'sass?sourceMap'])
-      },
+      // {
+      //   test: /bootstrap\/scss\/\S+\.scss$/,
+      //   loader: bootstrapCSSExtract.extract(['css?sourceMap', 'sass?sourceMap'])
+      // },
       {
         test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
         loader: 'url-loader',
@@ -68,18 +73,18 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       VERSION: JSON.stringify('1.0.0'),
-      PROD_MODE: false
+      PROD_MODE: false,
+      'process.env': {
+        NODE_ENV: JSON.stringify('development')
+      }
     }),
     new webpack.optimize.OccurenceOrderPlugin(), // recommanded by webpack
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.EnvironmentPlugin([
-      'NODE_ENV'
-    ]),
     new webpack.optimize.CommonsChunkPlugin({
       names: ['vendors'],
       minChunks: Infinity
     }),
-    bootstrapCSSExtract,
+    // bootstrapCSSExtract,
     scssExtract,
     new HtmlWebpackPlugin({
       title: 'my title',
@@ -92,20 +97,17 @@ module.exports = {
   ],
   resolve: {
     root: [path.resolve('./src')],
-    extensions: ['', '.js', '.jsx']
+    extensions: ['', '.js', '.vue']
   },
-  // devServer: {
-  //   historyApiFallback: true,
-  //   hot: true,
-  //   inline: true,
-  //   progress: true
-  //   // ,
-  //   // proxy: {
-  //   //   '/api/*': {
-  //   //     target: 'http://localhost:5000',
-  //   //     secure: false
-  //   //   }
-  //   // }
-  // },
+  vue: {
+    loaders: {
+      sass: scssExtract.extract("css?sourceMap!sass?sourceMap")
+    },
+    postcss: [
+      require('autoprefixer')({
+        browsers: ['last 2 versions']
+      })
+    ]
+  },
   devtool: 'source-map'
 };
