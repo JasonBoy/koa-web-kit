@@ -4,15 +4,44 @@ import App from './App';
 
 Vue.use(VueRouter);
 
-const Foo = { template: '<div>foo</div>' };
-const Bar = { template: '<div>bar</div>' };
+const Foo = {
+  template: '<div>foo, {{ $route.path }}</div>',
+  created: () => {
+    console.log('foo');
+    console.log(router.currentRoute);
+    // router.push('/bar');
+  }
+};
+const Bar = {
+  template: '<div>bar</div>',
+  created: () => console.log('bar')
+};
+const Default = {
+  template: '<div>home</div>',
+  created: () => {
+    console.log('home');
+  }
+};
+const All = {
+  template: '<div>All</div>',
+  created: () => console.log('all')
+};
 
 const routes = [
-  { path: '/foo', component: Foo },
-  { path: '/bar', component: Bar }
+  { path: '/', component: Default },
+  {
+    path: '/foo', component: Foo,
+    beforeEnter: (to, from, next) => {
+      console.log('matched routes', to.matched);
+      next();
+    }
+  },
+  { path: '/bar', component: Bar },
+  { path: '*', redirect: '/' }
 ];
 
 const router = new VueRouter({
+  mode: 'history',
   routes // short for routes: routes
 });
 

@@ -5,11 +5,26 @@
     <p>
       Welcome to your Vue.js app!
     </p>
-    <p>
-      <router-link to="/foo">Go to Foo</router-link>
-      <router-link to="/bar">Go to Bar</router-link>
-    </p>
-    <router-view></router-view>
+    <div>
+      <ul>
+        <router-link to="/" tag="li">
+          <a>Go to Home</a>
+        </router-link>
+        <router-link to="/foo" tag="li">
+          <a>Go to Foo</a>
+        </router-link>
+        <router-link to="/bar" tag="li">
+          <a>Go to Bar</a>
+        </router-link>
+        <router-link to="/xxx" tag="li">
+          <a>Default</a>
+        </router-link>
+
+      </ul>
+    </div>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
 
   </div>
 </template>
