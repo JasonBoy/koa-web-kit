@@ -21,7 +21,7 @@ del.sync('./build/app');
 
 let webpackConfig = {
   entry: {
-    vendors: ['vue', 'vue-router', 'vue-resource'],
+    vendors: ['vue', 'vue-router'],
     app: path.join(APP_PATH, 'main.js')
   },
   output: {
