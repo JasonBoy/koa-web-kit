@@ -4,11 +4,10 @@
   "description": "Node koa web starter kit for quick development",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node app.js",
     "build": "webpack --config webpack.config.dev.js",
     "watch": "webpack --config webpack.config.dev.js --watch",
     "prod": "webpack --config webpack.config.js",
-    "dev": "webpack-dev-server --hot --inline --port 3000 --config webpack.config.dev.js",
     "lint": "eslint . --ext .js --ext .jsx --cache",
     "es6-module-to-commonjs": "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs",
     "test": "mocha ./test/mocha"
@@ -91,9 +90,6 @@
     "url-loader": "^0.5.7",
     "vue-loader": "^9.5.1",
     "vue-style-loader": "^1.0.0",
-    "webpack": "^1.13.0",
-    "webpack-dev-middleware": "^1.4.0",
-    "webpack-dev-server": "^1.14.1",
-    "webpack-hot-middleware": "^2.9.1"
+    "webpack": "^1.13.0"
   }
 }
