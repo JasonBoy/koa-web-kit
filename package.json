@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
+    "deploy": "./deploy.sh",
     "build": "webpack --progress",
     "watch": "webpack --watch --progress",
     "prod": "webpack -p --progress",
