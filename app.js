@@ -28,10 +28,6 @@ app.use(mount('/public', serveStatic(path.join(process.cwd(), 'build', 'app'), {
   maxage: DEV_MODE ? 0 : 2592000000 // one month cache for prod
 })));
 
-app.use(function *(next) {
-  console.log('path: %s', this.path);
-  yield next;
-});
 app.keys = ['app'];
 app.proxy = true;
 app.use(session(app));

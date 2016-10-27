@@ -6,7 +6,7 @@ const router = require('koa-router')({
 
 
 router.use(function *(next) {
-  console.log('index path: %s', this.path);
+  // console.log('index path: %s', this.path);
   yield next;
 });
 
