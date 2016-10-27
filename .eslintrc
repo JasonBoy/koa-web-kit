@@ -2,9 +2,6 @@
   "extends": "eslint:recommended",
   "parserOptions": {
     "ecmaVersion": 6,
-    "ecmaFeatures": {
-      "jsx": true
-    },
     "sourceType": "module"
   },
   "env": {
@@ -12,7 +9,7 @@
     "node": true
   },
   "plugins": [
-    "react"
+    "html"
   ],
   "parser": "babel-eslint",
   "rules": {
