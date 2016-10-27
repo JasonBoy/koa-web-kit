@@ -1,26 +1,25 @@
 const path = require('path');
-
 const koa = require('koa');
 const mount = require('koa-mount');
 const compress = require('koa-compress');
 const session = require('koa-session');
 const views = require('koa-views');
 const koaLogger = require('koa-logger');
+const bodyParser = require('koa-bodyparser');
+const serveStatic = require('koa-static');
+const cons = require('consolidate');
+const nunjucks = require('nunjucks');
 
 const config = require('./config');
+const logger = require('./mw/logger');
+const index = require('./routes/index');
+const user = require('./routes/user');
 
 const PORT = config.getListeningPort();
 const DEV_MODE = config.isDevMode();
 
 //and initialize it with
 const app = koa();
-const bodyParser = require('koa-bodyparser');
-const serveStatic = require('koa-static');
-const cons = require('consolidate');
-const nunjucks = require('nunjucks');
-
-const index = require('./routes/index');
-const user = require('./routes/user');
 
 app.use(koaLogger());
 // app.use(compress());
@@ -53,4 +52,4 @@ app.use(user.routes());
 
 //and then give it a port to listen for
 app.listen(PORT);
-console.log('Koa listening on port %d', PORT);
+logger.info(`Koa listening on port ${PORT}`);
