@@ -63,24 +63,21 @@ if(DEV_MODE) {
 module.exports = webpackConfig;
 
 function getName(chunkName, ext, hashName) {
-  var temp = chunkName + (DEV_MODE ? '.' : '-[' + (hashName ? hashName : 'chunkhash') + ':9].') + ext;
-  // console.log(temp);
-  return temp;
+  return chunkName + (DEV_MODE ? '.' : '-[' + (hashName ? hashName : 'chunkhash') + ':9].') + ext;
 }
 function getResourceName() {
   return getName('[path][name]', '[ext]', 'hash');
 }
 function getStyleLoaders() {
-  var temp = [];
+  const temp = [];
   for(let i = 0, length = arguments.length; i < length; i++) {
-    var name = arguments[i];
-    temp.push(name + (DEV_MODE ? '?sourceMap' : ''));
+    temp.push(arguments[i] + (DEV_MODE ? '?sourceMap' : ''));
   }
   return temp;
 }
 
 function getPlugins() {
-  var plugins = [
+  const plugins = [
     new webpack.DefinePlugin({
       // VERSION: JSON.stringify('1.0.0'),
       DEV_MODE: DEV_MODE,
@@ -129,7 +126,7 @@ function getPlugins() {
 }
 
 function getModules() {
-  var imageLoader = {
+  const imageLoader = {
     test: /\.(png|jpe?g|gif|svg)$/,
     loaders: [
       `url?context=${CONTENT_PATH}&name=${getResourceName()}&limit=5000`,
@@ -139,7 +136,7 @@ function getModules() {
     imageLoader.loaders.push('image-webpack');
   }
 
-  var module = {
+  const module = {
     // preLoaders: [
     //   {
     //     test: /\.vue$/,
@@ -155,11 +152,7 @@ function getModules() {
       {
         test: /\.js$/,
         loader: 'babel',
-        include: APP_PATH,
         exclude: /node_modules/,
-        query: {
-          presets: ['es2015', 'stage-2', 'stage-1']
-        }
       },
       {
         test: /\.scss$/,
