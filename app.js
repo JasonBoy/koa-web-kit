@@ -28,7 +28,7 @@ app.keys = ['app'];
 app.proxy = true;
 
 app.use(koaLogger());
-// app.use(compress());
+app.use(compress());
 app.use(mount('/public', serveStatic(path.join(process.cwd(), 'build', 'app'), {
   maxage: DEV_MODE ? 0 : 2592000000 // one month cache for prod
 })));

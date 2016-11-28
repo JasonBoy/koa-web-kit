@@ -16,7 +16,7 @@ try {
 }
 
 function getConfigProperty(key) {
-  var valueFormEnv = process.env[key];
+  const valueFormEnv = process.env[key];
   return valueFormEnv ? valueFormEnv : configInfo[key];
 }
 
@@ -28,11 +28,11 @@ module.exports = {
     return getConfigProperty('NODE_ENV');
   },
   isDevMode: () => {
-    var env = getConfigProperty('NODE_ENV');
+    const env = getConfigProperty('NODE_ENV');
     return 'dev' === env || 'development' === env;
   },
   isProdMode: () => {
-    var env = getConfigProperty('NODE_ENV');
+    const env = getConfigProperty('NODE_ENV');
     return 'prod' === env || 'production' === env;
   },
   isNodeProxyEnabled: () => {

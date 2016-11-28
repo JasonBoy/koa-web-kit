@@ -102,7 +102,7 @@ function getPlugins() {
     }),
     new ChunkManifestPlugin({
       filename: '../manifest.json',
-      manifestVariable: "webpackManifest"
+      manifestVariable: 'webpackManifest'
     }),
   ];
   if(DEV_MODE) {

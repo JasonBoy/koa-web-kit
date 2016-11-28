@@ -1,4 +1,4 @@
-var dateFormat = require('dateformat');
+const dateFormat = require('dateformat');
 
 module.exports = {
   simpleDate () {

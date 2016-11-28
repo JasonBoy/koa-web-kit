@@ -22,10 +22,6 @@ const Default = {
     console.log('home');
   }
 };
-const All = {
-  template: '<div>All</div>',
-  created: () => console.log('all')
-};
 
 const routes = [
   { path: '/', component: Default },

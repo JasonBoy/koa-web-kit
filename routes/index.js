@@ -10,7 +10,7 @@ router.use(function *(next) {
   yield next;
 });
 
-router.get('/', function *(next) {
+router.get('/', function *() {
   // console.log('in index');
   // this.body = 'OK';
   this.state = {
@@ -20,23 +20,23 @@ router.get('/', function *(next) {
   yield this.render('index');
 });
 
-router.get('/market/mall', function *(next) {
+router.get('/market/mall', function *() {
   console.log('in mall');
   logRequestInfo(this);
   this.body = 'Mall';
 });
 
-router.get('/userx/:id', function *(next) {
+router.get('/userx/:id', function *() {
   console.log('in user');
   this.redirect('/user/id-' + this.params.id);
 });
 
-router.post('/login', function *(next) {
+router.post('/login', function *() {
   console.log('body:', this.request.body);
   this.body = this.request.body;
 });
 
-router.get('/session', function *(next) {
+router.get('/session', function *() {
   let n = this.session.views || 0;
   this.session.views = ++n;
   this.body = n + ' views';

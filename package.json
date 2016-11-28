@@ -9,7 +9,7 @@
     "build": "webpack --progress",
     "watch": "webpack --watch --progress",
     "prod": "webpack -p --progress",
-    "lint": "eslint . --ext .js --ext .jsx --cache",
+    "lint": "eslint --ext .js --cache .",
     "es6-module-to-commonjs": "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs",
     "test": "mocha ./test/mocha"
   },
