@@ -3,7 +3,6 @@
 #This is meant for production
 # > ./deploy.sh moduleName clusterNumber skipInstall
 ModuleName="app"
-AllModules="all"
 AppName=${ModuleName}
 #Get/Set module name from argv
 if [[ $# != 0 && $1 != "" ]]; then
@@ -33,9 +32,9 @@ fi
 #uncoment this if you are in China...
 TaobaoRegistry="http://registry.npm.taobao.org/"
 NpmRegistry=$(npm config get registry)
-npm config set registry $TaobaoRegistry
+npm config set registry ${TaobaoRegistry}
 if [ "$TaobaoRegistry" != "$NpmRegistry" ]; then
-  echo changing npm registry "$NpmRegistry" to taobao registry
+  echo changing npm registry to taobao registry "$TaobaoRegistry"
   npm config set registry "$TaobaoRegistry"
 fi
 
@@ -52,20 +51,10 @@ npm run prod
 
 ClientScript="app.js"
 #For just make it to ClientScript
-AllModuleScript=${ClientScript}
 RunScript=${ClientScript}
 ClusterNumber=0
 if [[ $2 != "" ]]; then
   ClusterNumber=$2
-fi
-#start or reload all apps
-if [[ ${AppName} == ${AllModules} ]]; then
-  if [[ "start" == $3 ]]; then
-    pm2 start ${ClientScript} --no-vizion --name ${ModuleName} -i ${ClusterNumber}
-  else
-    pm2 reload all
-  fi
-  exit
 fi
 
 #check if app is running
