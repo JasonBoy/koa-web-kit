@@ -9,17 +9,23 @@ const bodyParser = require('koa-bodyparser');
 const serveStatic = require('koa-static');
 const cons = require('consolidate');
 const nunjucks = require('nunjucks');
+const _ = require('lodash');
 
 const config = require('./config');
 const logger = require('./mw/logger');
 const index = require('./routes/index');
 const user = require('./routes/user');
+const apiRouter = require('./routes/proxy');
 
 const PORT = config.getListeningPort();
 const DEV_MODE = config.isDevMode();
+const DEFAULT_PREFIX_KEY = 'defaultPrefix';
+const API_ENDPOINTS = config.getApiEndPoints();
 
 //and initialize it with
 const app = koa();
+app.keys = ['app'];
+app.proxy = true;
 
 app.use(koaLogger());
 // app.use(compress());
@@ -27,12 +33,25 @@ app.use(mount('/public', serveStatic(path.join(process.cwd(), 'build', 'app'), {
   maxage: DEV_MODE ? 0 : 2592000000 // one month cache for prod
 })));
 
-app.keys = ['app'];
-app.proxy = true;
+//api proxy
+if(config.isNodeProxyEnabled() && !_.isEmpty(API_ENDPOINTS)) {
+  for(const prefix in API_ENDPOINTS) {
+    if(API_ENDPOINTS.hasOwnProperty(prefix) && prefix !== DEFAULT_PREFIX_KEY) {
+      let endPoint = API_ENDPOINTS[prefix];
+      if ('string' !== typeof endPoint) {
+        endPoint = endPoint.endpoint;
+      }
+      app.use(apiRouter.handleApiRequests(prefix, endPoint));
+      logger.info('Node proxy[' + endPoint + '] enabled for path: ' + prefix);
+    }
+  }
+}
+
+
 app.use(session(app));
 app.use(bodyParser());
 
-var viewsPath = path.join(process.cwd(), 'build/app');
+const viewsPath = path.join(process.cwd(), 'build/app');
 cons.requires.nunjucks = nunjucks.configure(viewsPath, {
   autoescape: true,
   noCache: true,

@@ -37,6 +37,7 @@
   "homepage": "https://github.com/JasonBoy/koa-web-kit#readme",
   "readme": "README.md",
   "dependencies": {
+    "bluebird": "^3.4.6",
     "bootstrap": "4.0.0-alpha.5",
     "consolidate": "^0.14.1",
     "dateformat": "^1.0.12",
@@ -49,7 +50,10 @@
     "koa-session": "^3.3.1",
     "koa-static": "^2.0.0",
     "koa-views": "^4.1.0",
+    "lodash": "^4.17.2",
     "nunjucks": "3.0.0",
+    "request": "^2.79.0",
+    "request-debug": "^0.2.0",
     "vue": "2.1.0",
     "vue-router": "2.0.3",
     "winston": "^2.2.0"

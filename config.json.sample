@@ -5,7 +5,7 @@
   "PROXY_DEBUG_LEVEL": 0,
   "STATIC_ENDPOINT": "",
   "API_ENDPOINTS": {
-    "/prefix": "127.0.0.1:3001",
-    "/prefix2": "127.0.0.1:3002"
+    "/prefix": "http://127.0.0.1:3001",
+    "/prefix2": "http://127.0.0.1:3002"
   }
 }
