@@ -1,6 +1,6 @@
 {
   "name": "koa-web-kit",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Node koa web starter kit for quick development",
   "main": "index.js",
   "scripts": {
