@@ -15,7 +15,7 @@ const CONTENT_PATH = path.join(__dirname, './src');
 
 const libCSSExtract = new ExtractTextPlugin(getName('common', 'css', 'contenthash'));
 const scssExtract = new ExtractTextPlugin(getName('[name]', 'css', 'contenthash'));
-const scssExtracted = scssExtract.extract(getStyleLoaders('css', 'sass'));
+const scssExtracted = scssExtract.extract(getStyleLoaders('css-loader', 'sass-loader'));
 
 del.sync('./build/app');
 
@@ -33,9 +33,11 @@ let webpackConfig = {
   module: getModules(),
   plugins: getPlugins(),
   resolve: {
-    root: [path.resolve('./src')],
-    extensions: ['', '.js', '.vue'],
-    fallback: [path.join(__dirname, './node_modules')],
+    modules: [
+      path.resolve('./src'),
+      'node_modules',
+    ],
+    extensions: ['.js', '.vue'],
     alias: {
       'vue': DEV_MODE ? 'vue/dist/vue': 'vue/dist/vue.min',
       'src': path.resolve(__dirname, './src'),
@@ -43,16 +45,6 @@ let webpackConfig = {
       'components': path.resolve(__dirname, './src/components'),
       'store': path.resolve(__dirname, './src/store')
     }
-  },
-  vue: {
-    loaders: {
-      sass: scssExtracted,
-    },
-    postcss: [
-      require('autoprefixer')({
-        browsers: ['last 5 versions']
-      })
-    ]
   },
 };
 
@@ -71,8 +63,16 @@ function getResourceName() {
 function getStyleLoaders() {
   const temp = [];
   for(let i = 0, length = arguments.length; i < length; i++) {
-    temp.push(arguments[i] + (DEV_MODE ? '?sourceMap' : ''));
+    const tempLoader = {
+      loader: arguments[i],
+      options: {},
+    };
+    if(DEV_MODE) {
+      tempLoader.options.sourceMap = '';
+    }
+    temp.push(tempLoader);
   }
+  console.log(temp);
   return temp;
 }
 
@@ -85,8 +85,12 @@ function getPlugins() {
         NODE_ENV: JSON.stringify(config.getNodeEnv())
       }
     }),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.LoaderOptionsPlugin({
+      debug: DEV_MODE,
+      options: {
+        context: CONTENT_PATH,
+      },
+    }),
     new WebpackMd5Hash(),
     new webpack.optimize.CommonsChunkPlugin({
       names: 'vendors',
@@ -128,30 +132,42 @@ function getPlugins() {
 function getModules() {
   const imageLoader = {
     test: /\.(png|jpe?g|gif|svg)$/,
-    loaders: [
-      `url?context=${CONTENT_PATH}&name=${getResourceName()}&limit=5000`,
+    use: [
+      {
+        loader: 'url-loader',
+        options: {
+          context: CONTENT_PATH,
+          name: getResourceName(),
+          limit: 5000,
+        }
+      },
     ],
   };
   if(!DEV_MODE) {
-    imageLoader.loaders.push('image-webpack');
+    imageLoader.use.push({loader: 'image-webpack-loader'});
   }
 
   const module = {
-    // preLoaders: [
-    //   {
-    //     test: /\.vue$/,
-    //     loaders: ['eslint'],
-    //     exclude: /node_modules/
-    //   }
-    // ],
-    loaders: [
+    rules: [
       {
         test: /\.vue$/,
-        loader: 'vue'
+        use: [{
+          loader: 'vue-loader',
+          options: {
+            loaders: {
+              sass: scssExtracted,
+            },
+            postcss: [
+              require('autoprefixer')({
+                browsers: ['last 5 versions']
+              })
+            ]
+          }
+        }],
       },
       {
         test: /\.js$/,
-        loader: 'babel',
+        use: ['babel-loader'],
         exclude: /node_modules/,
       },
       {
@@ -159,21 +175,21 @@ function getModules() {
         include: APP_PATH,
         // exclude: /node_modules/,
         exclude: [/node_modules/, /content\/scss\/bootstrap\.scss$/],
-        loader: scssExtracted
+        use: scssExtracted
       },
       {
         test: /content\/scss\/bootstrap\.scss$/,
-        loader: libCSSExtract.extract(getStyleLoaders('css', 'sass'))
+        use: libCSSExtract.extract(getStyleLoaders('css-loader', 'sass-loader'))
       },
       {
         test: /\.css$/,
-        loader: libCSSExtract.extract(getStyleLoaders('css'))
+        use: libCSSExtract.extract(getStyleLoaders('css-loader'))
       },
       imageLoader,
       {
         test: /\.(woff|woff2|eot|ttf|wav|mp3)$/,
-        loader: 'file',
-        query: {
+        loader: 'file-loader',
+        options: {
           context: CONTENT_PATH,
           name: getResourceName(),
           limit: 5000,
