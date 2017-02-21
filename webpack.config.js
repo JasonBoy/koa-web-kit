@@ -84,6 +84,7 @@ function getPlugins() {
     }),
     new webpack.LoaderOptionsPlugin({
       debug: DEV_MODE,
+      minimize: !DEV_MODE,
       options: {
         context: CONTENT_PATH,
       },
