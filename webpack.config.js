@@ -3,7 +3,7 @@ const del = require('del');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const WebpackMd5Hash = require('webpack-md5-hash');
+// const WebpackMd5Hash = require('webpack-md5-hash');
 const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
 
 const config = require('./config');
@@ -72,7 +72,6 @@ function getStyleLoaders() {
     }
     temp.push(tempLoader);
   }
-  console.log(temp);
   return temp;
 }
 
@@ -91,9 +90,9 @@ function getPlugins() {
         context: CONTENT_PATH,
       },
     }),
-    new WebpackMd5Hash(),
+    // new WebpackMd5Hash(),
     new webpack.optimize.CommonsChunkPlugin({
-      names: 'vendors',
+      names: ['vendors', 'manifest'],
       minChunks: Infinity
     }),
     libCSSExtract,
@@ -111,8 +110,8 @@ function getPlugins() {
   ];
   if(DEV_MODE) {
     plugins.push(new webpack.HotModuleReplacementPlugin());
+    plugins.push(new webpack.NoEmitOnErrorsPlugin());
   } else {
-    plugins.push(new webpack.NoErrorsPlugin());
     //add uglify plugin
     plugins.push(new webpack.optimize.UglifyJsPlugin({
       compress: {
@@ -121,7 +120,6 @@ function getPlugins() {
         dead_code: true,
         drop_debugger: true,
       },
-      comments: /eju/,
       mangle: true
     }));
   }
