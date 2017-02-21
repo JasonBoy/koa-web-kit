@@ -3,8 +3,7 @@ const del = require('del');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-// const WebpackMd5Hash = require('webpack-md5-hash');
-const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 
 const config = require('./config');
 
@@ -39,7 +38,6 @@ let webpackConfig = {
     ],
     extensions: ['.js', '.vue'],
     alias: {
-      'vue': DEV_MODE ? 'vue/dist/vue': 'vue/dist/vue.min',
       'src': path.resolve(__dirname, './src'),
       'content': path.resolve(__dirname, './src/content'),
       'components': path.resolve(__dirname, './src/components'),
@@ -90,7 +88,6 @@ function getPlugins() {
         context: CONTENT_PATH,
       },
     }),
-    // new WebpackMd5Hash(),
     new webpack.optimize.CommonsChunkPlugin({
       names: ['vendors', 'manifest'],
       minChunks: Infinity
@@ -103,10 +100,7 @@ function getPlugins() {
       inject: 'body',
       chunksSortMode: 'dependency'
     }),
-    new ChunkManifestPlugin({
-      filename: '../manifest.json',
-      manifestVariable: 'webpackManifest'
-    }),
+    new ManifestPlugin(),
   ];
   if(DEV_MODE) {
     plugins.push(new webpack.HotModuleReplacementPlugin());
@@ -145,7 +139,7 @@ function getModules() {
     imageLoader.use.push({loader: 'image-webpack-loader'});
   }
 
-  const module = {
+  return {
     rules: [
       {
         test: /\.vue$/,
@@ -195,8 +189,4 @@ function getModules() {
       }
     ]
   };
-  if(DEV_MODE) {
-    module.noParse = [/^vue$/];
-  }
-  return module;
 }
