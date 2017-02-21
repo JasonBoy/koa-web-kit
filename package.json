@@ -91,8 +91,8 @@
     "uglify-loader": "1.4.0",
     "url-loader": "0.5.7",
     "vue-loader": "11.1.0",
+    "vue-template-compiler": "2.1.10",
     "webpack": "2.2.1",
-    "webpack-md5-hash": "0.0.5",
-    "vue-template-compiler": "2.1.10"
+    "webpack-md5-hash": "0.0.5"
   }
 }
