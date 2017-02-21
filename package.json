@@ -8,7 +8,7 @@
     "deploy": "./deploy.sh",
     "build": "webpack --progress",
     "watch": "webpack --watch --progress",
-    "prod": "NODE_ENV=production webpack -p --progress",
+    "prod": "cross-env NODE_ENV=production webpack -p --progress",
     "lint": "eslint --ext .js --cache .",
     "es6-module-to-commonjs": "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs",
     "test": "mocha ./test/mocha"
@@ -71,6 +71,7 @@
     "babel-preset-stage-2": "6.22.0",
     "babel-preset-stage-3": "6.22.0",
     "chai": "3.5.0",
+    "cross-env": "^3.1.4",
     "css-loader": "0.26.1",
     "del": "2.2.2",
     "eslint": "3.15.0",
