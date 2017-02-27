@@ -1,13 +1,13 @@
 'use strict';
 
 const path = require('path');
-const koa = require('koa');
+const Koa = require('koa');
 const mount = require('koa-mount');
 const compress = require('koa-compress');
 const session = require('koa-session');
 const views = require('koa-views');
 const koaLogger = require('koa-logger');
-const bodyParser = require('koa-bodyparser');
+const bodyParser = require('koa-better-body');
 const serveStatic = require('koa-static');
 const cons = require('consolidate');
 const nunjucks = require('nunjucks');
@@ -24,16 +24,22 @@ const DEFAULT_PREFIX_KEY = 'defaultPrefix';
 const API_ENDPOINTS = config.getApiEndPoints();
 
 //and initialize it with
-const app = koa();
+const app = new Koa();
 app.env = config.getNodeEnv() || 'development';
 app.keys = ['koa-web-kit'];
 app.proxy = true;
 
 app.use(koaLogger());
 app.use(compress());
-app.use(mount('/public', serveStatic(path.join(process.cwd(), 'build', 'app'), {
-  maxage: DEV_MODE ? 0 : 2592000000 // one month cache for prod
-})));
+app.use(mount('/public',
+    serveStatic(path.join(process.cwd(), 'build/app'),
+      {
+        // one month cache for prod
+        maxage: DEV_MODE ? 0 : 2592000000,
+      }
+    )
+  )
+);
 
 //api proxy
 if(config.isNodeProxyEnabled() && !_.isEmpty(API_ENDPOINTS)) {
@@ -49,14 +55,13 @@ if(config.isNodeProxyEnabled() && !_.isEmpty(API_ENDPOINTS)) {
   }
 }
 
-
 app.use(session(app));
-app.use(bodyParser());
+app.use(bodyParser({}));
 
 const viewsPath = path.join(process.cwd(), 'build/app');
 cons.requires.nunjucks = nunjucks.configure(viewsPath, {
   autoescape: true,
-  noCache: true,
+  noCache: DEV_MODE,
   tags: {
     variableStart: '{=',
     variableEnd: '=}'

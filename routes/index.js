@@ -1,45 +1,45 @@
 'use strict';
 
-const router = require('koa-router')({
-  // prefix: '/i'
+const Router = require('koa-router');
+const router = new Router();
+
+
+router.use(async function (ctx, next) {
+  console.log(`start of index router: ${ctx.path}`);
+  await next();
+  console.log(`end of index router: ${ctx.path}`);
 });
 
-
-router.use(function *(next) {
-  // console.log('index path: %s', this.path);
-  yield next;
-});
-
-router.get('/', function *() {
-  // console.log('in index');
-  // this.body = 'OK';
-  this.state = {
+router.get('/', async function (ctx) {
+  ctx.state = {
     title: 'using nunjucks template'
   };
 
-  yield this.render('index');
+  await ctx.render('index');
 });
 
-router.get('/market/mall', function *() {
+router.get('/market/mall', function (ctx) {
   console.log('in mall');
-  logRequestInfo(this);
-  this.body = 'Mall';
+  logRequestInfo(ctx);
+  ctx.body = 'Mall';
 });
 
-router.get('/userx/:id', function *() {
-  console.log('in user');
-  this.redirect('/user/id-' + this.params.id);
+router.get('/user/:id', function (ctx) {
+  console.log('user id:', ctx.params.id);
+  ctx.body = ctx.params.id;
 });
 
-router.post('/login', function *() {
-  console.log('body:', this.request.body);
-  this.body = this.request.body;
+router.post('/login', function (ctx) {
+  console.log('body:(buffer or text):', ctx.request.body);    // if buffer or text
+  console.log('files: (multipart or urlencoded):', ctx.request.files);   // if multipart or urlencoded
+  console.log('field: (json):', ctx.request.fields);  // if json
+  ctx.body = ctx.request.fields;
 });
 
-router.get('/session', function *() {
-  let n = this.session.views || 0;
-  this.session.views = ++n;
-  this.body = n + ' views';
+router.get('/session', function (ctx) {
+  let n = ctx.session.views || 0;
+  ctx.session.views = ++n;
+  ctx.body = n + ' views';
 });
 
 function logRequestInfo(ctx) {
@@ -48,7 +48,7 @@ function logRequestInfo(ctx) {
   console.log('url: %s', ctx.url);
   console.log('original url: %s', ctx.originalUrl);
   console.log('path: %s', ctx.path);
-  console.log('query: %s', ctx.query);
+  console.log('query: %s', JSON.stringify(ctx.query));
   console.log('host: %s', ctx.host);
   console.log('hostname: %s', ctx.hostname);
 }

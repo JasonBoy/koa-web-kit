@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <img class="logo" src="./content/img/node.png">
-    <hello></hello>
     <p>
       Welcome to your Vue.js app!
     </p>
@@ -33,12 +32,13 @@
   import './content/scss/bootstrap.scss';
 //  import './content/scss/common.scss';
 //  import './content/scss/demo.css';
-  import Hello from './components/Hello/Hello';
-  console.log(process.env.NODE_ENV);
+//  console.log(process.env.NODE_ENV);
   export default {
-    components: {
-      Hello,
-    },
+    data () {
+      return {
+        msg: 'app'
+      }
+    }
   };
 </script>
 

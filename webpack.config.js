@@ -38,6 +38,7 @@ let webpackConfig = {
     ],
     extensions: ['.js', '.vue'],
     alias: {
+      // 'vue$': 'vue/dist/vue.esm.js',
       'src': path.resolve(__dirname, './src'),
       'content': path.resolve(__dirname, './src/content'),
       'components': path.resolve(__dirname, './src/components'),
@@ -144,24 +145,23 @@ function getModules() {
     rules: [
       {
         test: /\.vue$/,
-        use: [{
-          loader: 'vue-loader',
-          options: {
-            loaders: {
-              sass: scssExtracted,
-            },
-            postcss: [
-              require('autoprefixer')({
-                browsers: ['last 5 versions']
-              })
-            ]
-          }
-        }],
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+            js: 'babel-loader',
+            sass: scssExtracted,
+          },
+          postcss: [
+            require('autoprefixer')({
+              browsers: ['last 5 versions']
+            })
+          ]
+        },
       },
       {
         test: /\.js$/,
         use: ['babel-loader'],
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
       },
       {
         test: /\.scss$/,
