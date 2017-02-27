@@ -104,7 +104,6 @@ function getPlugins() {
     new ManifestPlugin(),
   ];
   if(DEV_MODE) {
-    plugins.push(new webpack.HotModuleReplacementPlugin());
     plugins.push(new webpack.NoEmitOnErrorsPlugin());
   } else {
     //add uglify plugin
