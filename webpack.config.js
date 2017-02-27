@@ -38,7 +38,7 @@ let webpackConfig = {
     ],
     extensions: ['.js', '.vue'],
     alias: {
-      // 'vue$': 'vue/dist/vue.esm.js',
+      'vue$': 'vue/dist/vue.esm.js',
       'src': path.resolve(__dirname, './src'),
       'content': path.resolve(__dirname, './src/content'),
       'components': path.resolve(__dirname, './src/components'),
@@ -77,7 +77,6 @@ function getStyleLoaders() {
 function getPlugins() {
   const plugins = [
     new webpack.DefinePlugin({
-      // VERSION: JSON.stringify('1.0.0'),
       DEV_MODE: DEV_MODE,
       'process.env': {
         NODE_ENV: JSON.stringify(config.getNodeEnv())
@@ -148,7 +147,6 @@ function getModules() {
         loader: 'vue-loader',
         options: {
           loaders: {
-            js: 'babel-loader',
             sass: scssExtracted,
           },
           postcss: [
@@ -160,8 +158,8 @@ function getModules() {
       },
       {
         test: /\.js$/,
-        use: ['babel-loader'],
-        // exclude: /node_modules/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
       },
       {
         test: /\.scss$/,
