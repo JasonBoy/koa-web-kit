@@ -218,7 +218,7 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "http://registry.npm.taobao.org/asynckit/download/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-autoprefixer@6.7.5:
+autoprefixer@6.7.5, autoprefixer@^6.3.1:
   version "6.7.5"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-6.7.5.tgz#50848f39dc08730091d9495023487e7cc21f518d"
   dependencies:
@@ -227,17 +227,6 @@ autoprefixer@6.7.5:
     normalize-range "^0.1.2"
     num2fraction "^1.2.2"
     postcss "^5.2.15"
-    postcss-value-parser "^3.2.3"
-
-autoprefixer@^6.3.1:
-  version "6.7.3"
-  resolved "http://registry.npm.taobao.org/autoprefixer/download/autoprefixer-6.7.3.tgz#bc2c28018e9a226f24f0ded36ce81014dccec817"
-  dependencies:
-    browserslist "^1.7.2"
-    caniuse-db "^1.0.30000623"
-    normalize-range "^0.1.2"
-    num2fraction "^1.2.2"
-    postcss "^5.2.13"
     postcss-value-parser "^3.2.3"
 
 aws-sign2@~0.6.0:
@@ -1056,14 +1045,7 @@ browserify-zlib@^0.1.4:
   dependencies:
     pako "~0.2.0"
 
-browserslist@^1.0.1, browserslist@^1.5.2, browserslist@^1.7.2:
-  version "1.7.4"
-  resolved "http://registry.npm.taobao.org/browserslist/download/browserslist-1.7.4.tgz#56a12da876f787223743a866224ccd8f97014628"
-  dependencies:
-    caniuse-db "^1.0.30000624"
-    electron-to-chromium "^1.2.2"
-
-browserslist@^1.7.5:
+browserslist@^1.0.1, browserslist@^1.5.2, browserslist@^1.7.5:
   version "1.7.5"
   resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-1.7.5.tgz#eca4713897b51e444283241facf3985de49a9e2b"
   dependencies:
@@ -1160,7 +1142,7 @@ caniuse-api@^1.5.2:
     lodash.memoize "^4.1.0"
     lodash.uniq "^4.3.0"
 
-caniuse-db@^1.0.30000346, caniuse-db@^1.0.30000623, caniuse-db@^1.0.30000624:
+caniuse-db@^1.0.30000346, caniuse-db@^1.0.30000624:
   version "1.0.30000624"
   resolved "http://registry.npm.taobao.org/caniuse-db/download/caniuse-db-1.0.30000624.tgz#554b87547895e36f5fe128f4b7448a2ea5bf2213"
 
@@ -1945,10 +1927,6 @@ editorconfig@^0.13.2:
 ee-first@1.1.1:
   version "1.1.1"
   resolved "http://registry.npm.taobao.org/ee-first/download/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
-
-electron-to-chromium@^1.2.2:
-  version "1.2.2"
-  resolved "http://registry.npm.taobao.org/electron-to-chromium/download/electron-to-chromium-1.2.2.tgz#e41bc9488c88e3cfa1e94bde28e8420d7d47c47c"
 
 electron-to-chromium@^1.2.3:
   version "1.2.4"
@@ -3490,12 +3468,13 @@ koa-mount@1.3.0:
     debug "*"
     koa-compose "^2.2.0"
 
-koa-router@5.4.0:
-  version "5.4.0"
-  resolved "http://registry.npm.taobao.org/koa-router/download/koa-router-5.4.0.tgz#2c4e67b0126b97263fdf24493ab2efb4c4c661c3"
+koa-router@next:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/koa-router/-/koa-router-7.0.1.tgz#800a61d0a3342d3d1f96d8c688b84ed2a6314d97"
   dependencies:
     debug "^2.2.0"
     http-errors "^1.3.1"
+    koa-compose "^3.0.0"
     methods "^1.0.1"
     path-to-regexp "^1.1.1"
 
@@ -4679,16 +4658,7 @@ postcss-zindex@^2.0.1:
     postcss "^5.0.4"
     uniqs "^2.0.0"
 
-postcss@^5.0.10, postcss@^5.0.11, postcss@^5.0.12, postcss@^5.0.13, postcss@^5.0.14, postcss@^5.0.16, postcss@^5.0.2, postcss@^5.0.4, postcss@^5.0.5, postcss@^5.0.6, postcss@^5.0.8, postcss@^5.2.13:
-  version "5.2.14"
-  resolved "http://registry.npm.taobao.org/postcss/download/postcss-5.2.14.tgz#47b4fbde363fd4f81e547f7e0e43d6d300267330"
-  dependencies:
-    chalk "^1.1.3"
-    js-base64 "^2.1.9"
-    source-map "^0.5.6"
-    supports-color "^3.2.3"
-
-postcss@^5.2.15:
+postcss@^5.0.10, postcss@^5.0.11, postcss@^5.0.12, postcss@^5.0.13, postcss@^5.0.14, postcss@^5.0.16, postcss@^5.0.2, postcss@^5.0.4, postcss@^5.0.5, postcss@^5.0.6, postcss@^5.0.8, postcss@^5.2.15:
   version "5.2.15"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-5.2.15.tgz#a9e8685e50e06cc5b3fdea5297273246c26f5b30"
   dependencies:

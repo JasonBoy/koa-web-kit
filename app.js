@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const koa = require('koa');
 const mount = require('koa-mount');
@@ -14,7 +16,6 @@ const _ = require('lodash');
 const config = require('./config');
 const logger = require('./mw/logger');
 const index = require('./routes/index');
-const user = require('./routes/user');
 const apiRouter = require('./routes/proxy');
 
 const PORT = config.getListeningPort();
@@ -24,7 +25,8 @@ const API_ENDPOINTS = config.getApiEndPoints();
 
 //and initialize it with
 const app = koa();
-app.keys = ['app'];
+app.env = config.getNodeEnv() || 'development';
+app.keys = ['koa-web-kit'];
 app.proxy = true;
 
 app.use(koaLogger());
@@ -67,7 +69,10 @@ app.use(views(viewsPath, {
   }
 }));
 app.use(index.routes());
-app.use(user.routes());
+
+app.on('error', err => {
+  logger.error(err);
+});
 
 //and then give it a port to listen for
 app.listen(PORT);
