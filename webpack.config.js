@@ -18,10 +18,10 @@ const scssExtracted = scssExtract.extract(getStyleLoaders('css-loader', 'sass-lo
 
 del.sync('./build/app');
 
-let webpackConfig = {
+const webpackConfig = {
   entry: {
-    vendors: ['vue', 'vue-router'],
-    app: path.join(APP_PATH, 'main.js')
+    vendors: ['react', 'react-dom'],
+    app: path.join(APP_PATH, 'index.js')
   },
   output: {
     path: APP_BUILD_PATH,
@@ -36,15 +36,19 @@ let webpackConfig = {
       path.resolve('./src'),
       'node_modules',
     ],
-    extensions: ['.js', '.vue'],
+    extensions: ['.js', '.jsx', '.json'],
     alias: {
-      'vue$': 'vue/dist/vue.esm.js',
       'src': path.resolve(__dirname, './src'),
       'content': path.resolve(__dirname, './src/content'),
       'components': path.resolve(__dirname, './src/components'),
       'store': path.resolve(__dirname, './src/store')
     }
   },
+  // postcss: [
+  //   require('autoprefixer')({
+  //     browsers: ['last 5 versions']
+  //   })
+  // ]
 };
 
 if(DEV_MODE) {
@@ -136,27 +140,13 @@ function getModules() {
     ],
   };
   if(!DEV_MODE) {
-    imageLoader.use.push({loader: 'image-webpack-loader'});
+    // imageLoader.use.push({loader: 'image-webpack-loader'});
   }
 
   return {
     rules: [
       {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          loaders: {
-            sass: scssExtracted,
-          },
-          postcss: [
-            require('autoprefixer')({
-              browsers: ['last 5 versions']
-            })
-          ]
-        },
-      },
-      {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
       },

@@ -9,7 +9,7 @@
     "node": true
   },
   "plugins": [
-    "html"
+    "react"
   ],
   "parser": "babel-eslint",
   "rules": {
