@@ -42,7 +42,7 @@
     "consolidate": "0.14.5",
     "dateformat": "2.0.0",
     "koa": "2.2.0",
-    "koa-better-body": "^3.0.2",
+    "koa-better-body": "3.0.2",
     "koa-compress": "2.0.0",
     "koa-logger": "2.0.1",
     "koa-mount": "3.0.0",

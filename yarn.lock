@@ -3371,9 +3371,9 @@ klaw@^1.0.0:
   optionalDependencies:
     graceful-fs "^4.1.9"
 
-koa-better-body@^3.0.2:
+koa-better-body@3.0.2:
   version "3.0.2"
-  resolved "https://registry.yarnpkg.com/koa-better-body/-/koa-better-body-3.0.2.tgz#f4f7be7d7148422fa023c25771924422f51877fb"
+  resolved "http://registry.npm.taobao.org/koa-better-body/download/koa-better-body-3.0.2.tgz#f4f7be7d7148422fa023c25771924422f51877fb"
   dependencies:
     extend-shallow "^2.0.1"
     formidable "^1.0.17"
