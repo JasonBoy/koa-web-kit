@@ -4,7 +4,7 @@
 
 const request = require('request');
 const _ = require('lodash');
-const BBPromise = require('bluebird');
+const Promise = require('bluebird');
 
 const logger = require('../mw/logger');
 const appConfig = require('../config');
@@ -18,7 +18,7 @@ if (debugLevel && debugLevel > 0) {
 
 exports.getProxyOptions = getProxyOptions;
 
-exports.coRequest = function () {
+exports.dispatchRequest = function () {
   return getApiPromise.apply(this, Array.from(arguments));
 };
 
@@ -30,14 +30,14 @@ exports.coRequest = function () {
  */
 function getApiPromise(apiEndpoint, needPromise, options) {
   let apiRequest = undefined;
-  const self = this;
-  const req = this.req;
-  const p = new BBPromise(function (resolve, reject) {
-    apiRequest = req.pipe(request(getProxyOptions.call(self, apiEndpoint, options), function (err, response, body) {
+  const ctx = this;
+  const req = ctx.req;
+  const p = new Promise(function (resolve, reject) {
+    apiRequest = req.pipe(request(getProxyOptions.call(ctx, apiEndpoint, options), function (err, response, body) {
       if (err) {
         logger.error(err);
       }
-      if (err || response.statusCode != 200) {
+      if (response.statusCode !== 200) {
         reject({body, response, err});
       } else {
         resolve({body, response});
@@ -45,7 +45,7 @@ function getApiPromise(apiEndpoint, needPromise, options) {
     }));
   });
   if (!needPromise) {
-    apiRequest.pipe(this.res);
+    apiRequest.pipe(ctx.res);
   }
   return p;
 }

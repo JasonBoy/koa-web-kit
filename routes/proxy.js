@@ -12,8 +12,8 @@ module.exports = {
 
 function handleApiRequests(prefix, apiEndpoint) {
   const router = new Router({prefix: prefix});
-  router.all('*', function *() {
-    yield apiProxy.coRequest.call(this, apiEndpoint);
+  router.all('*', async function (ctx) {
+    await apiProxy.dispatchRequest.call(ctx, apiEndpoint);
   });
   return router.routes();
 }
