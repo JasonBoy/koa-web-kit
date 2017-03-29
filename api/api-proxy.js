@@ -7,7 +7,7 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 
 const logger = require('../mw/logger');
-const appConfig = require('../config');
+const appConfig = require('../config/env');
 
 const debugLevel = appConfig.getProxyDebugLevel();
 

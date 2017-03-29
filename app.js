@@ -13,7 +13,7 @@ const cons = require('consolidate');
 const nunjucks = require('nunjucks');
 const _ = require('lodash');
 
-const config = require('./config');
+const config = require('./config/env');
 const logger = require('./mw/logger');
 const index = require('./routes/index');
 const apiRouter = require('./routes/proxy');

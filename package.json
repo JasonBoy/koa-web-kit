@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node app.js",
     "deploy": "./deploy.sh",
-    "build": "webpack --progress",
-    "watch": "webpack --watch --progress",
-    "prod": "cross-env NODE_ENV=production webpack -p --progress",
+    "build": "webpack --progress --config config/webpack.config.dev.js",
+    "watch": "webpack --watch --progress --config config/webpack.config.dev.js",
+    "prod": "cross-env NODE_ENV=production webpack -p --progress --config config/webpack.config.prod.js",
     "lint": "eslint --ext .js --cache .",
     "es6-module-to-commonjs": "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs",
     "test": "mocha ./test/mocha"
@@ -87,6 +87,7 @@
     "style-loader": "0.16.1",
     "url-loader": "0.5.8",
     "webpack": "2.3.2",
-    "webpack-manifest-plugin": "1.1.0"
+    "webpack-manifest-plugin": "1.1.0",
+    "webpack-merge": "4.1.0"
   }
 }

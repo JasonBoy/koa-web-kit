@@ -12,6 +12,9 @@ fi
 #using node >= 6
 #nvm use 6
 
+echo $(which node)
+echo $(which pm2)
+
 #echo ${AppName} $#
 #Simple script to run app quickly
 NodeVersion=$(node -v)

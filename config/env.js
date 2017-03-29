@@ -3,7 +3,9 @@
  */
 
 const fs = require('fs');
-const configPath = './config.json';
+const path = require('path');
+
+const configPath = path.join(__dirname, '../config.json');
 let configInfo = {};
 
 try {
