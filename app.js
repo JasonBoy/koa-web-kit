@@ -36,6 +36,7 @@ app.use(mount('/public',
       {
         // one month cache for prod
         maxage: DEV_MODE ? 0 : 2592000000,
+        gzip: false,
       }
     )
   )
