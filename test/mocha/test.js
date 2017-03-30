@@ -31,6 +31,6 @@ describe('Demo', function () {
   });
   it('should be a number', function () {
     const foo = 'bar';
-    foo.should.be.a('number');
+    foo.should.not.be.a('number');
   });
 });
