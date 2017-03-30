@@ -18,9 +18,9 @@ del.sync('./build/app');
 
 module.exports = webpackMerge(baseWebpackConfig, {
   output: {
-    publicPath: config.getStaticAssetsEndpoint() + '/public/',
+    publicPath: config.getStaticAssetsEndpoint() + config.getAppPrefix() + config.getStaticPrefix(),
     filename: utils.getName('[name]', 'js', '', false),
-    chunkFilename: '[name]-[chunkhash].chunk.js'
+    chunkFilename: '[name]-[chunkhash].chunk.js',
   },
   module: {
     rules: [

@@ -44,6 +44,12 @@ module.exports = {
     //AKA, get CDN domain
     return getConfigProperty('STATIC_ENDPOINT');
   },
+  getAppPrefix: () => {
+    return getConfigProperty('APP_PREFIX');
+  },
+  getStaticPrefix: () => {
+    return getConfigProperty('STATIC_PREFIX');
+  },
   getApiEndPoints: () => {
     return getConfigProperty('API_ENDPOINTS');
   },

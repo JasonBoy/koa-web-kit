@@ -31,7 +31,8 @@ app.proxy = true;
 
 app.use(koaLogger());
 app.use(compress());
-app.use(mount('/public',
+app.use(mount(
+    config.getAppPrefix() + config.getStaticPrefix(),
     serveStatic(path.join(process.cwd(), 'build/app'),
       {
         // one month cache for prod

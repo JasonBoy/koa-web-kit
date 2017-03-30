@@ -1,7 +1,11 @@
 'use strict';
 
 const Router = require('koa-router');
-const router = new Router();
+const config = require('../config/env');
+
+const router = new Router({
+  prefix: config.getAppPrefix(),
+});
 
 
 router.use(async function (ctx, next) {

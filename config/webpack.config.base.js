@@ -22,9 +22,6 @@ module.exports = {
   },
   output: {
     path: APP_BUILD_PATH,
-    publicPath: '/public/',
-    filename: '[name].js',
-    chunkFilename: '[name].js',
   },
   resolve: {
     modules: [

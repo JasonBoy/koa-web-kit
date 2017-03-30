@@ -17,6 +17,11 @@ const scssExtracted = scssExtract.extract(utils.getStyleLoaders('css-loader', 's
 del.sync('./build/app');
 
 module.exports = webpackMerge(baseWebpackConfig, {
+  output: {
+    publicPath: config.getAppPrefix() + config.getStaticPrefix(),
+    filename: '[name].js',
+    chunkFilename: '[name].js',
+  },
   module: {
     rules: [
       {
