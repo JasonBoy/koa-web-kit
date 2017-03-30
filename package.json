@@ -11,7 +11,7 @@
     "prod": "cross-env NODE_ENV=production webpack -p --progress --config config/webpack.config.prod.js",
     "lint": "eslint --ext .js --cache .",
     "es6-module-to-commonjs": "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs",
-    "test": "mocha ./test/mocha"
+    "test": "./node_modules/.bin/_mocha ./test/mocha"
   },
   "engines": {
     "node": ">= 7.6"
