@@ -12,7 +12,7 @@ const APP_PATH = utils.APP_PATH;
 
 const libCSSExtract = new ExtractTextPlugin(utils.getName('common', 'css', 'contenthash', true));
 const scssExtract = new ExtractTextPlugin(utils.getName('[name]', 'css', 'contenthash', true));
-const scssExtracted = scssExtract.extract(utils.getStyleLoaders('css-loader', 'sass-loader', true));
+const scssExtracted = scssExtract.extract(utils.getStyleLoaders('css-loader', 'postcss-loader', 'sass-loader', true));
 
 del.sync('./build/app');
 

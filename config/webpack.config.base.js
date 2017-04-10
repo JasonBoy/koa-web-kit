@@ -51,8 +51,14 @@ module.exports = {
             options: {
               context: CONTENT_PATH,
               name: utils.getResourceName(DEV_MODE),
-              limit: 5000,
+              limit: 1024,
             }
+          },
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              bypassOnDebug: DEV_MODE,
+            },
           },
         ],
       },
