@@ -29,17 +29,21 @@ app.env = config.getNodeEnv() || 'development';
 app.keys = ['koa-web-kit'];
 app.proxy = true;
 
-app.use(koaLogger());
+//since koa-logger is sync operation, disable that on production mode,
+//use other async loggers
+if(DEV_MODE) {
+  app.use(koaLogger());
+}
 app.use(compress());
 app.use(mount(
-    config.getAppPrefix() + (config.getStaticPrefix() || '/'),
-    serveStatic(path.join(process.cwd(), 'build/app'),
-      {
-        // one month cache for prod
-        maxage: DEV_MODE ? 0 : 2592000000,
-        gzip: false,
-      }
-    )
+  path.join(config.getAppPrefix(), config.getStaticPrefix() || '/'),
+  serveStatic(path.join(process.cwd(), 'build/app'),
+    {
+      // one month cache for prod
+      maxage: DEV_MODE ? 0 : 2592000000,
+      gzip: false,
+    }
+  )
   )
 );
 
