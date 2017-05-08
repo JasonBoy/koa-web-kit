@@ -4,6 +4,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const config = require('./env');
 const utils = require('./utils');
@@ -40,8 +41,13 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        loader: 'babel-loader',
         exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+          }
+        }
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/,
@@ -91,6 +97,12 @@ module.exports = {
       inject: 'body',
       chunksSortMode: 'dependency'
     }),
+    new CopyWebpackPlugin([
+      {
+        from: utils.resolve('src/assets/static'),
+        to: utils.resolve('build/app/assets/static'),
+      },
+    ]),
     new ManifestPlugin(),
   ],
 };

@@ -45,7 +45,7 @@ module.exports = webpackMerge(baseWebpackConfig, {
   plugins: [
     new webpack.DefinePlugin({
       'DEV_MODE': false,
-      'process.env': JSON.stringify(config.getNodeEnv()),
+      'process.env.NODE_ENV': JSON.stringify(config.getNodeEnv()),
     }),
     libCSSExtract,
     scssExtract,
