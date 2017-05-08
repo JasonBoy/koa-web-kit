@@ -6,7 +6,7 @@ const mount = require('koa-mount');
 const compress = require('koa-compress');
 const session = require('koa-session');
 const views = require('koa-views');
-const koaLogger = require('koa-logger');
+const morgan = require('koa-morgan');
 const bodyParser = require('koa-better-body');
 const serveStatic = require('koa-static');
 const cons = require('consolidate');
@@ -29,11 +29,7 @@ app.env = config.getNodeEnv() || 'development';
 app.keys = ['koa-web-kit'];
 app.proxy = true;
 
-//since koa-logger is sync operation, disable that on production mode,
-//use other async loggers
-if(DEV_MODE) {
-  app.use(koaLogger());
-}
+app.use(morgan(DEV_MODE ? 'dev' : 'tiny'));
 app.use(compress());
 app.use(mount(
   path.join(config.getAppPrefix(), config.getStaticPrefix() || '/'),

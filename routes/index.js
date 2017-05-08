@@ -11,9 +11,9 @@ const router = new Router({
 
 
 router.use(async function (ctx, next) {
-  console.log(`start of index router: ${ctx.path}`);
+  // console.log(`start of index router: ${ctx.path}`);
   await next();
-  console.log(`end of index router: ${ctx.path}`);
+  // console.log(`end of index router: ${ctx.path}`);
 });
 
 router.get('/', async function (ctx) {
