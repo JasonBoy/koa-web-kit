@@ -50,6 +50,7 @@ module.exports = webpackMerge(baseWebpackConfig, {
     ]
   },
   devtool: false,
+  stats: 'errors-only',
   plugins: [
     libCSSExtract,
     scssExtract,
