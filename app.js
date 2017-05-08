@@ -82,5 +82,5 @@ app.on('error', err => {
 });
 
 //and then give it a port to listen for
-app.listen(PORT);
+app.listen(PORT, '0.0.0.0');
 logger.info(`Koa listening on port ${PORT}`);
