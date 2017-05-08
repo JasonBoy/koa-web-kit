@@ -50,6 +50,9 @@ module.exports = {
   getStaticPrefix: () => {
     return getConfigProperty('STATIC_PREFIX');
   },
+  isPrefixTailSlashEnabled: () => {
+    return !!getConfigProperty('PREFIX_TRAILING_SLASH');
+  },
   getApiEndPoints: () => {
     return getConfigProperty('API_ENDPOINTS');
   },

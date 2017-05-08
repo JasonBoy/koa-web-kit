@@ -1,5 +1,6 @@
 'use strict';
 
+const path = require('path');
 const del = require('del');
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
@@ -18,7 +19,10 @@ del.sync('./build/app');
 
 module.exports = webpackMerge(baseWebpackConfig, {
   output: {
-    publicPath: config.getAppPrefix() + config.getStaticPrefix(),
+    publicPath: utils.normalizeTailSlash(
+      utils.normalizePublicPath(
+        path.join(config.getAppPrefix(), config.getStaticPrefix())
+      ), config.isPrefixTailSlashEnabled()),
     filename: '[name].js',
     chunkFilename: '[name].js',
   },
@@ -43,10 +47,6 @@ module.exports = webpackMerge(baseWebpackConfig, {
   },
   devtool: 'source-map',
   plugins: [
-    new webpack.DefinePlugin({
-      'DEV_MODE': true,
-      'process.env.NODE_ENV': JSON.stringify(config.getNodeEnv()),
-    }),
     new webpack.NoEmitOnErrorsPlugin(),
     libCSSExtract,
     scssExtract,

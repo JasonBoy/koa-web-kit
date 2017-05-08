@@ -37,3 +37,21 @@ exports.resolve = function resolve (dir) {
 exports.CONTENT_PATH = exports.APP_PATH = exports.resolve('src');
 
 exports.APP_BUILD_PATH = exports.resolve('build/app');
+
+exports.normalizePublicPath = function normalizePublicPath(publicPath) {
+  return publicPath === '.' ? '' : publicPath;
+};
+exports.normalizeTailSlash = function normalizeTailSlash(publicPath, withSlash) {
+  if(publicPath.endsWith('/')) {
+    publicPath = withSlash ? publicPath : publicPath.substring(0, publicPath.length - 1);
+  } else {
+    publicPath = withSlash ? (publicPath + '/') : publicPath;
+  }
+  return publicPath;
+};
+exports.normalizePath = function normalizePath (publicPath, withSlash) {
+  return exports.normalizeTailSlash(
+    exports.normalizePublicPath(publicPath),
+    withSlash
+  );
+};

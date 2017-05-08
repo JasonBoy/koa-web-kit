@@ -1,9 +1,11 @@
 'use strict';
 
+const path = require('path');
 const del = require('del');
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CompressionPlugin = require("compression-webpack-plugin");
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
@@ -18,7 +20,13 @@ del.sync('./build/app');
 
 module.exports = webpackMerge(baseWebpackConfig, {
   output: {
-    publicPath: config.getStaticAssetsEndpoint() + config.getAppPrefix() + config.getStaticPrefix(),
+    publicPath: config.getStaticAssetsEndpoint() +
+      utils.normalizeTailSlash(
+        utils.normalizePublicPath(
+          path.join(config.getAppPrefix(), config.getStaticPrefix())
+        )
+        , config.isPrefixTailSlashEnabled()
+      ),
     filename: utils.getName('[name]', 'js', '', false),
     chunkFilename: '[name]-[chunkhash].chunk.js',
   },
@@ -43,13 +51,11 @@ module.exports = webpackMerge(baseWebpackConfig, {
   },
   devtool: false,
   plugins: [
-    new webpack.DefinePlugin({
-      'DEV_MODE': false,
-      'process.env.NODE_ENV': JSON.stringify(config.getNodeEnv()),
-    }),
     libCSSExtract,
     scssExtract,
     new webpack.optimize.UglifyJsPlugin({
+      beautify: false,
+      comments: false,
       compress: {
         warnings: false,
         drop_console: true,
@@ -57,6 +63,13 @@ module.exports = webpackMerge(baseWebpackConfig, {
         drop_debugger: true,
       },
       mangle: true
+    }),
+    new CompressionPlugin({
+      asset: "[file].gz[query]",
+      algorithm: "gzip",
+      // test: /\.(js|html)$/,
+      threshold: 10240,
+      minRatio: 0.8
     })
   ],
 });

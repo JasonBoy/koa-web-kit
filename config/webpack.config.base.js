@@ -14,7 +14,11 @@ const APP_PATH = utils.APP_PATH;
 const CONTENT_PATH = APP_PATH;
 const APP_BUILD_PATH = utils.APP_BUILD_PATH;
 
-
+const appPrefix = utils.normalizeTailSlash(config.getAppPrefix(), config.isPrefixTailSlashEnabled());
+const prefix = utils.normalizeTailSlash(
+  utils.normalizePublicPath(
+    path.join(config.getAppPrefix(), config.getStaticPrefix())
+  ), config.isPrefixTailSlashEnabled());
 
 module.exports = {
   entry: {
@@ -80,6 +84,12 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.DEV_MODE': DEV_MODE,
+      'process.env.prefix': JSON.stringify(prefix),
+      'process.env.appPrefix': JSON.stringify(appPrefix),
+      'process.env.NODE_ENV': JSON.stringify(config.getNodeEnv()),
+    }),
     new webpack.LoaderOptionsPlugin({
       debug: DEV_MODE,
       minimize: !DEV_MODE,

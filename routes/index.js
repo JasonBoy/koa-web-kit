@@ -2,9 +2,11 @@
 
 const Router = require('koa-router');
 const config = require('../config/env');
+const utils = require('../config/utils');
+const appPrefix = utils.normalizeTailSlash(config.getAppPrefix());
 
 const router = new Router({
-  prefix: config.getAppPrefix(),
+  prefix: appPrefix,
 });
 
 
