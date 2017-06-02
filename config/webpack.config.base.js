@@ -22,7 +22,13 @@ const prefix = utils.normalizeTailSlash(
 
 module.exports = {
   entry: {
-    vendors: ['react', 'react-dom'],
+    vendors: [
+      'react',
+      'react-dom',
+      'whatwg-fetch',
+      'url-parse',
+      'lodash.isempty',
+    ],
     app: path.join(APP_PATH, 'index.js'),
   },
   output: {

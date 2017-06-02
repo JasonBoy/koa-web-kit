@@ -1,6 +1,6 @@
 {
   "name": "koa-web-kit",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Node koa web starter kit for quick development",
   "main": "index.js",
   "scripts": {
@@ -51,11 +51,15 @@
     "koa-static": "3.0.0",
     "koa-views": "6.0.2",
     "lodash": "4.17.4",
+    "lodash.isempty": "4.4.0",
     "nunjucks": "3.0.1",
+    "qs": "6.4.0",
     "react": "15.5.4",
     "react-dom": "15.5.4",
     "request": "2.81.0",
     "request-debug": "0.2.0",
+    "url-parse": "1.1.9",
+    "whatwg-fetch": "2.0.3",
     "winston": "2.3.1"
   },
   "devDependencies": {

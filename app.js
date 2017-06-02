@@ -43,20 +43,6 @@ app.use(mount(
   )
 );
 
-//api proxy
-if(config.isNodeProxyEnabled() && !_.isEmpty(API_ENDPOINTS)) {
-  for(const prefix in API_ENDPOINTS) {
-    if(API_ENDPOINTS.hasOwnProperty(prefix) && prefix !== DEFAULT_PREFIX_KEY) {
-      let endPoint = API_ENDPOINTS[prefix];
-      if ('string' !== typeof endPoint) {
-        endPoint = endPoint.endpoint;
-      }
-      app.use(apiRouter.handleApiRequests(prefix, endPoint));
-      logger.info('Node proxy[' + endPoint + '] enabled for path: ' + prefix);
-    }
-  }
-}
-
 app.use(session(app));
 app.use(bodyParser({}));
 
@@ -75,7 +61,22 @@ app.use(views(viewsPath, {
     html: 'nunjucks'
   }
 }));
+
 app.use(index.routes());
+
+//api proxy
+if(config.isNodeProxyEnabled() && !_.isEmpty(API_ENDPOINTS)) {
+  for(const prefix in API_ENDPOINTS) {
+    if(API_ENDPOINTS.hasOwnProperty(prefix) && prefix !== DEFAULT_PREFIX_KEY) {
+      let endPoint = API_ENDPOINTS[prefix];
+      if ('string' !== typeof endPoint) {
+        endPoint = endPoint.endpoint;
+      }
+      app.use(apiRouter.handleApiRequests(prefix, endPoint));
+      logger.info('Node proxy[' + endPoint + '] enabled for path: ' + prefix);
+    }
+  }
+}
 
 app.on('error', err => {
   logger.error(err);
