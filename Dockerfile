@@ -1,4 +1,4 @@
-FROM node:boron
+FROM node:8
 MAINTAINER Jason <jasonlikenfs@gmail.com>
 
 # Create app directory
