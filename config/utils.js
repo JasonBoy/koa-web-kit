@@ -23,7 +23,7 @@ exports.getStyleLoaders = function getStyleLoaders() {
         options: {},
       };
       if(DEV_MODE) {
-        tempLoader.options.sourceMap = '';
+        tempLoader.options.sourceMap = true;
       }
       temp.push(tempLoader);
   }
