@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "deploy": "cross-env NODE_ENV=production ./deploy.sh",
+    "deploy": "./deploy.sh",
     "build": "webpack --progress --config config/webpack.config.dev.js",
     "watch": "webpack --watch --progress --config config/webpack.config.dev.js",
     "prod": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",

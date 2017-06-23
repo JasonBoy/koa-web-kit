@@ -44,12 +44,15 @@ fi
 #installing npm modules
 if [[ $3 != "1" ]]; then
   echo installing npm modules...
-  npm install
+  npm install --no-shrinkwrap
+#  yarn install --production=false
 fi
 
+export NODE_ENV=production
 
 #webpack is bundling modules
 echo webpack is bundling modules...
+#yarn run prod
 npm run prod
 
 ClientScript="app.js"
