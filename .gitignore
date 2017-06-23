@@ -48,3 +48,4 @@ npm-debug.log
 config.json
 bundle*.js
 *cache
+package-lock.json
