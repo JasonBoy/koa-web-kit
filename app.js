@@ -9,6 +9,7 @@ const views = require('koa-views');
 const morgan = require('koa-morgan');
 const bodyParser = require('koa-better-body');
 const serveStatic = require('koa-static');
+const convert = require('koa-convert');
 const cons = require('consolidate');
 const nunjucks = require('nunjucks');
 const _ = require('lodash');
@@ -44,7 +45,7 @@ app.use(mount(
 );
 
 app.use(session(app));
-app.use(bodyParser({}));
+app.use(convert(bodyParser({})));
 
 const viewsPath = path.join(process.cwd(), 'build/app');
 cons.requires.nunjucks = nunjucks.configure(viewsPath, {
