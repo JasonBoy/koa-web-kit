@@ -5,7 +5,6 @@ const del = require('del');
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CompressionPlugin = require("compression-webpack-plugin");
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
@@ -65,12 +64,5 @@ module.exports = webpackMerge(baseWebpackConfig, {
       },
       mangle: true
     }),
-    new CompressionPlugin({
-      asset: "[file].gz[query]",
-      algorithm: "gzip",
-      // test: /\.(js|html)$/,
-      threshold: 10240,
-      minRatio: 0.8
-    })
   ],
 });

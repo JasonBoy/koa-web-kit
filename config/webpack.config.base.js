@@ -70,12 +70,12 @@ module.exports = {
               limit: 1024,
             }
           },
-          {
-            loader: 'image-webpack-loader',
-            options: {
-              bypassOnDebug: DEV_MODE,
-            },
-          },
+          // {
+          //   loader: 'image-webpack-loader',
+          //   options: {
+          //     bypassOnDebug: DEV_MODE,
+          //   },
+          // },
         ],
       },
       {
