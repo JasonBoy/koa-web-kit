@@ -4,18 +4,39 @@
 
 const fs = require('fs');
 const path = require('path');
+const devConfig = require('./build.dev');
+const prodConfig = require('./build.prod');
 
-const configPath = path.join(__dirname, '../config.json');
+//get custom config path from env
+const customConfigPath = process.env.NODE_BEAUTY_CONFIG_PATH;
+const nodeBuildEnv = process.env.NODE_BUILD_ENV;
+
+const configPath = customConfigPath ? path.resolve(customConfigPath) : path.join(__dirname, '../config.json');
+// console.log(configPath);
 let configInfo = {};
+
+let hasConfigDotJSON = true;
 
 try {
   fs.statSync(configPath);
 } catch (e) {
-  fs.writeFileSync(configPath, fs.readFileSync(configPath + '.sample'));
-  console.log('creating config file finished');
+  hasConfigDotJSON = false;
+  // fs.writeFileSync(configPath, fs.readFileSync(configPath + '.sample'));
+  // console.log('creating config file finished');
 } finally {
-  configInfo = JSON.parse(fs.readFileSync(configPath));
+  console.log('check config.json done');
 }
+
+if(hasConfigDotJSON) {
+  configInfo = JSON.parse(fs.readFileSync(configPath));
+  console.log('using config.json');
+} else {
+  configInfo = !nodeBuildEnv ? prodConfig : devConfig;
+  console.log(`using ${!nodeBuildEnv ? 'build.prod' : 'build.dev'}`);
+}
+
+// console.log(configInfo);
+// console.log(getConfigProperty('beauty_custom'));
 
 function getConfigProperty(key) {
   const valueFormEnv = process.env[key];
