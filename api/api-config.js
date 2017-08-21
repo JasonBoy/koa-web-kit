@@ -20,3 +20,9 @@ exports.formatRestfulUrl = function(url, params) {
   });
   return parts.join('/');
 };
+
+const restRegex = /\/:/g;
+exports.numberOfRestParams = function (url) {
+  const matched = url.match(restRegex);
+  return matched ? matched.length : 0;
+};
