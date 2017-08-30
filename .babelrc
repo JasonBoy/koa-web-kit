@@ -1,5 +1,21 @@
 {
-  "presets": [["es2015", { "modules": false } ], "react", "stage-3"],
-  "plugins": ["transform-runtime"],
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": ["> 1%", "last 5 versions"]
+        },
+        "loose": true,
+        "modules": false
+      }
+    ],
+    "react"
+  ],
+  "plugins": [
+    "transform-runtime",
+    "transform-es2015-modules-commonjs",
+    "transform-object-rest-spread"
+  ],
   "comments": false
 }
