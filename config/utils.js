@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const SLASH_REGEX = /[\\]+/g;
 
 exports.getName = function getName(chunkName, ext, hashName, DEV_MODE) {
   return chunkName + (DEV_MODE ? '.' : '-[' + (hashName ? hashName : 'chunkhash') + ':9].') + ext;
@@ -47,6 +48,9 @@ exports.normalizeTailSlash = function normalizeTailSlash(publicPath, withSlash) 
   } else {
     publicPath = withSlash ? (publicPath + '/') : publicPath;
   }
+  if(exports.isWindows()) {
+    publicPath = exports.replaceBackwardSlash(publicPath);
+  }
   return publicPath;
 };
 exports.normalizePath = function normalizePath (publicPath, withSlash) {
@@ -54,4 +58,10 @@ exports.normalizePath = function normalizePath (publicPath, withSlash) {
     exports.normalizePublicPath(publicPath),
     withSlash
   );
+};
+exports.isWindows = function isWindows() {
+  return process.platform === 'win32';
+};
+exports.replaceBackwardSlash = function replaceBackwardSlash(str) {
+  return str.replace(SLASH_REGEX, '/');
 };

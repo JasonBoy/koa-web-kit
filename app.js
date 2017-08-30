@@ -18,6 +18,7 @@ const config = require('./config/env');
 const logger = require('./mw/logger');
 const index = require('./routes/index');
 const apiRouter = require('./routes/proxy');
+const sysUtils = require('./config/utils');
 
 const PORT = config.getListeningPort();
 const DEV_MODE = config.isDevMode();
@@ -32,8 +33,13 @@ app.proxy = true;
 
 app.use(morgan(DEV_MODE ? 'dev' : 'tiny'));
 app.use(compress());
+
+let staticPrefix = path.join(config.getAppPrefix(), config.getStaticPrefix() || '/');
+if(sysUtils.isWindows()) {
+  staticPrefix = sysUtils.replaceBackwardSlash(staticPrefix);
+}
 app.use(mount(
-  path.join(config.getAppPrefix(), config.getStaticPrefix() || '/'),
+  staticPrefix,
   serveStatic(path.join(process.cwd(), 'build/app'),
     {
       // one month cache for prod
