@@ -1,7 +1,7 @@
 {
   "name": "koa-web-kit",
   "version": "2.0.4",
-  "description": "Node koa web starter kit for quick development",
+  "description": "A modern, production-ready, and full-stack node web framework",
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
@@ -24,10 +24,10 @@
     "koa",
     "es6",
     "webpack",
-    "sass",
     "react",
-    "vue",
-    "bootstrap"
+    "bootstrap",
+    "fullstack",
+    "framework"
   ],
   "author": "jasonlikenfs@gmail.com",
   "license": "MIT",
