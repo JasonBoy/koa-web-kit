@@ -47,7 +47,6 @@ module.exports = webpackMerge(baseWebpackConfig, {
   },
   devtool: 'source-map',
   plugins: [
-    new webpack.NoEmitOnErrorsPlugin(),
     libCSSExtract,
     scssExtract,
   ],
