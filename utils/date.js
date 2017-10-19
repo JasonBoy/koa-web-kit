@@ -1,8 +1,15 @@
-const dateFormat = require('dateformat');
+const moment = require('moment');
+const defaultFormat = 'YYYY-MM-DD HH:mm:ss';
 
 module.exports = {
   simpleDate () {
-    return dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss');
-  }
+    return moment().format(defaultFormat);
+  },
+  now () {
+    return this.simpleDate();
+  },
+  format (date = Date.now(), pattern = defaultFormat) {
+    return moment(date).format(pattern);
+  },
 };
 
