@@ -168,5 +168,5 @@ class Request {
 
 }
 
-export {Request, api, CODE};
+export {Request, api};
 export default new Request();
