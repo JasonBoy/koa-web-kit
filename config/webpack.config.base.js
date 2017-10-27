@@ -23,6 +23,7 @@ const prefix = utils.normalizeTailSlash(
 module.exports = {
   entry: {
     vendors: [
+      'prop-types',
       'react',
       'react-dom',
       'whatwg-fetch',
