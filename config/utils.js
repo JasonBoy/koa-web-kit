@@ -16,17 +16,20 @@ exports.getStyleLoaders = function getStyleLoaders() {
   const isLastArgBoolean = typeof lastArg === 'boolean';
   const DEV_MODE =  isLastArgBoolean? lastArg : true;
   const temp = [];
-  for(let i = 0, length = (isLastArgBoolean
+  for (let i = 0, length = (isLastArgBoolean
     ? arguments.length - 1
     : arguments.length); i < length; i++) {
-      const tempLoader = {
-        loader: arguments[i],
-        options: {},
-      };
-      if(DEV_MODE) {
-        tempLoader.options.sourceMap = true;
-      }
-      temp.push(tempLoader);
+    const tempLoader = {
+      loader: arguments[i],
+      options: {},
+    };
+    if (String(arguments[i]).startsWith('sass')) {
+      tempLoader.options.outputStyle = 'compressed';
+    }
+    if (DEV_MODE) {
+      tempLoader.options.sourceMap = true;
+    }
+    temp.push(tempLoader);
   }
   return temp;
 };
