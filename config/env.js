@@ -11,7 +11,7 @@ const prodConfig = require('./build.prod');
 const customConfigPath = process.env.NODE_BEAUTY_CONFIG_PATH;
 const nodeBuildEnv = process.env.NODE_BUILD_ENV;
 
-const configPath = customConfigPath ? path.resolve(customConfigPath) : path.join(__dirname, '../config.json');
+const configPath = customConfigPath ? path.resolve(customConfigPath) : path.join(process.cwd(), 'config.json');
 // console.log(configPath);
 let configInfo = {};
 

@@ -49,3 +49,4 @@ config.json
 bundle*.js
 *cache
 package-lock.json
+app.min.js

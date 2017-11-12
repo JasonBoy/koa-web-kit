@@ -8,6 +8,7 @@
     "deploy": "./deploy.sh",
     "build": "webpack --progress --config config/webpack.config.dev.js",
     "watch": "webpack --watch --progress --config config/webpack.config.dev.js",
+    "node": "webpack --progress --config config/webpack.config.node.js",
     "prod": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
     "lint": "eslint --ext .js --cache .",
     "es6-module-to-commonjs": "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs",
@@ -70,6 +71,7 @@
     "babel-core": "6.26.0",
     "babel-eslint": "8.0.1",
     "babel-loader": "7.1.2",
+    "babel-minify-webpack-plugin": "0.2.0",
     "babel-plugin-transform-es2015-modules-commonjs": "6.26.0",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
     "babel-plugin-transform-runtime": "6.23.0",
@@ -95,7 +97,8 @@
     "url-loader": "0.6.2",
     "webpack": "3.8.1",
     "webpack-manifest-plugin": "1.3.2",
-    "webpack-merge": "4.1.0"
+    "webpack-merge": "4.1.0",
+    "webpack-node-externals": "1.6.0"
   },
   "browserslist": [
     "> 1%",
