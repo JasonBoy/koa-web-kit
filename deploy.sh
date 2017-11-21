@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #Create by Jason <jasonlikenfs@gmail.com>
 #This is meant for production
 # > ./deploy.sh moduleName clusterNumber skipInstall skipBuild skipServer
