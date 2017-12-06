@@ -20,14 +20,15 @@
 
 ### Quick Start
 
-Get the [latest version](https://github.com/JasonBoy/koa-web-kit/releases), and go to your project root,
+Get the [latest version](https://github.com/JasonBoy/koa-web-kit/releases), and go to your project root,  
+Also available on [npm](https://www.npmjs.com/package/koa-web-kit), `npm i koa-web-kit --save`
 
 1. Install Dependencies  
-```
+```bash
 #with yarn, yarn.lock is included
-> yarn
+yarn
 #or npm, no package-lock.json is included, use it as your own taste 
-> npm install --no-shrinkwrap
+npm install --no-shrinkwrap
 ```
 2. Build Assets  
 `npm run build` or `npm run watch` for auto recompile your code
@@ -37,7 +38,7 @@ Get the [latest version](https://github.com/JasonBoy/koa-web-kit/releases), and 
 
 ### Project Structure
 
-- `api` dir, the API Proxy utility, also put your api urls here for universal import cross your app
+- `api` dir, the API Proxy utility, also put your api urls here for universal import across your app
 - `config` dir, all webpack build configs are put here, besides, some application-wide env configs getter utility
 - `mw` dir, some middleware here, default logger utility also located here
 - `routes` dir, put your koa app routes here
@@ -45,18 +46,18 @@ Get the [latest version](https://github.com/JasonBoy/koa-web-kit/releases), and 
 - `test` dir, for your tests
 - `utils` dir, utilities for both node.js and front-end
 - `views` dir, your view templates
-- `build` dir, all built assets for your project, git ignored
-- `logs` dir, logs are put here by default, git ignored
-- All other files in project root, which indicate there purpose clearly😀
+- *`build`* dir, all built assets for your project, git ignored
+- *`logs`* dir, logs are put here by default, git ignored
+- All other files in project root, which indicate their purposes clearly😀.
 
 ### Application Config and Environment Variables
 
-Every project has some configuration or environment variables to make it run in different environment,  
+Every project has some configuration or environment variables to make it run differently in different environment,  
 for koa-web-kit, we also provide different ways to configure your ENVs.
 
 #### config.json/config.json.sample
 
-The preconfigured file `config.json.sample` lists some common variables to use in the project, you should copy and rename it to `config.json` for your local config:
+The pre bundled file `config.json.sample` lists some common variables to use in the project, you should copy and rename it to `config.json` for your local config:
 ```javascript
 config = {
   "NODE_PORT": 3000, //http server listen port
@@ -67,17 +68,18 @@ config = {
   "STATIC_PREFIX": "/public/", //add a alternative prefix for your "STATIC_ENDPOINT"
   "PREFIX_TRAILING_SLASH": true, //add "/" to the end of your static url, if not existed
   "APP_PREFIX": "", //global prefix for your routes, e.g http://a.com/prefix/...your app routes
-  //API PROXY for multiple prefix
+  //API PROXYs for multiple api endpoints with different prefix in router
   "API_ENDPOINTS": {
+    //e.g http://127.0.0.1:3000/prefix/api/login -->proxy to--> http://127.0.0.1:3001/api/login
     "/prefix": "http://127.0.0.1:3001",
-    "/prefix2": "http://127.0.0.1:3002"
+    "/prefix2": "http://127.0.0.1:3002",
   }
 }
 ```
 
 #### Environment Variables
 
-All the variables in config.json can be set with Environment Variables, which have higher priority.
+All the variables in config.json can be set with Environment Variables, which have higher priority than `config.json`.
 e.g:  
 `> NODE_ENV=production npm start`  
 or  
@@ -86,11 +88,11 @@ export NODE_PORT=3001
 export NODE_ENV=production
 npm start
 ``` 
-Everything you can do within cli.
+BTW you can do Everything you can within cli to set your env.
 
-#### `config/build.dev(prod).js` in source code
+#### Default `config/build.dev(prod).js` in source code
 
-The project comes with default configs just like `config.json`, if neither above are provided.
+The project comes with default config files just like `config.json`, which will be used if neither above are provided.
 
 > Priority: *Environment Variables* > *config.json* > *default config/build.dev(prod).js*
 
@@ -103,14 +105,14 @@ The builtin `mw/logger.js` provides some default log functionality for your app,
 
 ### Production Deployment
 
-Deploy your app to production is simple with only one npm script command, you can provide different options in different deployment phase(install, build, start server),    
-[pm2](https://github.com/Unitech/pm2) inside is used as node process manager.
+Deploy your app to production is extremely simple with only one npm script command, you can provide different options in different deployment phases(e.g: install, build, start server),    
+[pm2](https://github.com/Unitech/pm2) inside is used as node process manager, so you may need to `npm i -g pm2`.
 
 #### Usage
 
 `npm run deploy -- moduleName clusterNumber skipInstall skipBuild skipServer`  
-Last three options are boolean values in `0`(or empty, false) and `1`(true),  
-`moduleName` is only useful if you didn't skipServer, but you still need to provide it if you have options following, I will improve this later on🤣.
+The last three options are boolean values in `0`(or empty, false) and `1`(true),  
+`moduleName` is only useful if you don't skipServer, but you still need to provide it if you have options following after, I will improve this later on🤣.
 
 #### Examples:
 
@@ -121,7 +123,7 @@ Last three options are boolean values in `0`(or empty, false) and `1`(true),
 - `npm run deploy -- app 2 1 0 1`: which will only build your assets
 - `npm run deploy -- app 2 1 1 0`: which will just start node server, useful when all assets were built on a different machine.
 
-> You should create/update the script to meet your own needs. 
+> You may need to create/update the script to meet your own needs. 
 
 ### License
 
