@@ -1,5 +1,6 @@
 # koa-web-kit
 
+[![npm](https://img.shields.io/npm/v/koa-web-kit.svg)](https://www.npmjs.com/package/koa-web-kit)
 [![Building Status](https://travis-ci.org/JasonBoy/koa-web-kit.svg?branch=master)](https://travis-ci.org/JasonBoy/koa-web-kit)
 [![node](https://img.shields.io/node/v/koa-web-kit.svg)](https://nodejs.org/)
 [![Dependency Status](https://david-dm.org/JasonBoy/koa-web-kit.svg)](https://david-dm.org/JasonBoy/koa-web-kit)
