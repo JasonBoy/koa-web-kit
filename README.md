@@ -35,7 +35,7 @@ npm install --no-shrinkwrap
 `npm run build` or `npm run watch` for auto recompile your code
 3. Start Koa Http Server  
 `npm start`
-4. Go to `http://localhost:3000` to view the default react page
+4. Go to `http://localhost:3000` to view the default react page, the demo page is based on [create-react-app](https://github.com/facebookincubator/create-react-app)
 
 ### Project Structure
 
