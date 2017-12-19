@@ -8,6 +8,8 @@
 
 🚀A Modern, Production-Ready, and Full-Stack Node Web Framework
 
+[An Introduction for koa-web-kit](https://blog.lovemily.me/koa-web-kit-a-modern-production-ready-and-full-stack-node-web-framework/)
+
 ## Features
 
 - ✨Built with all modern frameworks and libs, including Koa2, React-v16, Bootstrap-v4, Webpack, ES6, Babel...
@@ -18,6 +20,7 @@
 - 🎉Simple API Proxy bundled, no complex extra nginx configuration
 - 🌈PreConfigured Logger utility for better debug life
 - ⚡️Just one npm command to deploy your app to production
+- 🔥Available for generating static react site
 - 👷Continuously Maintaining🍻
 
 ### Quick Start
