@@ -4,6 +4,7 @@
 [![Building Status](https://travis-ci.org/JasonBoy/koa-web-kit.svg?branch=master)](https://travis-ci.org/JasonBoy/koa-web-kit)
 [![node](https://img.shields.io/node/v/koa-web-kit.svg)](https://nodejs.org/)
 [![Dependency Status](https://david-dm.org/JasonBoy/koa-web-kit.svg)](https://david-dm.org/JasonBoy/koa-web-kit)
+[![Known Vulnerabilities](https://snyk.io/test/github/jasonboy/koa-web-kit/badge.svg)](https://snyk.io/test/github/jasonboy/koa-web-kit)
 
 🚀A Modern, Production-Ready, and Full-Stack Node Web Framework
 
