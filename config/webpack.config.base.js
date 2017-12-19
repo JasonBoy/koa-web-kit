@@ -5,6 +5,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const config = require('./env');
 const utils = require('./utils');
@@ -91,6 +92,7 @@ module.exports = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin(['./build/app'], {root: process.cwd()}),
     new webpack.DefinePlugin({
       'process.env.DEV_MODE': DEV_MODE,
       'process.env.prefix': JSON.stringify(prefix),

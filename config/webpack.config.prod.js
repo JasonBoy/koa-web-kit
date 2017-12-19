@@ -1,7 +1,6 @@
 'use strict';
 
 const path = require('path');
-const del = require('del');
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -14,8 +13,6 @@ const APP_PATH = utils.APP_PATH;
 const libCSSExtract = new ExtractTextPlugin(utils.getName('common', 'css', 'contenthash', false));
 const scssExtract = new ExtractTextPlugin(utils.getName('[name]', 'css', 'contenthash', false));
 const scssExtracted = scssExtract.extract(utils.getStyleLoaders('css-loader', 'postcss-loader', 'sass-loader', false));
-
-del.sync('./build/app');
 
 module.exports = webpackMerge(baseWebpackConfig, {
   output: {
