@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "deploy": "./deploy.sh",
-    "build": "webpack --progress --config config/webpack.config.dev.js",
-    "watch": "webpack --watch --progress --config config/webpack.config.dev.js",
+    "build": "webpack --progress --hide-modules --config config/webpack.config.dev.js && echo Build Done!",
+    "watch": "webpack --watch --hide-modules --progress --config config/webpack.config.dev.js",
     "node": "webpack --progress --config config/webpack.config.node.js",
     "prod": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
     "lint": "eslint --ext .js --cache .",
