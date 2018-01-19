@@ -39,7 +39,7 @@
   "readme": "README.md",
   "dependencies": {
     "bluebird": "3.5.1",
-    "bootstrap": "4.0.0-beta.3",
+    "bootstrap": "4.0.0",
     "consolidate": "0.15.0",
     "koa": "2.4.1",
     "koa-better-body": "3.0.4",
