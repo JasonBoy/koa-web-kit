@@ -62,7 +62,7 @@ function getProxyOptions(apiEndPoint, options) {
     baseUrl: apiEndPoint ? apiEndPoint : '',
     method: this.method,
     // json: true,
-    gzip: true
+    // gzip: true
   };
   if (!_.isEmpty(options)) {
     defaultOptions = Object.assign(defaultOptions, options);
