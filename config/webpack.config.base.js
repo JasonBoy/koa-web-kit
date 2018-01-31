@@ -137,9 +137,9 @@ const webpackConfig = {
 };
 
 if(isHMREnabled) {
-  webpackConfig.devServer = {
-    hot: true,
-  };
+  // webpackConfig.devServer = {
+  //   hot: true,
+  // };
   webpackConfig.plugins.push(new webpack.NamedModulesPlugin());
   // webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
 }
