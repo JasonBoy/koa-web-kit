@@ -14,7 +14,7 @@ const libCSSExtract = new ExtractTextPlugin(utils.getName('common', 'css', 'cont
 const scssExtract = new ExtractTextPlugin(utils.getName('[name]', 'css', 'contenthash', true));
 const scssExtracted = scssExtract.extract(utils.getStyleLoaders('css-loader', 'postcss-loader', 'sass-loader', true));
 
-module.exports = webpackMerge(baseWebpackConfig, {
+const webpackConfig = webpackMerge(baseWebpackConfig, {
   output: {
     publicPath: isHMREnabled
       ? '/'
@@ -32,21 +32,31 @@ module.exports = webpackMerge(baseWebpackConfig, {
         include: APP_PATH,
         // exclude: /node_modules/,
         exclude: [/node_modules/, /content\/scss\/bootstrap\.scss$/],
-        use: scssExtracted
+        use: isHMREnabled
+          ? utils.getStyleLoaders('style-loader', 'css-loader', 'postcss-loader', 'sass-loader', true)
+          : scssExtracted
       },
       {
         test: /content\/scss\/bootstrap\.scss$/,
-        use: libCSSExtract.extract(utils.getStyleLoaders('css-loader', 'sass-loader', true))
+        use: isHMREnabled
+          ? utils.getStyleLoaders('style-loader', 'css-loader', 'postcss-loader', 'sass-loader', true)
+          : libCSSExtract.extract(utils.getStyleLoaders('css-loader', 'sass-loader', true))
       },
       {
         test: /\.css$/,
-        use: libCSSExtract.extract(utils.getStyleLoaders('css-loader', true))
+        use: isHMREnabled
+          ?  utils.getStyleLoaders('style-loader', 'css-loader', true)
+          : libCSSExtract.extract(utils.getStyleLoaders('css-loader', true))
       },
     ]
   },
   devtool: 'source-map',
-  plugins: [
-    libCSSExtract,
-    scssExtract,
-  ],
+  plugins: [],
 });
+
+if(!isHMREnabled) {
+  webpackConfig.plugins.push(libCSSExtract);
+  webpackConfig.plugins.push(scssExtract);
+}
+
+module.exports = webpackConfig;
