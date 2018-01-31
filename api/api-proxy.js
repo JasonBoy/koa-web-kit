@@ -56,9 +56,11 @@ function getApiPromise(apiEndpoint, needPromise, options) {
  * @param {object} options
  * @returns {object}
  */
-function getProxyOptions(apiEndPoint, options) {
+function getProxyOptions(apiEndPoint, options = {}) {
   let defaultOptions = {
-    url: this.url,
+    url: (this.url && options.prefix)
+      ? this.url.substring(options.prefix.length)
+      : '',
     baseUrl: apiEndPoint ? apiEndPoint : '',
     method: this.method,
     // json: true,
