@@ -8,6 +8,7 @@ const config = require('./env');
 const utils = require('./utils');
 
 const APP_PATH = utils.APP_PATH;
+const isHMREnabled = config.isHMREnabled();
 
 const libCSSExtract = new ExtractTextPlugin(utils.getName('common', 'css', 'contenthash', true));
 const scssExtract = new ExtractTextPlugin(utils.getName('[name]', 'css', 'contenthash', true));
@@ -15,10 +16,12 @@ const scssExtracted = scssExtract.extract(utils.getStyleLoaders('css-loader', 'p
 
 module.exports = webpackMerge(baseWebpackConfig, {
   output: {
-    publicPath: utils.normalizeTailSlash(
-      utils.normalizePublicPath(
-        path.join(config.getAppPrefix(), config.getStaticPrefix())
-      ), config.isPrefixTailSlashEnabled()),
+    publicPath: isHMREnabled
+      ? '/'
+      : utils.normalizeTailSlash(
+        utils.normalizePublicPath(
+          path.join(config.getAppPrefix(), config.getStaticPrefix())
+        ), config.isPrefixTailSlashEnabled()),
     filename: '[name].js',
     chunkFilename: '[name].js',
   },

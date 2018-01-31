@@ -80,6 +80,10 @@ module.exports = {
   getProxyDebugLevel: () => {
     return getConfigProperty('PROXY_DEBUG_LEVEL');
   },
+  isHMREnabled: () => {
+    const val = getConfigProperty('ENABLE_HMR');
+    return module.exports.isDevMode() && !!(val && (val === 'true' || val === '1'));
+  },
   getEnv: (key) => {
     return getConfigProperty(key);
   }

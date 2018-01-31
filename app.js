@@ -24,6 +24,7 @@ const PORT = config.getListeningPort();
 const DEV_MODE = config.isDevMode();
 const DEFAULT_PREFIX_KEY = 'defaultPrefix';
 const API_ENDPOINTS = config.getApiEndPoints();
+const isHMREnabled = config.isHMREnabled();
 
 //and initialize it with
 const app = new Koa();
@@ -32,63 +33,119 @@ app.keys = ['koa-web-kit'];
 app.proxy = true;
 
 app.use(morgan(DEV_MODE ? 'dev' : 'tiny'));
-app.use(compress());
 
-let staticPrefix = path.join(config.getAppPrefix(), config.getStaticPrefix() || '/');
-if(sysUtils.isWindows()) {
-  staticPrefix = sysUtils.replaceBackwardSlash(staticPrefix);
-}
-app.use(mount(
-  staticPrefix,
-  serveStatic(path.join(process.cwd(), 'build/app'),
-    {
-      // one month cache for prod
-      maxage: DEV_MODE ? 0 : 2592000000,
-      gzip: false,
+(async function () {
+  await initHMR();
+  await initApp();
+  logger.info(`${isHMREnabled ? 'HMR & ' : ''}Koa App initialized!`);
+})();
+
+async function initApp() {
+
+  if(!DEV_MODE) {
+    app.use(compress());
+  }
+
+  let staticPrefix = path.join(config.getAppPrefix(), config.getStaticPrefix() || '/');
+  if (sysUtils.isWindows()) {
+    staticPrefix = sysUtils.replaceBackwardSlash(staticPrefix);
+  }
+  app.use(mount(
+    staticPrefix,
+    serveStatic(path.join(process.cwd(), 'build/app'),
+      {
+        // one month cache for prod
+        maxage: DEV_MODE ? 0 : 2592000000,
+        gzip: false,
+      }
+    )
+    )
+  );
+
+  app.use(session(app));
+  app.use(convert(bodyParser({})));
+
+  const viewsPath = path.join(process.cwd(), 'build/app');
+  cons.requires.nunjucks = nunjucks.configure(viewsPath, {
+    autoescape: true,
+    noCache: DEV_MODE,
+    tags: {
+      variableStart: '{=',
+      variableEnd: '=}'
     }
-  )
-  )
-);
+  });
 
-app.use(session(app));
-app.use(convert(bodyParser({})));
-
-const viewsPath = path.join(process.cwd(), 'build/app');
-cons.requires.nunjucks = nunjucks.configure(viewsPath, {
-  autoescape: true,
-  noCache: DEV_MODE,
-  tags: {
-    variableStart: '{=',
-    variableEnd: '=}'
-  }
-});
-
-app.use(views(viewsPath, {
-  map: {
-    html: 'nunjucks'
-  }
-}));
-
-app.use(index.routes());
+  app.use(views(viewsPath, {
+    map: {
+      html: 'nunjucks'
+    }
+  }));
 
 //api proxy
-if(config.isNodeProxyEnabled() && !_.isEmpty(API_ENDPOINTS)) {
-  for(const prefix in API_ENDPOINTS) {
-    if(API_ENDPOINTS.hasOwnProperty(prefix) && prefix !== DEFAULT_PREFIX_KEY) {
-      let endPoint = API_ENDPOINTS[prefix];
-      if ('string' !== typeof endPoint) {
-        endPoint = endPoint.endpoint;
+  if (config.isNodeProxyEnabled() && !_.isEmpty(API_ENDPOINTS)) {
+    for (const prefix in API_ENDPOINTS) {
+      if (API_ENDPOINTS.hasOwnProperty(prefix) && prefix !== DEFAULT_PREFIX_KEY) {
+        let endPoint = API_ENDPOINTS[prefix];
+        if ('string' !== typeof endPoint) {
+          endPoint = endPoint.endpoint;
+        }
+        app.use(apiRouter.handleApiRequests(prefix, endPoint));
+        logger.info('Node proxy[' + endPoint + '] enabled for path: ' + prefix);
       }
-      app.use(apiRouter.handleApiRequests(prefix, endPoint));
-      logger.info('Node proxy[' + endPoint + '] enabled for path: ' + prefix);
     }
   }
+
+  app.use(index.routes());
+
+  app.on('error', err => {
+    logger.error(err);
+  });
+
+  //and then give it a port to listen for
+  app.listen(PORT, '0.0.0.0');
+  logger.info(`Koa listening on port ${PORT}`);
+
 }
 
-app.on('error', err => {
-  logger.error(err);
-});
-
-//and then give it a port to listen for
-app.listen(PORT, '0.0.0.0');
-logger.info(`Koa listening on port ${PORT}`);
+async function initHMR() {
+  let HMRInitialized = false;
+  //enable hmr
+  if (isHMREnabled) {
+    logger.info('HMR enabled, initializing HMR...');
+    const hmrMiddleware = require('koa-webpack');
+    const webpackConfig = require('./config/webpack.config.dev');
+    const instance = hmrMiddleware({
+      config: webpackConfig,
+      hot: {
+        port: 8086,
+        // logLevel: 'warn',
+        reload: true,
+      },
+      dev: {
+        // logLevel: 'warn',
+        index: 'index.html',
+        publicPath: webpackConfig.output.publicPath,
+        watchOptions: {
+          aggregateTimeout: 0,
+        },
+        hot: true,
+        stats: {
+          modules: false,
+          colors: true,
+        }
+      }
+    });
+    const dev = instance.dev;
+    await new Promise((resolve, reject) => {
+      dev.waitUntilValid(() => {
+        if (!HMRInitialized) {
+          HMRInitialized = true;
+          app.use(instance);
+        }
+        resolve();
+      })
+    });
+    // console.log(webpackConfig);
+    // app.use();
+  }
+}

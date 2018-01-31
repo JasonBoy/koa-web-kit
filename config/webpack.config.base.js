@@ -11,6 +11,7 @@ const config = require('./env');
 const utils = require('./utils');
 
 const DEV_MODE = config.isDevMode();
+const isHMREnabled = config.isHMREnabled();
 const APP_PATH = utils.APP_PATH;
 const CONTENT_PATH = APP_PATH;
 const APP_BUILD_PATH = utils.APP_BUILD_PATH;
@@ -21,8 +22,13 @@ const prefix = utils.normalizeTailSlash(
     path.join(config.getAppPrefix(), config.getStaticPrefix())
   ), config.isPrefixTailSlashEnabled());
 
-module.exports = {
-  entry: {
+const appIndex = path.join(APP_PATH, 'index.js');
+
+let entry = undefined;
+if(isHMREnabled) {
+  entry = ['react-hot-loader/patch', appIndex];
+} else {
+  entry = {
     vendors: [
       'prop-types',
       'react',
@@ -31,8 +37,12 @@ module.exports = {
       'url-parse',
       'lodash.isempty',
     ],
-    app: path.join(APP_PATH, 'index.js'),
-  },
+    app: appIndex,
+  }
+}
+
+const webpackConfig = {
+  entry,
   output: {
     path: APP_BUILD_PATH,
   },
@@ -107,7 +117,7 @@ module.exports = {
       },
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendors', 'manifest'],
+      names: isHMREnabled ? ['manifest'] : ['vendors', 'manifest'],
       minChunks: Infinity
     }),
     new HtmlWebpackPlugin({
@@ -125,3 +135,13 @@ module.exports = {
     new ManifestPlugin(),
   ],
 };
+
+if(isHMREnabled) {
+  webpackConfig.devServer = {
+    hot: true,
+  };
+  webpackConfig.plugins.push(new webpack.NamedModulesPlugin());
+  // webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
+}
+
+module.exports = webpackConfig;

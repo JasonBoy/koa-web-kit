@@ -4,6 +4,7 @@
   "description": "A modern, production-ready, and full-stack node web framework",
   "main": "index.js",
   "scripts": {
+    "dev": "ENABLE_HMR=true node app.js",
     "start": "node app.js",
     "deploy": "./deploy.sh",
     "build": "webpack --progress --hide-modules --config config/webpack.config.dev.js && echo Build Done!",
@@ -59,6 +60,7 @@
     "qs": "6.5.1",
     "react": "16.2.0",
     "react-dom": "16.2.0",
+    "react-hot-loader": "3.1.3",
     "request": "2.83.0",
     "request-debug": "0.2.0",
     "url-parse": "1.2.0",
@@ -90,6 +92,7 @@
     "file-loader": "1.1.6",
     "html-loader": "0.5.5",
     "html-webpack-plugin": "2.30.1",
+    "koa-webpack": "2.0.3",
     "mocha": "4.0.1",
     "node-sass": "4.7.2",
     "postcss-loader": "2.0.10",
