@@ -37,7 +37,7 @@ function getApiPromise(apiEndpoint, needPromise, options) {
       if (err) {
         logger.error(err);
       }
-      if (response.statusCode !== 200) {
+      if (!response || response.statusCode !== 200) {
         reject({body, response, err});
       } else {
         resolve({body, response});
