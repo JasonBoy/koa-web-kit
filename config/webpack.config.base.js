@@ -26,7 +26,10 @@ const appIndex = path.join(APP_PATH, 'index.js');
 
 let entry = undefined;
 if(isHMREnabled) {
-  entry = ['react-hot-loader/patch', appIndex];
+  entry = [
+    // 'react-hot-loader/patch',
+    appIndex,
+  ];
 } else {
   entry = {
     vendors: [
@@ -117,7 +120,7 @@ const webpackConfig = {
       },
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      names: isHMREnabled ? ['manifest'] : ['vendors', 'manifest'],
+      names: isHMREnabled ? [] : ['vendors', 'manifest'],
       minChunks: Infinity
     }),
     new HtmlWebpackPlugin({
