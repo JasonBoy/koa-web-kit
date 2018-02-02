@@ -35,12 +35,13 @@ app.proxy = true;
 app.use(morgan(DEV_MODE ? 'dev' : 'tiny'));
 
 (async function () {
+  initProxy();
   await initHMR();
-  await initApp();
+  initApp();
   logger.info(`${isHMREnabled ? 'HMR & ' : ''}Koa App initialized!`);
 })();
 
-async function initApp() {
+function initApp() {
 
   if(!DEV_MODE) {
     app.use(compress());
@@ -61,20 +62,6 @@ async function initApp() {
     )
     )
   );
-
-  //api proxy
-  if (config.isNodeProxyEnabled() && !_.isEmpty(API_ENDPOINTS)) {
-    for (const prefix in API_ENDPOINTS) {
-      if (API_ENDPOINTS.hasOwnProperty(prefix) && prefix !== DEFAULT_PREFIX_KEY) {
-        let endPoint = API_ENDPOINTS[prefix];
-        if ('string' !== typeof endPoint) {
-          endPoint = endPoint.endpoint;
-        }
-        app.use(apiRouter.handleApiRequests(prefix, endPoint));
-        logger.info('Node proxy[' + endPoint + '] enabled for path: ' + prefix);
-      }
-    }
-  }
 
   app.use(session(app));
   app.use(convert(bodyParser({})));
@@ -113,12 +100,14 @@ async function initHMR() {
   if (isHMREnabled) {
     logger.info('HMR enabled, initializing HMR...');
     const hmrMiddleware = require('koa-webpack');
+    const historyApiFallback = require("koa-history-api-fallback");
     const webpackConfig = require('./config/webpack.config.dev');
     const instance = hmrMiddleware({
       config: webpackConfig,
       hot: {
         port: 8086,
         // logLevel: 'warn',
+        hot: true,
         reload: true,
       },
       dev: {
@@ -141,11 +130,29 @@ async function initHMR() {
         if (!HMRInitialized) {
           HMRInitialized = true;
           app.use(instance);
+          app.use(historyApiFallback());
+          app.use(instance);
         }
         resolve();
       })
     });
     // console.log(webpackConfig);
     // app.use();
+  }
+}
+
+function initProxy() {
+  //api proxy
+  if (config.isNodeProxyEnabled() && !_.isEmpty(API_ENDPOINTS)) {
+    for (const prefix in API_ENDPOINTS) {
+      if (API_ENDPOINTS.hasOwnProperty(prefix) && prefix !== DEFAULT_PREFIX_KEY) {
+        let endPoint = API_ENDPOINTS[prefix];
+        if ('string' !== typeof endPoint) {
+          endPoint = endPoint.endpoint;
+        }
+        app.use(apiRouter.handleApiRequests(prefix, endPoint));
+        logger.info('Node proxy[' + endPoint + '] enabled for path: ' + prefix);
+      }
+    }
   }
 }

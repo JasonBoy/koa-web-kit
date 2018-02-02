@@ -3583,6 +3583,10 @@ koa-convert@1.2.0, koa-convert@^1.2.0:
     co "^4.6.0"
     koa-compose "^3.0.0"
 
+koa-history-api-fallback@0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/koa-history-api-fallback/-/koa-history-api-fallback-0.1.3.tgz#94eb35b481914d682634f9911021187667f02b39"
+
 koa-is-json@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/koa-is-json/-/koa-is-json-1.0.0.tgz#273c07edcdcb8df6a2c1ab7d59ee76491451ec14"
