@@ -50,7 +50,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
       },
     ]
   },
-  devtool: 'source-map',
+  devtool: isHMREnabled ? 'eval' : 'source-map',
   plugins: [],
 });
 
