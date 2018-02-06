@@ -82,7 +82,7 @@ module.exports = {
   },
   isHMREnabled: () => {
     const val = getConfigProperty('ENABLE_HMR');
-    return module.exports.isDevMode() && !!(val && (val === 'true' || val === '1'));
+    return module.exports.isDevMode() && !!(val && (val === true || val === 'true' || val === '1'));
   },
   getEnv: (key) => {
     return getConfigProperty(key);
