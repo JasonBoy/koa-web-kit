@@ -101,11 +101,13 @@ async function initHMR() {
     logger.info('HMR enabled, initializing HMR...');
     const hmrMiddleware = require('koa-webpack');
     const historyApiFallback = require("koa-history-api-fallback");
+    const getPort = require('get-port');
+    const availPort = await getPort();
     const webpackConfig = require('./config/webpack.config.dev');
     const instance = hmrMiddleware({
       config: webpackConfig,
       hot: {
-        port: 8086,
+        port: availPort,
         // logLevel: 'warn',
         hot: true,
         reload: true,
