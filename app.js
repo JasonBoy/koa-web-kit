@@ -130,7 +130,7 @@ async function initHMR() {
         if (!HMRInitialized) {
           HMRInitialized = true;
           app.use(instance);
-          app.use(historyApiFallback());
+          app.use(convert(historyApiFallback()));
           app.use(instance);
         }
         resolve();
