@@ -135,6 +135,7 @@ const webpackConfig = {
         to: utils.resolve('build/app/assets/static'),
       },
     ]),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new ManifestPlugin(),
   ],
 };
