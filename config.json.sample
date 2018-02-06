@@ -8,7 +8,8 @@
   "PREFIX_TRAILING_SLASH": true,
   "APP_PREFIX": "",
   "API_ENDPOINTS": {
-    "/prefix": "http://127.0.0.1:3001",
+    "defaultPrefix": "/api-proxy",
+    "/api-proxy": "http://127.0.0.1:3001",
     "/prefix2": "http://127.0.0.1:3002"
   }
 }

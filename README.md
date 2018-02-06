@@ -75,6 +75,8 @@ config = {
   "APP_PREFIX": "", //global prefix for your routes, e.g http://a.com/prefix/...your app routes
   //API PROXYs for multiple api endpoints with different prefix in router
   "API_ENDPOINTS": {
+    //set a default prefix
+    "defaultPrefix": "/prefix",
     //e.g http://127.0.0.1:3000/prefix/api/login -->proxy to--> http://127.0.0.1:3001/api/login
     "/prefix": "http://127.0.0.1:3001",
     "/prefix2": "http://127.0.0.1:3002",
