@@ -27,7 +27,6 @@ const appIndex = path.join(APP_PATH, 'index.js');
 let entry = undefined;
 if(isHMREnabled) {
   entry = [
-    // 'react-hot-loader/patch',
     appIndex,
   ];
 } else {
