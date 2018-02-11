@@ -28,6 +28,8 @@
 Get the [latest version](https://github.com/JasonBoy/koa-web-kit/releases), and go to your project root,  
 Also available on [npm](https://www.npmjs.com/package/koa-web-kit), `npm i koa-web-kit --save`
 
+> Before start, recommend to copy the `config.json.sample` to `config.json` for local dev configuration
+
 1. Install Dependencies  
 ```bash
 #with yarn, yarn.lock is included
