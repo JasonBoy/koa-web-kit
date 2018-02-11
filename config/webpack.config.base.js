@@ -16,6 +16,8 @@ const APP_PATH = utils.APP_PATH;
 const CONTENT_PATH = APP_PATH;
 const APP_BUILD_PATH = utils.APP_BUILD_PATH;
 
+const defaultPrefix = config.getApiEndPoints().defaultPrefix;
+
 const appPrefix = utils.normalizeTailSlash(config.getAppPrefix(), config.isPrefixTailSlashEnabled());
 const prefix = utils.normalizeTailSlash(
   utils.normalizePublicPath(
@@ -110,6 +112,7 @@ const webpackConfig = {
       'process.env.prefix': JSON.stringify(prefix),
       'process.env.appPrefix': JSON.stringify(appPrefix),
       'process.env.NODE_ENV': JSON.stringify(config.getNodeEnv()),
+      'process.env.apiPrefix': JSON.stringify(config.isCustomAPIPrefix() ? defaultPrefix : ''),
     }),
     new webpack.LoaderOptionsPlugin({
       debug: DEV_MODE,
@@ -140,11 +143,7 @@ const webpackConfig = {
 };
 
 if(isHMREnabled) {
-  // webpackConfig.devServer = {
-  //   hot: true,
-  // };
   webpackConfig.plugins.push(new webpack.NamedModulesPlugin());
-  // webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
 }
 
 module.exports = webpackConfig;

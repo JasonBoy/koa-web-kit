@@ -84,6 +84,9 @@ module.exports = {
     const val = getConfigProperty('ENABLE_HMR');
     return module.exports.isDevMode() && !!(val && (val === true || val === 'true' || val === '1'));
   },
+  isCustomAPIPrefix: () => {
+    return !!getConfigProperty('CUSTOM_API_PREFIX');
+  },
   getEnv: (key) => {
     return getConfigProperty(key);
   }

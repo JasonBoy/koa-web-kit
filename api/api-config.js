@@ -3,17 +3,11 @@
  */
 
 /**
- * TODO prefix can be added universally in src/modules/Request.js, instead of concatenating here verbosely
- * @type {string}
- */
-const prefix = '/api-proxy';
-
-/**
  * api urls
  * @type {{key: value}}
  */
 exports.api = {
-  TEST: `${prefix}/login`,
+  TEST: `/v1/login`,
 };
 
 /**

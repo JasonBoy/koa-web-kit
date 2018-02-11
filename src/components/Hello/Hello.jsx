@@ -4,6 +4,7 @@
 
 import React from 'react';
 import './Hello.scss';
+import r, {api} from 'modules/Request';
 
 class Hello extends React.Component {
   constructor(props) {
@@ -18,7 +19,9 @@ class Hello extends React.Component {
     console.log('hello created!');
     this.setState({
       name: 'Hello Created!'
-    })
+    });
+    //api test
+    r.get(api.TEST);
   }
 
   render() {

@@ -8,6 +8,7 @@ const Promise = require('bluebird');
 
 const logger = require('../mw/logger');
 const appConfig = require('../config/env');
+const isCustomAPIPrefix = appConfig.isCustomAPIPrefix();
 
 const debugLevel = appConfig.getProxyDebugLevel();
 
@@ -58,10 +59,10 @@ function getApiPromise(apiEndpoint, needPromise, options) {
  */
 function getProxyOptions(apiEndPoint, options = {}) {
   let defaultOptions = {
-    url: (this.url && options.prefix)
+    url: (isCustomAPIPrefix && options.prefix)
       ? this.url.substring(options.prefix.length)
-      : '',
-    baseUrl: apiEndPoint ? apiEndPoint : '',
+      : this.url,
+    baseUrl: apiEndPoint || '',
     method: this.method,
     // json: true,
     // gzip: true
