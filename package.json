@@ -1,6 +1,6 @@
 {
   "name": "koa-web-kit",
-  "version": "2.1.5",
+  "version": "2.2.0",
   "description": "A modern, production-ready, and full-stack node web framework",
   "main": "index.js",
   "scripts": {
