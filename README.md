@@ -39,8 +39,7 @@ npm install --no-shrinkwrap
 `npm run build` or `npm run watch` for auto recompile your code, or  
 `npm run dev` to start koa with HMR enabled(step 2 & 3 combined, skip step 3)  
 3. Start Koa Http Server  
-`npm start` or  
-
+`npm start`  
 4. Go to `http://localhost:3000` to view the default react page, the demo page is based on [create-react-app](https://github.com/facebookincubator/create-react-app)
 
 ### Project Structure
