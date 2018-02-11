@@ -13,10 +13,17 @@
     "prod": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
     "lint": "eslint --ext .js --cache .",
     "es6-module-to-commonjs": "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs",
-    "test": "./node_modules/.bin/_mocha ./test/mocha"
+    "test": "./node_modules/.bin/_mocha ./test/mocha",
+    "precommit": "lint-staged"
   },
   "engines": {
     "node": ">= 8"
+  },
+  "lint-staged": {
+    "**/*.{js, jsx}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -89,10 +96,13 @@
     "file-loader": "1.1.6",
     "html-loader": "0.5.5",
     "html-webpack-plugin": "2.30.1",
+    "husky": "0.14.3",
     "koa-webpack": "2.0.3",
+    "lint-staged": "6.1.0",
     "mocha": "5.0.0",
     "node-sass": "4.7.2",
     "postcss-loader": "2.1.0",
+    "prettier": "1.10.2",
     "sass-loader": "6.0.6",
     "style-loader": "0.20.1",
     "url-loader": "0.6.2",
