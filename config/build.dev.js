@@ -4,7 +4,7 @@ module.exports = {
   NODE_PROXY: true,
   PROXY_DEBUG_LEVEL: 0,
   STATIC_ENDPOINT: '',
-  STATIC_PREFIX: '/public/',
+  STATIC_PREFIX: '',
   PREFIX_TRAILING_SLASH: true,
   APP_PREFIX: '',
   CUSTOM_API_PREFIX: true,

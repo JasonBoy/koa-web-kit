@@ -5,6 +5,7 @@
 [![node](https://img.shields.io/node/v/koa-web-kit.svg)](https://nodejs.org/)
 [![Dependency Status](https://david-dm.org/JasonBoy/koa-web-kit.svg)](https://david-dm.org/JasonBoy/koa-web-kit)
 [![Known Vulnerabilities](https://snyk.io/test/github/jasonboy/koa-web-kit/badge.svg)](https://snyk.io/test/github/jasonboy/koa-web-kit)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 🚀A Modern, Production-Ready, and Full-Stack Node Web Framework
 
@@ -14,13 +15,12 @@
 
 - ✨Built with all modern frameworks and libs, including Koa2, React-v16, Bootstrap-v4, Webpack, ES6, Babel...
 - 📦Get all the Node.JS full stack development experience out of the box
-- 👀Compile your source code instantly, Node.JS side code minification support
+- 🔥Hot Module Replacement support without refreshing whole page, and server side js minification support
 - 📉Async/Await support for writing neat async code
 - 💖SASS preprocessor, PostCSS, autoprefixer for better css compatibility
 - 🎉Simple API Proxy bundled, no complex extra nginx configuration
-- 🌈PreConfigured Logger utility for better debug life
+- 🌈Available for generating static react site
 - ⚡️Just one npm command to deploy your app to production
-- 🔥Available for generating static react site
 - 👷Continuously Maintaining🍻
 
 ### Quick Start
@@ -36,9 +36,11 @@ yarn
 npm install --no-shrinkwrap
 ```
 2. Build Assets  
-`npm run build` or `npm run watch` for auto recompile your code
+`npm run build` or `npm run watch` for auto recompile your code, or  
+`npm run dev` to start koa with HMR enabled(step 2 & 3 combined, skip step 3)  
 3. Start Koa Http Server  
-`npm start`
+`npm start` or  
+
 4. Go to `http://localhost:3000` to view the default react page, the demo page is based on [create-react-app](https://github.com/facebookincubator/create-react-app)
 
 ### Project Structure
@@ -65,15 +67,24 @@ for koa-web-kit, we also provide different ways to configure your ENVs.
 The pre bundled file `config.json.sample` lists some common variables to use in the project, you should copy and rename it to `config.json` for your local config:
 ```javascript
 config = {
-  "NODE_PORT": 3000, //http server listen port
-  "NODE_ENV": "development", //most commonly used env
-  "NODE_PROXY": true, //enable/disable built API Proxy
-  "PROXY_DEBUG_LEVEL": 0, //config the api proxy debug level, [0, 1, 2], 0 -> nothing
-  "STATIC_ENDPOINT": "", //static endpoint, e.g CDN for your static assets
-  "STATIC_PREFIX": "/public/", //add a alternative prefix for your "STATIC_ENDPOINT"
-  "PREFIX_TRAILING_SLASH": true, //add "/" to the end of your static url, if not existed
-  "APP_PREFIX": "", //global prefix for your routes, e.g http://a.com/prefix/...your app routes
-  //API PROXYs for multiple api endpoints with different prefix in router
+  //http server listen port
+  "NODE_PORT": 3000,
+  //most commonly used env
+  "NODE_ENV": "development",
+  //enable/disable built-in API Proxy
+  "NODE_PROXY": true,
+  //config the api proxy debug level, [0, 1, 2], 0 -> nothing, default: 1 -> simple, 2 -> verbose
+  "PROXY_DEBUG_LEVEL": 1,
+  //static endpoint, e.g CDN for your static assets
+  "STATIC_ENDPOINT": "",
+  //add a alternative prefix for your "STATIC_ENDPOINT"
+  "STATIC_PREFIX": "",
+  //add "/" to the end of your static url, if not existed
+  "PREFIX_TRAILING_SLASH": true,
+  //global prefix for your routes, e.g http://a.com/prefix/...your app routes,
+  //like a github project site
+  "APP_PREFIX": "",
+  //API Proxies for multiple api endpoints with different prefix in router
   "API_ENDPOINTS": {
     //set a default prefix
     "defaultPrefix": "/prefix",
