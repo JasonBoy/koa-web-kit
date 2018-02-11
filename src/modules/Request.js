@@ -2,16 +2,20 @@ import qs from 'qs';
 import URL from 'url-parse';
 import isEmpty from 'lodash.isempty';
 import 'whatwg-fetch';
-import {api, formatRestfulUrl, numberOfRestParams} from '../../api/api-config';
+import {
+  api,
+  formatRestfulUrl,
+  numberOfRestParams,
+} from '../../api/api-config';
 import env from 'modules/env';
 
 const fetch = window.fetch;
 
 const defaultOptions = {
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
-  credentials: "same-origin",
+  credentials: 'same-origin',
 };
 
 function jsonResponseHandler(data, apiOptions) {
@@ -19,17 +23,15 @@ function jsonResponseHandler(data, apiOptions) {
 }
 
 class Request {
-
   constructor(options) {
-
     if (!(this instanceof Request)) {
       return new Request();
     }
 
     this.jsonResponseHandler = jsonResponseHandler.bind(this);
 
-    const ops = {...defaultOptions};
-    if(!isEmpty(options) && !isEmpty(options.headers)) {
+    const ops = { ...defaultOptions };
+    if (!isEmpty(options) && !isEmpty(options.headers)) {
       ops.headers = Object.assign({}, ops.headers, options.headers);
       delete options.headers;
     }
@@ -57,7 +59,7 @@ class Request {
     url = this.normalizeRestfulParams(url, options);
 
     const originalUrl = url;
-    if(!options.noPrefix) {
+    if (!options.noPrefix) {
       url = `${env.apiPrefix}${url}`;
       options.noPrefix = undefined;
     }
@@ -67,34 +69,32 @@ class Request {
     const defaultHeaders = this.options.headers;
     Object.assign(headers, defaultHeaders, options.headers);
     options.headers = undefined;
-    const apiOptions = Object.assign({}, this.options, options, {headers});
+    const apiOptions = Object.assign({}, this.options, options, { headers });
 
-    return fetch(
-      url,
-      apiOptions
-    )
+    return fetch(url, apiOptions)
       .then(response => {
         if (!response.ok) {
-          console.error(`[koa-web-kit]:[API-ERROR]-[${response.status}]-[${originalUrl}]`);
+          console.error(
+            `[koa-web-kit]:[API-ERROR]-[${response.status}]-[${originalUrl}]`
+          );
           return Promise.reject(response);
         }
-        return response.json()
+        return response.json();
       })
-      .then(data => this.jsonResponseHandler(data, apiOptions))
-      ;
+      .then(data => this.jsonResponseHandler(data, apiOptions));
   }
 
   addQueryString(url, params, baseUrl, noHost = false) {
     if (isEmpty(params)) return url;
     const obj = new URL(url, baseUrl || '');
-    const addedQuery = ('string' === typeof params)
-      ? params : qs.stringify(params);
+    const addedQuery =
+      'string' === typeof params ? params : qs.stringify(params);
     const query = obj.query ? `${obj.query}&${addedQuery}` : `?${addedQuery}`;
     const fullHost = obj.protocol ? `${obj.protocol}//${obj.host}` : '';
     return `${noHost ? '' : fullHost}${obj.pathname}${query}${obj.hash}`;
   }
 
-  get (url, params, options = {}) {
+  get(url, params, options = {}) {
     if (!isEmpty(params)) {
       url = this.addQueryString(url, params);
     }
@@ -102,26 +102,35 @@ class Request {
   }
 
   post(url, data = {}, options = {}) {
-    const postOptions = Object.assign({
-      method: 'POST',
-      body: JSON.stringify(data)
-    }, options);
+    const postOptions = Object.assign(
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      },
+      options
+    );
     return this.sendRequest(url, postOptions);
   }
 
   put(url, data = {}, options = {}) {
-    const putOptions = Object.assign({
-      method: 'PUT',
-      body: JSON.stringify(data)
-    }, options);
+    const putOptions = Object.assign(
+      {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      },
+      options
+    );
     return this.sendRequest(url, putOptions);
   }
 
   delete(url, data = {}, options = {}) {
-    const deleteOptions = Object.assign({
-      method: 'DELETE',
-      body: JSON.stringify(data)
-    }, options);
+    const deleteOptions = Object.assign(
+      {
+        method: 'DELETE',
+        body: JSON.stringify(data),
+      },
+      options
+    );
     return this.sendRequest(url, deleteOptions);
   }
 
@@ -141,15 +150,17 @@ class Request {
 
     url = this.normalizeRestfulParams(url, options);
 
-    const apiOptions = Object.assign({
-      method: 'POST',
-      body: formData,
-      credentials: "same-origin",
-    }, options);
+    const apiOptions = Object.assign(
+      {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin',
+      },
+      options
+    );
     return fetch(url, apiOptions)
       .then(response => response.json())
-      .then(data => this.jsonResponseHandler(data, apiOptions))
-      ;
+      .then(data => this.jsonResponseHandler(data, apiOptions));
   }
 
   getQueryString(url = location.href) {
@@ -166,19 +177,18 @@ class Request {
     return `${u.origin}${u.pathname}${u.query}`;
   }
 
-  normalizeRestfulParams (url, options) {
+  normalizeRestfulParams(url, options) {
     const restLength = numberOfRestParams(url);
     const restParams = !isEmpty(options.restParams) ? options.restParams : [];
-    if(restLength > 0) {
-      if(restLength > restParams.length) {
+    if (restLength > 0) {
+      if (restLength > restParams.length) {
         restParams.unshift(this.storeId || '0');
       }
       url = formatRestfulUrl(url, restParams);
     }
     return url;
   }
-
 }
 
-export {Request, api};
+export { Request, api };
 export default new Request();

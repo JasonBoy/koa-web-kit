@@ -11,7 +11,9 @@ const prodConfig = require('./build.prod');
 const customConfigPath = process.env.NODE_BEAUTY_CONFIG_PATH;
 const nodeBuildEnv = process.env.NODE_BUILD_ENV;
 
-const configPath = customConfigPath ? path.resolve(customConfigPath) : path.join(process.cwd(), 'config.json');
+const configPath = customConfigPath
+  ? path.resolve(customConfigPath)
+  : path.join(process.cwd(), 'config.json');
 // console.log(configPath);
 let configInfo = {};
 
@@ -27,7 +29,7 @@ try {
   console.log('check config.json done');
 }
 
-if(hasConfigDotJSON) {
+if (hasConfigDotJSON) {
   configInfo = JSON.parse(fs.readFileSync(configPath));
   console.log('using config.json');
 } else {
@@ -82,12 +84,15 @@ module.exports = {
   },
   isHMREnabled: () => {
     const val = getConfigProperty('ENABLE_HMR');
-    return module.exports.isDevMode() && !!(val && (val === true || val === 'true' || val === '1'));
+    return (
+      module.exports.isDevMode() &&
+      !!(val && (val === true || val === 'true' || val === '1'))
+    );
   },
   isCustomAPIPrefix: () => {
     return !!getConfigProperty('CUSTOM_API_PREFIX');
   },
-  getEnv: (key) => {
+  getEnv: key => {
     return getConfigProperty(key);
-  }
+  },
 };

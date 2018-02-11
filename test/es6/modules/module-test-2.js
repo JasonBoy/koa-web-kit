@@ -9,4 +9,4 @@ console.log(b);
 
 export default function Add(b) {
   return a + b;
-};
+}

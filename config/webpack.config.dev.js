@@ -10,18 +10,26 @@ const utils = require('./utils');
 const APP_PATH = utils.APP_PATH;
 const isHMREnabled = config.isHMREnabled();
 
-const libCSSExtract = new ExtractTextPlugin(utils.getName('common', 'css', 'contenthash', true));
-const scssExtract = new ExtractTextPlugin(utils.getName('[name]', 'css', 'contenthash', true));
-const scssExtracted = scssExtract.extract(utils.getStyleLoaders('css-loader', 'postcss-loader', 'sass-loader', true));
+const libCSSExtract = new ExtractTextPlugin(
+  utils.getName('common', 'css', 'contenthash', true)
+);
+const scssExtract = new ExtractTextPlugin(
+  utils.getName('[name]', 'css', 'contenthash', true)
+);
+const scssExtracted = scssExtract.extract(
+  utils.getStyleLoaders('css-loader', 'postcss-loader', 'sass-loader', true)
+);
 
 const webpackConfig = webpackMerge(baseWebpackConfig, {
   output: {
     publicPath: isHMREnabled
       ? '/'
       : utils.normalizeTailSlash(
-        utils.normalizePublicPath(
-          path.join(config.getAppPrefix(), config.getStaticPrefix())
-        ), config.isPrefixTailSlashEnabled()),
+          utils.normalizePublicPath(
+            path.join(config.getAppPrefix(), config.getStaticPrefix())
+          ),
+          config.isPrefixTailSlashEnabled()
+        ),
     filename: '[name].js',
     chunkFilename: '[name].js',
   },
@@ -33,28 +41,42 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
         // exclude: /node_modules/,
         exclude: [/node_modules/, /content\/scss\/bootstrap\.scss$/],
         use: isHMREnabled
-          ? utils.getStyleLoaders('style-loader', 'css-loader', 'postcss-loader', 'sass-loader', true)
-          : scssExtracted
+          ? utils.getStyleLoaders(
+              'style-loader',
+              'css-loader',
+              'postcss-loader',
+              'sass-loader',
+              true
+            )
+          : scssExtracted,
       },
       {
         test: /content\/scss\/bootstrap\.scss$/,
         use: isHMREnabled
-          ? utils.getStyleLoaders('style-loader', 'css-loader', 'postcss-loader', 'sass-loader', true)
-          : libCSSExtract.extract(utils.getStyleLoaders('css-loader', 'sass-loader', true))
+          ? utils.getStyleLoaders(
+              'style-loader',
+              'css-loader',
+              'postcss-loader',
+              'sass-loader',
+              true
+            )
+          : libCSSExtract.extract(
+              utils.getStyleLoaders('css-loader', 'sass-loader', true)
+            ),
       },
       {
         test: /\.css$/,
         use: isHMREnabled
-          ?  utils.getStyleLoaders('style-loader', 'css-loader', true)
-          : libCSSExtract.extract(utils.getStyleLoaders('css-loader', true))
+          ? utils.getStyleLoaders('style-loader', 'css-loader', true)
+          : libCSSExtract.extract(utils.getStyleLoaders('css-loader', true)),
       },
-    ]
+    ],
   },
   devtool: isHMREnabled ? 'eval' : 'source-map',
   plugins: [],
 });
 
-if(!isHMREnabled) {
+if (!isHMREnabled) {
   webpackConfig.plugins.push(libCSSExtract);
   webpackConfig.plugins.push(scssExtract);
 }

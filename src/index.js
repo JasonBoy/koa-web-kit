@@ -6,11 +6,7 @@ import './index.css';
 const elRoot = document.getElementById('app');
 
 const render = Component => {
-  ReactDOM.render(
-    <Component />
-    ,
-    elRoot,
-  )
+  ReactDOM.render(<Component />, elRoot);
 };
 
 render(App);
@@ -19,5 +15,5 @@ render(App);
 if (module.hot) {
   module.hot.accept('./App', () => {
     render(require('./App').default);
-  })
+  });
 }

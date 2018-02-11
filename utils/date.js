@@ -2,14 +2,13 @@ const moment = require('moment');
 const defaultFormat = 'YYYY-MM-DD HH:mm:ss';
 
 module.exports = {
-  simpleDate () {
+  simpleDate() {
     return moment().format(defaultFormat);
   },
-  now () {
+  now() {
     return this.simpleDate();
   },
-  format (date = Date.now(), pattern = defaultFormat) {
+  format(date = Date.now(), pattern = defaultFormat) {
     return moment(date).format(pattern);
   },
 };
-

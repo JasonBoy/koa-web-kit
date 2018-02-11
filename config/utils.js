@@ -4,7 +4,11 @@ const path = require('path');
 const SLASH_REGEX = /[\\]+/g;
 
 exports.getName = function getName(chunkName, ext, hashName, DEV_MODE) {
-  return chunkName + (DEV_MODE ? '.' : '-[' + (hashName ? hashName : 'chunkhash') + ':9].') + ext;
+  return (
+    chunkName +
+    (DEV_MODE ? '.' : '-[' + (hashName ? hashName : 'chunkhash') + ':9].') +
+    ext
+  );
 };
 
 exports.getResourceName = function getResourceName(DEV_MODE) {
@@ -14,11 +18,14 @@ exports.getResourceName = function getResourceName(DEV_MODE) {
 exports.getStyleLoaders = function getStyleLoaders() {
   const lastArg = arguments[arguments.length - 1];
   const isLastArgBoolean = typeof lastArg === 'boolean';
-  const DEV_MODE =  isLastArgBoolean? lastArg : true;
+  const DEV_MODE = isLastArgBoolean ? lastArg : true;
   const temp = [];
-  for (let i = 0, length = (isLastArgBoolean
-    ? arguments.length - 1
-    : arguments.length); i < length; i++) {
+  for (
+    let i = 0,
+      length = isLastArgBoolean ? arguments.length - 1 : arguments.length;
+    i < length;
+    i++
+  ) {
     const tempLoader = {
       loader: arguments[i],
       options: {},
@@ -34,7 +41,7 @@ exports.getStyleLoaders = function getStyleLoaders() {
   return temp;
 };
 
-exports.resolve = function resolve (dir) {
+exports.resolve = function resolve(dir) {
   return path.join(__dirname, '..', dir);
 };
 
@@ -45,18 +52,23 @@ exports.APP_BUILD_PATH = exports.resolve('build/app');
 exports.normalizePublicPath = function normalizePublicPath(publicPath) {
   return publicPath === '.' ? '' : publicPath;
 };
-exports.normalizeTailSlash = function normalizeTailSlash(publicPath, withSlash) {
-  if(publicPath.endsWith('/')) {
-    publicPath = withSlash ? publicPath : publicPath.substring(0, publicPath.length - 1);
+exports.normalizeTailSlash = function normalizeTailSlash(
+  publicPath,
+  withSlash
+) {
+  if (publicPath.endsWith('/')) {
+    publicPath = withSlash
+      ? publicPath
+      : publicPath.substring(0, publicPath.length - 1);
   } else {
-    publicPath = withSlash ? (publicPath + '/') : publicPath;
+    publicPath = withSlash ? publicPath + '/' : publicPath;
   }
-  if(exports.isWindows()) {
+  if (exports.isWindows()) {
     publicPath = exports.replaceBackwardSlash(publicPath);
   }
   return publicPath;
 };
-exports.normalizePath = function normalizePath (publicPath, withSlash) {
+exports.normalizePath = function normalizePath(publicPath, withSlash) {
   return exports.normalizeTailSlash(
     exports.normalizePublicPath(publicPath),
     withSlash

@@ -33,7 +33,7 @@ app.proxy = true;
 
 app.use(morgan(DEV_MODE ? 'dev' : 'tiny'));
 
-(async function () {
+(async function() {
   initProxy();
   await initHMR();
   initApp();
@@ -41,24 +41,25 @@ app.use(morgan(DEV_MODE ? 'dev' : 'tiny'));
 })();
 
 function initApp() {
-
-  if(!DEV_MODE) {
+  if (!DEV_MODE) {
     app.use(compress());
   }
 
-  let staticPrefix = path.join(config.getAppPrefix(), config.getStaticPrefix() || '/');
+  let staticPrefix = path.join(
+    config.getAppPrefix(),
+    config.getStaticPrefix() || '/'
+  );
   if (sysUtils.isWindows()) {
     staticPrefix = sysUtils.replaceBackwardSlash(staticPrefix);
   }
-  app.use(mount(
-    staticPrefix,
-    serveStatic(path.join(process.cwd(), 'build/app'),
-      {
+  app.use(
+    mount(
+      staticPrefix,
+      serveStatic(path.join(process.cwd(), 'build/app'), {
         // one month cache for prod
         maxage: DEV_MODE ? 0 : 2592000000,
         gzip: false,
-      }
-    )
+      })
     )
   );
 
@@ -70,15 +71,17 @@ function initApp() {
     noCache: DEV_MODE,
     tags: {
       variableStart: '{=',
-      variableEnd: '=}'
-    }
+      variableEnd: '=}',
+    },
   });
 
-  app.use(views(viewsPath, {
-    map: {
-      html: 'nunjucks'
-    }
-  }));
+  app.use(
+    views(viewsPath, {
+      map: {
+        html: 'nunjucks',
+      },
+    })
+  );
 
   app.use(index.routes());
 
@@ -89,7 +92,6 @@ function initApp() {
   //and then give it a port to listen for
   app.listen(PORT, '0.0.0.0');
   logger.info(`Koa listening on port ${PORT}`);
-
 }
 
 async function initHMR() {
@@ -98,7 +100,7 @@ async function initHMR() {
   if (isHMREnabled) {
     logger.info('HMR enabled, initializing HMR...');
     const hmrMiddleware = require('koa-webpack');
-    const historyApiFallback = require("koa-history-api-fallback");
+    const historyApiFallback = require('koa-history-api-fallback');
     const getPort = require('get-port');
     const availPort = await getPort();
     const webpackConfig = require('./config/webpack.config.dev');
@@ -121,8 +123,8 @@ async function initHMR() {
         stats: {
           modules: false,
           colors: true,
-        }
-      }
+        },
+      },
     });
     const dev = instance.dev;
     await new Promise((resolve, reject) => {
@@ -134,7 +136,7 @@ async function initHMR() {
           app.use(instance);
         }
         resolve();
-      })
+      });
     });
     // console.log(webpackConfig);
     // app.use();
@@ -145,7 +147,10 @@ function initProxy() {
   //api proxy
   if (config.isNodeProxyEnabled() && !_.isEmpty(API_ENDPOINTS)) {
     for (const prefix in API_ENDPOINTS) {
-      if (API_ENDPOINTS.hasOwnProperty(prefix) && prefix !== DEFAULT_PREFIX_KEY) {
+      if (
+        API_ENDPOINTS.hasOwnProperty(prefix) &&
+        prefix !== DEFAULT_PREFIX_KEY
+      ) {
         let endPoint = API_ENDPOINTS[prefix];
         if ('string' !== typeof endPoint) {
           endPoint = endPoint.endpoint;

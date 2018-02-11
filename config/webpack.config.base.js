@@ -18,19 +18,22 @@ const APP_BUILD_PATH = utils.APP_BUILD_PATH;
 
 const defaultPrefix = config.getApiEndPoints().defaultPrefix;
 
-const appPrefix = utils.normalizeTailSlash(config.getAppPrefix(), config.isPrefixTailSlashEnabled());
+const appPrefix = utils.normalizeTailSlash(
+  config.getAppPrefix(),
+  config.isPrefixTailSlashEnabled()
+);
 const prefix = utils.normalizeTailSlash(
   utils.normalizePublicPath(
     path.join(config.getAppPrefix(), config.getStaticPrefix())
-  ), config.isPrefixTailSlashEnabled());
+  ),
+  config.isPrefixTailSlashEnabled()
+);
 
 const appIndex = path.join(APP_PATH, 'index.js');
 
 let entry = undefined;
-if(isHMREnabled) {
-  entry = [
-    appIndex,
-  ];
+if (isHMREnabled) {
+  entry = [appIndex];
 } else {
   entry = {
     vendors: [
@@ -42,7 +45,7 @@ if(isHMREnabled) {
       'lodash.isempty',
     ],
     app: appIndex,
-  }
+  };
 }
 
 const webpackConfig = {
@@ -51,17 +54,14 @@ const webpackConfig = {
     path: APP_BUILD_PATH,
   },
   resolve: {
-    modules: [
-      APP_PATH,
-      'node_modules',
-    ],
+    modules: [APP_PATH, 'node_modules'],
     extensions: ['.js', '.jsx', '.json'],
     alias: {
-      'src': APP_PATH,
-      'content': utils.resolve('src/content'),
-      'components': utils.resolve('src/components'),
-      'store': utils.resolve('src/store'),
-    }
+      src: APP_PATH,
+      content: utils.resolve('src/content'),
+      components: utils.resolve('src/components'),
+      store: utils.resolve('src/store'),
+    },
   },
   module: {
     rules: [
@@ -72,8 +72,8 @@ const webpackConfig = {
           loader: 'babel-loader',
           options: {
             cacheDirectory: true,
-          }
-        }
+          },
+        },
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/,
@@ -84,7 +84,7 @@ const webpackConfig = {
               context: CONTENT_PATH,
               name: utils.getResourceName(DEV_MODE),
               limit: 1024,
-            }
+            },
           },
           // {
           //   loader: 'image-webpack-loader',
@@ -102,17 +102,19 @@ const webpackConfig = {
           name: utils.getResourceName(DEV_MODE),
           limit: 5000,
         },
-      }
-    ]
+      },
+    ],
   },
   plugins: [
-    new CleanWebpackPlugin(['./build/app'], {root: process.cwd()}),
+    new CleanWebpackPlugin(['./build/app'], { root: process.cwd() }),
     new webpack.DefinePlugin({
       'process.env.DEV_MODE': DEV_MODE,
       'process.env.prefix': JSON.stringify(prefix),
       'process.env.appPrefix': JSON.stringify(appPrefix),
       'process.env.NODE_ENV': JSON.stringify(config.getNodeEnv()),
-      'process.env.apiPrefix': JSON.stringify(config.isCustomAPIPrefix() ? defaultPrefix : ''),
+      'process.env.apiPrefix': JSON.stringify(
+        config.isCustomAPIPrefix() ? defaultPrefix : ''
+      ),
     }),
     new webpack.LoaderOptionsPlugin({
       debug: DEV_MODE,
@@ -123,13 +125,13 @@ const webpackConfig = {
     }),
     new webpack.optimize.CommonsChunkPlugin({
       names: isHMREnabled ? [] : ['vendors', 'manifest'],
-      minChunks: Infinity
+      minChunks: Infinity,
     }),
     new HtmlWebpackPlugin({
       template: './views/index.html',
       filename: 'index.html',
       inject: 'body',
-      chunksSortMode: 'dependency'
+      chunksSortMode: 'dependency',
     }),
     new CopyWebpackPlugin([
       {
@@ -142,7 +144,7 @@ const webpackConfig = {
   ],
 };
 
-if(isHMREnabled) {
+if (isHMREnabled) {
   webpackConfig.plugins.push(new webpack.NamedModulesPlugin());
 }
 

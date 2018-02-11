@@ -20,7 +20,7 @@
     "node": ">= 8"
   },
   "lint-staged": {
-    "**/*.{js, jsx}": [
+    "**/*.{js,jsx}": [
       "prettier --write",
       "git add"
     ]
