@@ -59,6 +59,7 @@ module.exports = webpackMerge(baseWebpackConfig, {
   plugins: [
     libCSSExtract,
     scssExtract,
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       beautify: false,
       comments: false,
