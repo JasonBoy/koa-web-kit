@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 
 const config = require('./env');
 const utils = require('./utils');
@@ -36,14 +37,6 @@ if (isHMREnabled) {
   entry = [appIndex];
 } else {
   entry = {
-    vendors: [
-      'prop-types',
-      'react',
-      'react-dom',
-      'whatwg-fetch',
-      'url-parse',
-      'lodash.isempty',
-    ],
     app: appIndex,
   };
 }
@@ -123,10 +116,8 @@ const webpackConfig = {
         context: CONTENT_PATH,
       },
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      names: isHMREnabled ? [] : ['vendors', 'manifest'],
-      minChunks: Infinity,
-    }),
+    new webpack.HashedModuleIdsPlugin(),
+    ...getCommonsChunkPlugins(),
     new HtmlWebpackPlugin({
       template: './views/index.html',
       filename: 'index.html',
@@ -145,6 +136,39 @@ const webpackConfig = {
 
 if (isHMREnabled) {
   webpackConfig.plugins.push(new webpack.NamedModulesPlugin());
+}
+
+function getCommonsChunkPlugins() {
+  const plugins = [];
+  if (isHMREnabled) {
+    plugins.push(
+      new webpack.optimize.CommonsChunkPlugin({
+        names: [],
+        minChunks: Infinity,
+      })
+    );
+    return plugins;
+  }
+  plugins.push(
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendors',
+      minChunks: module =>
+        module.context && module.context.includes('node_modules'),
+    })
+  );
+  plugins.push(
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'runtime',
+      minChunks: Infinity,
+    })
+  );
+  plugins.push(
+    new InlineChunkWebpackPlugin({
+      inlineChunks: ['runtime'],
+    })
+  );
+
+  return plugins;
 }
 
 module.exports = webpackConfig;
