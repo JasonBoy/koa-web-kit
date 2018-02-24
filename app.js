@@ -1,5 +1,7 @@
 'use strict';
 
+const config = require('./config/env');
+
 const path = require('path');
 const Koa = require('koa');
 const mount = require('koa-mount');
@@ -13,7 +15,6 @@ const cons = require('consolidate');
 const nunjucks = require('nunjucks');
 const _ = require('lodash');
 
-const config = require('./config/env');
 const logger = require('./mw/logger');
 const index = require('./routes/index');
 const apiRouter = require('./routes/proxy');
