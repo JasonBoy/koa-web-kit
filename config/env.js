@@ -84,10 +84,11 @@ module.exports = {
   },
   isHMREnabled: () => {
     const val = getConfigProperty('ENABLE_HMR');
-    return (
-      module.exports.isDevMode() &&
-      !!(val && (val === true || val === 'true' || val === '1'))
-    );
+    return module.exports.isDevMode() && isTrue(val);
+  },
+  isBundleAnalyzerEnabled: () => {
+    const val = getConfigProperty('BUNDLE_ANALYZER');
+    return isTrue(val);
   },
   isCustomAPIPrefix: () => {
     return !!getConfigProperty('CUSTOM_API_PREFIX');
@@ -96,3 +97,7 @@ module.exports = {
     return getConfigProperty(key);
   },
 };
+
+function isTrue(val) {
+  return !!(val && (val === true || val === 'true' || val === '1'));
+}

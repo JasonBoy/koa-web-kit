@@ -102,10 +102,22 @@ async function initHMR() {
     const hmrMiddleware = require('koa-webpack');
     const historyApiFallback = require('koa-history-api-fallback');
     const getPort = require('get-port');
+    const webpack = require('webpack');
+    const DashboardPlugin = require('webpack-dashboard/plugin');
     const availPort = await getPort();
     const webpackConfig = require('./config/webpack.config.dev');
+    const compiler = webpack(
+      Object.assign({}, webpackConfig, {
+        stats: {
+          modules: false,
+          colors: true,
+        },
+      })
+    );
+    compiler.apply(new DashboardPlugin());
     const instance = hmrMiddleware({
-      config: webpackConfig,
+      compiler,
+      // config: webpackConfig,
       hot: {
         port: availPort,
         // logLevel: 'warn',

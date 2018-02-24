@@ -5,9 +5,13 @@ const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
+
+const isBundleAnalyzerEnabled = config.isBundleAnalyzerEnabled();
 
 const APP_PATH = utils.APP_PATH;
 
@@ -21,7 +25,7 @@ const scssExtracted = scssExtract.extract(
   utils.getStyleLoaders('css-loader', 'postcss-loader', 'sass-loader', false)
 );
 
-module.exports = webpackMerge(baseWebpackConfig, {
+const webpackConfig = webpackMerge(baseWebpackConfig, {
   output: {
     publicPath:
       config.getStaticAssetsEndpoint() +
@@ -80,3 +84,9 @@ module.exports = webpackMerge(baseWebpackConfig, {
     }),
   ],
 });
+
+if (isBundleAnalyzerEnabled) {
+  webpackConfig.plugins.push(new BundleAnalyzerPlugin());
+}
+
+module.exports = webpackConfig;
