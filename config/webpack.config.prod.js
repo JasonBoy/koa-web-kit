@@ -4,6 +4,7 @@ const path = require('path');
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
@@ -60,16 +61,22 @@ module.exports = webpackMerge(baseWebpackConfig, {
     libCSSExtract,
     scssExtract,
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      beautify: false,
-      comments: false,
-      compress: {
+    new UglifyJsPlugin({
+      uglifyOptions: {
         warnings: false,
-        drop_console: true,
-        dead_code: true,
-        drop_debugger: true,
+        compress: {
+          warnings: false,
+          drop_console: true,
+          dead_code: true,
+          drop_debugger: true,
+        },
+        output: {
+          comments: false,
+          beautify: false,
+        },
+        mangle: true,
       },
-      mangle: true,
+      parallel: true,
     }),
   ],
 });
