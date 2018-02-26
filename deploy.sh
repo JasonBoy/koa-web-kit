@@ -78,11 +78,12 @@ if [[ $5 != "1" ]]; then
   fi
 
   #check if app is running
+  InitAppIds=$(pm2 id "$AppName")
   AppIds=$(pm2 id "$AppName")
   echo NODE_ENV: ${NODE_ENV}
   echo using ${RunScript}
 
-  if [[ -z ${AppIds} || ${AppIds} = "" || ${AppIds} = "[]" ]]; then
+  if [[ ${AppIds} = "[]" || -z ${AppIds} || ${AppIds} = "" ]]; then
     echo ${AppName} is not running, starting ${AppName}
     pm2 start ${RunScript} --no-vizion --name ${AppName} -i ${ClusterNumber}
   else
