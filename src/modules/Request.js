@@ -84,9 +84,9 @@ class Request {
       .then(data => this.jsonResponseHandler(data, apiOptions));
   }
 
-  addQueryString(url, params, baseUrl, noHost = false) {
+  addQueryString(url, params, baseUrl = '', noHost = true) {
     if (isEmpty(params)) return url;
-    const obj = new URL(url, baseUrl || '');
+    const obj = new URL(url, baseUrl);
     const addedQuery =
       'string' === typeof params ? params : qs.stringify(params);
     const query = obj.query ? `${obj.query}&${addedQuery}` : `?${addedQuery}`;
