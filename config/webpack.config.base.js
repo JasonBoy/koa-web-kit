@@ -7,6 +7,7 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 const config = require('./env');
 const utils = require('./utils');
@@ -54,6 +55,7 @@ const webpackConfig = {
       content: utils.resolve('src/content'),
       components: utils.resolve('src/components'),
       store: utils.resolve('src/store'),
+      'lodash-es': 'lodash',
     },
   },
   module: {
@@ -118,6 +120,9 @@ const webpackConfig = {
     }),
     new webpack.HashedModuleIdsPlugin(),
     ...getCommonsChunkPlugins(),
+    new MomentLocalesPlugin({
+      localesToKeep: ['zh-cn'],
+    }),
     new HtmlWebpackPlugin({
       template: './views/index.html',
       filename: 'index.html',
