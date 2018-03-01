@@ -8,7 +8,7 @@ const devConfig = require('./build.dev');
 const prodConfig = require('./build.prod');
 
 //get custom config path from env
-const customConfigPath = process.env.NODE_BEAUTY_CONFIG_PATH;
+const customConfigPath = process.env.NODE_CONFIG_PATH;
 const nodeBuildEnv = process.env.NODE_BUILD_ENV;
 
 const configPath = customConfigPath
@@ -37,12 +37,27 @@ if (hasConfigDotJSON) {
   console.log(`using ${!nodeBuildEnv ? 'build.prod' : 'build.dev'}`);
 }
 
-// console.log(configInfo);
-// console.log(getConfigProperty('beauty_custom'));
+const config = {};
+//cache non-empty config from env at init time instead of accessing from process.env at runtime to improve performance
+for (let key in configInfo) {
+  if (configInfo.hasOwnProperty(key)) {
+    const envValue = process.env[key];
+    config[key] = envValue || configInfo[key];
+  }
+}
+
+// console.log(config);
 
 function getConfigProperty(key) {
-  const valueFormEnv = process.env[key];
-  return valueFormEnv ? valueFormEnv : configInfo[key];
+  let value = undefined;
+  if (config.hasOwnProperty(key)) {
+    // console.log(`config[${key}] from cache`);
+    value = config[key];
+  } else {
+    // console.log(`config[${key}] from process.env`);
+    value = process.env[key];
+  }
+  return value;
 }
 
 module.exports = {
