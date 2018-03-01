@@ -15,7 +15,7 @@
 
 - ✨Built with all modern frameworks and libs, including Koa2, React-v16, Bootstrap-v4, Webpack, ES6, Babel...
 - 📦Get all the Node.JS full stack development experience out of the box
-- 🔥Hot Module Replacement support without refreshing whole page, and server side js minification support
+- 🔥Hot Module Replacement support without refreshing whole page, and bundle size analyzer support
 - 📉Async/Await support for writing neat async code
 - 💖SASS preprocessor, PostCSS, autoprefixer for better css compatibility
 - 🎉Simple API Proxy bundled, no complex extra nginx configuration
