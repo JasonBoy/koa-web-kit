@@ -68,6 +68,7 @@
     "lodash.isempty": "4.4.0",
     "moment": "2.20.1",
     "nunjucks": "3.0.1",
+    "pm2": "2.10.1",
     "prop-types": "15.6.0",
     "qs": "6.5.1",
     "react": "16.2.0",
