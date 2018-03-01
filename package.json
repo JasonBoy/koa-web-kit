@@ -122,6 +122,6 @@
   },
   "browserslist": [
     "> 1%",
-    "last 5 versions"
+    "last 2 versions"
   ]
 }
