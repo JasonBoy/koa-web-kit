@@ -32,13 +32,13 @@ fi
 #rm -f package-lock.json
 
 #uncoment this if you are in China...
-TaobaoRegistry="http://registry.npm.taobao.org/"
-NpmRegistry=$(npm config get registry)
-npm config set registry ${TaobaoRegistry}
-if [ "$TaobaoRegistry" != "$NpmRegistry" ]; then
-  echo changing npm registry to taobao registry "$TaobaoRegistry"
-  npm config set registry "$TaobaoRegistry"
-fi
+#TaobaoRegistry="http://registry.npm.taobao.org/"
+#NpmRegistry=$(npm config get registry)
+#npm config set registry ${TaobaoRegistry}
+#if [ "$TaobaoRegistry" != "$NpmRegistry" ]; then
+#  echo changing npm registry to taobao registry "$TaobaoRegistry"
+#  npm config set registry "$TaobaoRegistry"
+#fi
 
 #export SASS_BINARY_SITE=https://npm.taobao.org/mirrors/node-sass/
 
@@ -63,7 +63,7 @@ if [[ $5 != "1" ]]; then
 
   PMVersion=$(pm2 -v)
   if [[ $? != 0 ]]; then
-    echo ERROR: pls install pm2 to continue.[sudo npm install -g pm2]
+    echo ERROR: pls install pm2 to continue...
     exit
   #  echo installing pm2...
   #  npm install -g pm2
@@ -83,11 +83,15 @@ if [[ $5 != "1" ]]; then
   echo NODE_ENV: ${NODE_ENV}
   echo using ${RunScript}
 
-  if [[ ${AppIds} = "[]" || -z ${AppIds} || ${AppIds} = "" ]]; then
-    echo ${AppName} is not running, starting ${AppName}
-    pm2 start ${RunScript} --no-vizion --name ${AppName} -i ${ClusterNumber}
-  else
-    echo ${AppName} is running, reloading ${AppName}
-    pm2 reload ${AppName}
-  fi
+  which pm2
+
+  pm2 reload ecosystem.config.js --update-env --env production
+
+#  if [[ ${AppIds} = "[]" || -z ${AppIds} || ${AppIds} = "" ]]; then
+#    echo ${AppName} is not running, starting ${AppName}
+#    pm2 start ${RunScript} --no-vizion --name ${AppName} -i ${ClusterNumber}
+#  else
+#    echo ${AppName} is running, reloading ${AppName}
+#    pm2 reload ${AppName}
+#  fi
 fi

@@ -125,7 +125,7 @@ The builtin `mw/logger.js` provides some default log functionality for your app,
 ### Production Deployment
 
 Deploy your app to production is extremely simple with only one npm script command, you can provide different options in different deployment phases(e.g: install, build, start server),    
-[pm2](https://github.com/Unitech/pm2) inside is used as node process manager, so you may need to `npm i -g pm2`.
+[pm2](https://github.com/Unitech/pm2) inside is used as node process manager.
 
 #### Usage
 
