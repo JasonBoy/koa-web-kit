@@ -11,6 +11,7 @@ const views = require('koa-views');
 const morgan = require('koa-morgan');
 const serveStatic = require('koa-static');
 const convert = require('koa-convert');
+const helmet = require('koa-helmet');
 const cons = require('consolidate');
 const nunjucks = require('nunjucks');
 const _ = require('lodash');
@@ -33,6 +34,7 @@ app.keys = ['koa-web-kit'];
 app.proxy = true;
 
 app.use(morgan(DEV_MODE ? 'dev' : 'tiny'));
+app.use(helmet());
 
 (async function() {
   initProxy();
