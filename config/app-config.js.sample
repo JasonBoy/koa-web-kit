@@ -1,5 +1,9 @@
+/**
+ * A sample configuration for you application,
+ * copy this and rename without the `.sample` ext to use as your local env config
+ */
 module.exports = {
-  NODE_PORT: 3000,
+  PORT: 3000,
   NODE_ENV: 'development',
   NODE_PROXY: true,
   PROXY_DEBUG_LEVEL: 0,

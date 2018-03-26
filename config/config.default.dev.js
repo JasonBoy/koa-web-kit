@@ -1,5 +1,8 @@
+/**
+ * The default dev configuration if no custom config js file is provided
+ */
 module.exports = {
-  NODE_PORT: 3000,
+  PORT: 3000,
   NODE_ENV: 'development',
   NODE_PROXY: true,
   PROXY_DEBUG_LEVEL: 0,

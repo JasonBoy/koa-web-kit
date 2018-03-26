@@ -4,6 +4,8 @@
 
 const fs = require('fs');
 const path = require('path');
+const chalk = require('chalk');
+
 const devConfig = require('./config.default.dev');
 const prodConfig = require('./config.default.prod');
 
@@ -12,36 +14,33 @@ const customConfigPath = process.env.NODE_CONFIG_PATH;
 const nodeBuildEnv = process.env.NODE_BUILD_ENV;
 
 const defaultConfigJS = './app-config.js';
-// const defaultConfigJSON = 'app-config.json';
 
 const configPath = customConfigPath
   ? path.resolve(customConfigPath)
   : path.join(__dirname, defaultConfigJS);
-console.log(configPath);
-// const configPathJSON = path.resolve(defaultConfigJSON);
+// console.log(configPath);
 let configInfo = {};
-
 let hasCustomConfig = true;
+let checkMsg = '';
 
 try {
   fs.statSync(configPath);
 } catch (e) {
+  console.error(e);
   hasCustomConfig = false;
-  // fs.writeFileSync(configPath, fs.readFileSync(configPath + '.sample'));
-  // console.log('creating config file finished');
-} finally {
-  console.log(`check app config done`);
 }
 
 if (hasCustomConfig) {
   configInfo = require(configPath);
-  console.log(`using ${configPath}`);
+  checkMsg += `Using [${chalk.green(configPath)}] as app configuration`;
 } else {
   configInfo = !nodeBuildEnv ? prodConfig : devConfig;
-  console.log(
-    `using ${!nodeBuildEnv ? 'config.default.dev' : 'config.default.prod'}`
-  );
+  checkMsg += `Using [${chalk.green(
+    !nodeBuildEnv ? 'config.default.dev' : 'config.default.prod'
+  )}] as app configuration`;
 }
+
+console.log(checkMsg);
 
 const config = {};
 //cache non-empty config from env at init time instead of accessing from process.env at runtime to improve performance
@@ -68,7 +67,7 @@ function getConfigProperty(key) {
 
 module.exports = {
   getListeningPort: () => {
-    return getConfigProperty('NODE_PORT');
+    return getConfigProperty('PORT') || getConfigProperty('NODE_PORT');
   },
   getNodeEnv: () => {
     return getConfigProperty('NODE_ENV');
