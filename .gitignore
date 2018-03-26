@@ -50,3 +50,5 @@ bundle*.js
 *cache
 package-lock.json
 app.min.js
+config/app-config.js
+config/app-config.json

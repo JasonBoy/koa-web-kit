@@ -4,37 +4,43 @@
 
 const fs = require('fs');
 const path = require('path');
-const devConfig = require('./build.dev');
-const prodConfig = require('./build.prod');
+const devConfig = require('./config.default.dev');
+const prodConfig = require('./config.default.prod');
 
 //get custom config path from env
 const customConfigPath = process.env.NODE_CONFIG_PATH;
 const nodeBuildEnv = process.env.NODE_BUILD_ENV;
 
+const defaultConfigJS = './app-config.js';
+// const defaultConfigJSON = 'app-config.json';
+
 const configPath = customConfigPath
   ? path.resolve(customConfigPath)
-  : path.join(process.cwd(), 'config.json');
-// console.log(configPath);
+  : path.join(__dirname, defaultConfigJS);
+console.log(configPath);
+// const configPathJSON = path.resolve(defaultConfigJSON);
 let configInfo = {};
 
-let hasConfigDotJSON = true;
+let hasCustomConfig = true;
 
 try {
   fs.statSync(configPath);
 } catch (e) {
-  hasConfigDotJSON = false;
+  hasCustomConfig = false;
   // fs.writeFileSync(configPath, fs.readFileSync(configPath + '.sample'));
   // console.log('creating config file finished');
 } finally {
-  console.log('check config.json done');
+  console.log(`check app config done`);
 }
 
-if (hasConfigDotJSON) {
-  configInfo = JSON.parse(fs.readFileSync(configPath));
-  console.log('using config.json');
+if (hasCustomConfig) {
+  configInfo = require(configPath);
+  console.log(`using ${configPath}`);
 } else {
   configInfo = !nodeBuildEnv ? prodConfig : devConfig;
-  console.log(`using ${!nodeBuildEnv ? 'build.prod' : 'build.dev'}`);
+  console.log(
+    `using ${!nodeBuildEnv ? 'config.default.dev' : 'config.default.prod'}`
+  );
 }
 
 const config = {};
