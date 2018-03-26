@@ -62,13 +62,13 @@ npm install --no-shrinkwrap
 Every project has some configuration or environment variables to make it run differently in different environment,  
 for koa-web-kit, we also provide different ways to configure your ENVs.
 
-#### config.json/config.json.sample
+#### app-config.js/app-config.js.sample
 
-The pre bundled file `config.json.sample` lists some common variables to use in the project, you should copy and rename it to `config.json` for your local config:
+The pre bundled file `app-config.js.sample` lists some common variables to use in the project, you should copy and rename it to `app-config.js` for your local config:
 ```javascript
-config = {
+module.exports = {
   //http server listen port
-  "NODE_PORT": 3000,
+  "PORT": 3000,
   //most commonly used env
   "NODE_ENV": "development",
   //enable/disable built-in API Proxy
@@ -97,22 +97,22 @@ config = {
 
 #### Environment Variables
 
-All the variables in config.json can be set with Environment Variables, which have higher priority than `config.json`.
+All the variables in config.json can be set with Environment Variables, which have higher priority than `app-config.js`.
 e.g:  
 `> NODE_ENV=production npm start`  
 or  
 ```bash
-export NODE_PORT=3001
+export PORT=3001
 export NODE_ENV=production
 npm start
 ``` 
 BTW you can do Everything you can within cli to set your env.
 
-#### Default `config/build.dev(prod).js` in source code
+#### Default `config.default/dev(prod).js` in source code
 
 The project comes with default config files just like `config.json`, which will be used if neither above are provided.
 
-> Priority: *Environment Variables* > *config.json* > *default config/build.dev(prod).js*
+> Priority: *Environment Variables* > *app-config.js* > *default config.default./dev(prod).js*
 
 ### Template Engines
 __Default template engine is [nunjucks](https://github.com/mozilla/nunjucks)__,
@@ -124,22 +124,21 @@ The builtin `mw/logger.js` provides some default log functionality for your app,
 ### Production Deployment
 
 Deploy your app to production is extremely simple with only one npm script command, you can provide different options in different deployment phases(e.g: install, build, start server),    
-[pm2](https://github.com/Unitech/pm2) inside is used as node process manager.
+[pm2](https://github.com/Unitech/pm2) inside is used as node process manager.  
+> Global installation of PM2 is not required now, we will use the locally installed pm2.
+
 
 #### Usage
 
-`npm run deploy -- moduleName clusterNumber skipInstall skipBuild skipServer`  
-The last three options are boolean values in `0`(or empty, false) and `1`(true),  
-`moduleName` is only useful if you don't skipServer, but you still need to provide it if you have options following after, I will improve this later on🤣.
+`npm run deploy -- skipInstall skipBuild skipServer`  
+The last three options are boolean values in `0`(or empty, false) and `1`(true).  
 
 #### Examples:
 
 - `npm run deploy`: no options provided, default values are:  
-  `moduleName`=app; `clusterNumber`=0, which is "max"; and install deps, start building assets, and last start node server.
-- `npm run deploy -- app2 2`: if you have multi node apps within one vm, you need to use different name as show with "app2", also I only need to open 2 node instances here.
-- `npm run deploy -- app 2 1`: this will skip the `npm install --no-shrinkwrap`, and just go to build and start server.
-- `npm run deploy -- app 2 1 0 1`: which will only build your assets
-- `npm run deploy -- app 2 1 1 0`: which will just start node server, useful when all assets were built on a different machine.
+- `npm run deploy -- 1`: this will skip the `npm install --no-shrinkwrap`, and just go to build and start server.
+- `npm run deploy -- 1 0 1`: which will only build your assets
+- `npm run deploy -- 1 1 0`: which will just start node server, useful when all assets were built on a different machine.
 
 > You may need to create/update the script to meet your own needs. 
 
