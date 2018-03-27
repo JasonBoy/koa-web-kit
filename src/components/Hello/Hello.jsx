@@ -4,7 +4,7 @@
 
 import React from 'react';
 import './Hello.scss';
-import r, { api } from 'modules/Request';
+import r, { api, Request } from 'modules/Request';
 
 class Hello extends React.Component {
   constructor(props) {
@@ -21,7 +21,15 @@ class Hello extends React.Component {
       name: 'Hello Created!',
     });
     //api test
-    r.get(api.TEST);
+    r.get(api.TEST, { page: 1 });
+    r.get(api.TEST_6, { page: 2 });
+    r.post(api.TEST_2, { a: 1, b: 2 }, { qs: { page: 2, pageSize: 10 } });
+
+    const r2 = new Request({ form: true, apiPrefix: '/api-proxy-3' });
+    r2.post(api.TEST_3, { a: 1, b: 2, c: 'https://github.com' });
+    r2.put(api.TEST_4, { a: 1, b: 2 }, { noPrefix: true });
+    const r3 = new Request({ form: true, noPrefix: true });
+    r3.delete(api.TEST_5, { a: 1, b: 2 });
   }
 
   render() {

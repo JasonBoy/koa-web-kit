@@ -11,32 +11,47 @@ import env from 'modules/env';
 
 const fetch = window.fetch;
 
+const CONTENT_TYPE_JSON = 'application/json';
+const CONTENT_TYPE_FORM_URL_ENCODED =
+  'application/x-www-form-urlencoded;charset=UTF-8';
+
 const defaultOptions = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
   credentials: 'same-origin',
 };
 
-function jsonResponseHandler(data, apiOptions) {
+function jsonResponseHandler(data) {
   return Promise.resolve(data);
 }
 
 class Request {
-  constructor(options) {
+  constructor(options = {}) {
     if (!(this instanceof Request)) {
-      return new Request();
+      return new Request(options);
     }
 
     this.jsonResponseHandler = jsonResponseHandler.bind(this);
 
+    //no api prefix for the instance
+    this.noPrefix = !!options.noPrefix;
+    //set default api prefix
+    this.apiPrefix = options.apiPrefix || (this.noPrefix ? '' : env.apiPrefix);
+
     const ops = { ...defaultOptions };
+
+    this.formURLEncoded = !!options.form;
+
+    ops.headers = {
+      'Content-Type': this.formURLEncoded
+        ? CONTENT_TYPE_FORM_URL_ENCODED
+        : CONTENT_TYPE_JSON,
+    };
+
     if (!isEmpty(options) && !isEmpty(options.headers)) {
       ops.headers = Object.assign({}, ops.headers, options.headers);
       delete options.headers;
     }
     //set custom fetch options for the instance
-    this.options = Object.assign({}, ops, options);
+    this.options = Object.assign(ops, options);
   }
 
   static get fetch() {
@@ -51,7 +66,13 @@ class Request {
     return formatRestfulUrl;
   }
 
+  static isPlainUrl(url) {
+    return 'string' === typeof url;
+  }
+
   sendRequest(url, options = {}) {
+    const originalUrlConfig = url;
+    url = Request.isPlainUrl(url) ? url : url.path;
     if (!isEmpty(options.qs)) {
       url = this.addQueryString(url, options.qs);
     }
@@ -59,9 +80,9 @@ class Request {
     url = this.normalizeRestfulParams(url, options);
 
     const originalUrl = url;
-    if (!options.noPrefix) {
-      url = `${env.apiPrefix}${url}`;
-      options.noPrefix = undefined;
+    if (!options.noPrefix && !this.noPrefix) {
+      url = this.getUrlWithPrefix(originalUrlConfig);
+      options.hasOwnProperty('noPrefix') && (options.noPrefix = undefined);
     }
 
     const headers = {};
@@ -94,9 +115,25 @@ class Request {
     return `${noHost ? '' : fullHost}${obj.pathname}${query}${obj.hash}`;
   }
 
+  /**
+   * Get method
+   * @param {string|object} url api url config, when in object:
+   * ```
+   * {
+   *   path: 'url',
+   *   prefix: '/proxy-1', //prefix for the url
+   * }
+   * ```
+   * @param {object=} params query strings in object
+   * @param options
+   * @return {*}
+   */
   get(url, params, options = {}) {
     if (!isEmpty(params)) {
-      url = this.addQueryString(url, params);
+      url = this.addQueryString(
+        Request.isPlainUrl(url) ? url : url.path,
+        params
+      );
     }
     return this.sendRequest(url, options);
   }
@@ -105,7 +142,7 @@ class Request {
     const postOptions = Object.assign(
       {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: this.normalizePostBodyData(data),
       },
       options
     );
@@ -116,7 +153,7 @@ class Request {
     const putOptions = Object.assign(
       {
         method: 'PUT',
-        body: JSON.stringify(data),
+        body: this.normalizePostBodyData(data),
       },
       options
     );
@@ -127,7 +164,7 @@ class Request {
     const deleteOptions = Object.assign(
       {
         method: 'DELETE',
-        body: JSON.stringify(data),
+        body: this.normalizePostBodyData(data),
       },
       options
     );
@@ -146,6 +183,10 @@ class Request {
     let i = 0;
     for (; i < inputFiles.length; i++) {
       formData.append(fieldName, inputFiles[i]);
+    }
+
+    if (!Request.isPlainUrl(url)) {
+      url = `${url.prefix}${url.path}`;
     }
 
     url = this.normalizeRestfulParams(url, options);
@@ -187,6 +228,34 @@ class Request {
       url = formatRestfulUrl(url, restParams);
     }
     return url;
+  }
+
+  formatFormUrlEncodeData(data) {
+    const params = new URLSearchParams();
+    for (let key in data) {
+      if (data.hasOwnProperty(key)) {
+        params.append(key, data[key]);
+      }
+    }
+    return params.toString();
+  }
+
+  normalizePostBodyData(data = {}) {
+    return this.formURLEncoded
+      ? this.formatFormUrlEncodeData(data)
+      : JSON.stringify(data);
+  }
+
+  getUrlWithPrefix(urlConfig) {
+    let ret = '';
+    const plain = Request.isPlainUrl(urlConfig);
+    if (plain) {
+      ret += this.apiPrefix;
+    } else {
+      ret += urlConfig.prefix || this.apiPrefix;
+    }
+    ret += plain ? urlConfig : urlConfig.path;
+    return ret;
   }
 }
 

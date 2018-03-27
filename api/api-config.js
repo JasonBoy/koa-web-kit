@@ -4,10 +4,24 @@
 
 /**
  * api urls
- * @type {{key: value}}
  */
 exports.api = {
-  TEST: `/v1/login`,
+  TEST: '/v1/login',
+  TEST_2: {
+    path: '/v2/logout',
+    prefix: '/api-proxy-2',
+  },
+  TEST_3: {
+    path: '/v3/logout',
+    prefix: '/api-proxy-3',
+  },
+  TEST_4: '/v4/logout',
+  TEST_5: {
+    path: '/v5/login',
+  },
+  TEST_6: {
+    path: '/v6/login',
+  },
 };
 
 /**
