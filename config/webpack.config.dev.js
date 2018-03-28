@@ -21,6 +21,14 @@ const scssExtracted = scssExtract.extract(
   utils.getStyleLoaders('css-loader', 'postcss-loader', 'sass-loader', true)
 );
 
+const libCSSExtracted = libCSSExtract.extract(
+  // utils.getStyleLoaders('css-loader', 'postcss-loader', true)
+  {
+    use: utils.getStyleLoaders('css-loader', 'postcss-loader', true),
+    fallback: 'style-loader',
+  }
+);
+
 const webpackConfig = webpackMerge(baseWebpackConfig, {
   output: {
     publicPath: isHMREnabled
@@ -52,24 +60,16 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
           : scssExtracted,
       },
       {
-        test: /content\/scss\/bootstrap\.scss$/,
+        test: /\.css$/,
+        include: [APP_PATH, /node_modules/],
         use: isHMREnabled
           ? utils.getStyleLoaders(
               'style-loader',
               'css-loader',
               'postcss-loader',
-              'sass-loader',
               true
             )
-          : libCSSExtract.extract(
-              utils.getStyleLoaders('css-loader', 'sass-loader', true)
-            ),
-      },
-      {
-        test: /\.css$/,
-        use: isHMREnabled
-          ? utils.getStyleLoaders('style-loader', 'css-loader', true)
-          : libCSSExtract.extract(utils.getStyleLoaders('css-loader', true)),
+          : libCSSExtracted,
       },
     ],
   },
