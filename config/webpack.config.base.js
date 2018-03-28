@@ -157,8 +157,14 @@ function getCommonsChunkPlugins() {
   plugins.push(
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendors',
-      minChunks: module =>
-        module.context && module.context.includes('node_modules'),
+      minChunks: module => {
+        return (
+          module.context &&
+          module.context.includes('node_modules') &&
+          !module.resource.endsWith('.css') &&
+          !module.resource.endsWith('.scss')
+        );
+      },
     })
   );
   plugins.push(

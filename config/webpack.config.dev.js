@@ -11,23 +11,28 @@ const utils = require('./utils');
 const APP_PATH = utils.APP_PATH;
 const isHMREnabled = config.isHMREnabled();
 
-const libCSSExtract = new ExtractTextPlugin(
-  utils.getName('common', 'css', 'contenthash', true)
-);
-const scssExtract = new ExtractTextPlugin(
-  utils.getName('[name]', 'css', 'contenthash', true)
-);
-const scssExtracted = scssExtract.extract(
-  utils.getStyleLoaders('css-loader', 'postcss-loader', 'sass-loader', true)
-);
+const libCSSExtract = new ExtractTextPlugin({
+  filename: utils.getName('common', 'css', 'contenthash', true),
+  allChunks: true,
+});
+const scssExtract = new ExtractTextPlugin({
+  filename: utils.getName('[name]', 'css', 'contenthash', true),
+  allChunks: true,
+});
+const scssExtracted = scssExtract.extract({
+  use: utils.getStyleLoaders(
+    'css-loader',
+    'postcss-loader',
+    'sass-loader',
+    true
+  ),
+  fallback: 'style-loader',
+});
 
-const libCSSExtracted = libCSSExtract.extract(
-  // utils.getStyleLoaders('css-loader', 'postcss-loader', true)
-  {
-    use: utils.getStyleLoaders('css-loader', 'postcss-loader', true),
-    fallback: 'style-loader',
-  }
-);
+const libCSSExtracted = libCSSExtract.extract({
+  use: utils.getStyleLoaders('css-loader', 'postcss-loader', true),
+  fallback: 'style-loader',
+});
 
 const webpackConfig = webpackMerge(baseWebpackConfig, {
   output: {
@@ -61,7 +66,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
       },
       {
         test: /\.css$/,
-        include: [APP_PATH, /node_modules/],
+        // include: [APP_PATH, /node_modules/],
         use: isHMREnabled
           ? utils.getStyleLoaders(
               'style-loader',
