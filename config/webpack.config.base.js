@@ -161,8 +161,8 @@ function getCommonsChunkPlugins() {
         return (
           module.context &&
           module.context.includes('node_modules') &&
-          !module.resource.endsWith('.css') &&
-          !module.resource.endsWith('.scss')
+          !String(module.resource).endsWith('.css') &&
+          !String(module.resource).endsWith('.scss')
         );
       },
     })
