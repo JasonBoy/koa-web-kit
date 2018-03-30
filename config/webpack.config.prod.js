@@ -69,7 +69,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
       },
     ],
   },
-  devtool: false,
+  devtool: 'hidden-source-map',
   stats: 'errors-only',
   plugins: [
     libCSSExtract,
