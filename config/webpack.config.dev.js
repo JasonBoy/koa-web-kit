@@ -78,7 +78,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
       },
     ],
   },
-  devtool: isHMREnabled ? 'eval' : 'source-map',
+  devtool: isHMREnabled ? 'cheap-module-eval-source-map' : 'source-map',
   plugins: [],
 });
 

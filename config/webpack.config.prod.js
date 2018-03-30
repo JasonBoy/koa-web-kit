@@ -74,6 +74,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   plugins: [
     libCSSExtract,
     scssExtract,
+    new webpack.HashedModuleIdsPlugin(),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new UglifyJsPlugin({
       uglifyOptions: {

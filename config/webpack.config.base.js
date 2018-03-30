@@ -118,7 +118,6 @@ const webpackConfig = {
         context: CONTENT_PATH,
       },
     }),
-    new webpack.HashedModuleIdsPlugin(),
     ...getCommonsChunkPlugins(),
     new MomentLocalesPlugin({
       localesToKeep: ['zh-cn'],
