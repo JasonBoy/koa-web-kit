@@ -2,12 +2,18 @@ import 'bootstrap/dist/css/bootstrap.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import AppError from 'components/AppError';
 import './index.css';
 
 const elRoot = document.getElementById('app');
 
 const render = Component => {
-  ReactDOM.render(<Component />, elRoot);
+  ReactDOM.render(
+    <AppError>
+      <Component />
+    </AppError>,
+    elRoot
+  );
 };
 
 render(App);
