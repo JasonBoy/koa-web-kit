@@ -1,0 +1,28 @@
+/**
+ * Created by jason on 2018/4/4.
+ */
+
+.app-logo {
+  animation: app-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.app-header {
+  text-align: center;
+  background-color: #222;
+  padding: 20px;
+  color: white;
+}
+
+.app-intro {
+  font-size: large;
+}
+
+@keyframes app-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

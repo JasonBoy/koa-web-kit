@@ -16,18 +16,14 @@ router.use(async function(ctx, next) {
   // console.log(`end of index router: ${ctx.path}`);
 });
 
-router.get('/', async function(ctx) {
-  ctx.state = {
-    title: 'using nunjucks template',
-  };
-
-  await ctx.render('index');
-});
-
 router.post('/user', koaBody({ multipart: true }), async function(ctx) {
   const body = ctx.request.body;
   console.log(body);
   ctx.body = { result: body };
+});
+
+router.get('*', async function(ctx) {
+  await ctx.render('index');
 });
 
 module.exports = router;

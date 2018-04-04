@@ -13,11 +13,16 @@
     ],
     "react"
   ],
+  "env": {
+    "development": {
+      "plugins": ["transform-react-jsx-source"]
+    }
+  },
   "plugins": [
     "lodash",
     "transform-runtime",
     "transform-object-rest-spread",
-    "transform-class-properties"
-  ],
-  "comments": false
+    "transform-class-properties",
+    "syntax-dynamic-import"
+  ]
 }
