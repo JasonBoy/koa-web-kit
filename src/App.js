@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './app.css';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Home from 'components/Home';
 import Hello from 'components/Hello';
+import Hello2 from 'components/Hello2';
+import Header from 'components/Header';
+
+import { AppContext } from 'modules/context';
 
 class App extends Component {
   constructor(props) {
@@ -9,21 +13,39 @@ class App extends Component {
 
     this.state = {
       appName: 'React-v16',
+      context: {
+        userName: 'jason-in-app',
+      },
     };
   }
   render() {
+    const { Provider } = AppContext;
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to {this.state.appName || 'React'}</h2>
+      <Router>
+        <div>
+          <Header appName={this.state.appName} />
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/hello" component={Hello} />
+            <Route
+              exact
+              path="/hello-2"
+              render={() => (
+                <React.Fragment>
+                  <Provider value={this.state.context}>
+                    <Hello2 />
+                  </Provider>
+                  <hr />
+                  <p className="text-center">
+                    Below is default value from AppContext
+                  </p>
+                  <Hello2 />
+                </React.Fragment>
+              )}
+            />
+          </Switch>
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>HMR is enabled!</p>
-        <Hello />
-      </div>
+      </Router>
     );
   }
 }

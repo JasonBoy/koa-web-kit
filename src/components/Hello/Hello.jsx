@@ -37,6 +37,7 @@ class Hello extends React.Component {
   render() {
     return (
       <div className="hello">
+        <h3>Hello1 page</h3>
         Hello <code>Component: {this.state.name || 'xxx'}</code>
         {/*<p>{this.yyy()}</p>*/}
       </div>

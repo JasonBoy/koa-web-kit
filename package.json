@@ -1,18 +1,24 @@
 {
   "name": "koa-web-kit",
   "version": "2.3.3",
-  "description": "A modern, production-ready, and full-stack node web framework",
+  "description":
+    "A modern, production-ready, and full-stack node web framework",
   "main": "index.js",
   "scripts": {
     "dev": "cross-env ENABLE_HMR=true node app.js",
     "start": "node app.js",
     "deploy": "./deploy.sh",
-    "build": "webpack --progress --hide-modules --config config/webpack.config.dev.js && echo '\n===Build for Development Done!==='",
-    "watch": "webpack --watch --progress --hide-modules --config config/webpack.config.dev.js",
+    "build":
+      "webpack --progress --hide-modules --config config/webpack.config.dev.js && echo '\n===Build for Development Done!==='",
+    "watch":
+      "webpack --watch --progress --hide-modules --config config/webpack.config.dev.js",
     "node": "webpack --progress --config config/webpack.config.node.js",
-    "prod": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js && echo '\n===Build for Production Done!==='",
-    "prod:analyze": "cross-env NODE_ENV=production BUNDLE_ANALYZER=true webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
-    "es6-module-to-commonjs": "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs",
+    "prod":
+      "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js && echo '\n===Build for Production Done!==='",
+    "prod:analyze":
+      "cross-env NODE_ENV=production BUNDLE_ANALYZER=true webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
+    "es6-module-to-commonjs":
+      "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs",
     "test": "./node_modules/.bin/_mocha ./test/mocha",
     "precommit": "lint-staged",
     "build:wd": "webpack-dashboard -- npm run build",
@@ -23,10 +29,7 @@
     "node": ">= 8"
   },
   "lint-staged": {
-    "**/*.{js,jsx}": [
-      "prettier --write",
-      "git add"
-    ]
+    "**/*.{js,jsx,json,scss}": ["prettier --write", "git add"]
   },
   "repository": {
     "type": "git",
@@ -52,6 +55,7 @@
     "bluebird": "3.5.1",
     "bootstrap": "4.0.0",
     "chalk": "2.3.2",
+    "classnames": "2.2.5",
     "consolidate": "0.15.1",
     "get-port": "3.2.0",
     "koa": "2.5.0",
@@ -73,8 +77,9 @@
     "pm2": "2.10.1",
     "prop-types": "15.6.1",
     "qs": "6.5.1",
-    "react": "16.2.0",
-    "react-dom": "16.2.0",
+    "react": "16.3.1",
+    "react-dom": "16.3.1",
+    "react-router-dom": "4.2.2",
     "request": "2.85.0",
     "request-debug": "0.2.0",
     "url-parse": "1.2.0",
@@ -125,8 +130,5 @@
     "webpack-merge": "4.1.2",
     "webpack-node-externals": "1.6.0"
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ]
+  "browserslist": ["> 1%", "last 2 versions"]
 }
