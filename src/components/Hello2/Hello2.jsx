@@ -34,6 +34,11 @@ class Hello2 extends React.Component {
   createPortal = () => {
     // console.log(this.portalContainer);
     this.setState(s => ({ portalCount: s.portalCount + 1 }));
+
+    import(/* webpackChunkName: "modules_misc" */ 'modules/misc').then(misc => {
+      console.log(misc);
+      misc.test();
+    });
   };
 
   render() {

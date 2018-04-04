@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Loadable from 'react-loadable';
 import Home from 'components/Home';
-import Hello from 'components/Hello';
+// import Hello from 'components/Hello';
 import Hello2 from 'components/Hello2';
 import Header from 'components/Header';
 
 import { AppContext } from 'modules/context';
+
+const Loading = () => <div>Loading...</div>;
+
+const Hello = Loadable({
+  loader: () =>
+    import(/* webpackChunkName: "components_Hello" */ 'components/Hello'),
+  loading: Loading,
+});
 
 class App extends Component {
   constructor(props) {
