@@ -92,6 +92,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
         mangle: true,
       },
       parallel: true,
+      sourceMap: true,
     }),
   ],
 });
