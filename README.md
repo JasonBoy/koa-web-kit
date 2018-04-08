@@ -1,9 +1,9 @@
 # koa-web-kit
 
-[![npm](https://img.shields.io/npm/v/koa-web-kit.svg)](https://www.npmjs.com/package/koa-web-kit)
-[![Building Status](https://travis-ci.org/JasonBoy/koa-web-kit.svg?branch=master)](https://travis-ci.org/JasonBoy/koa-web-kit)
-[![node](https://img.shields.io/node/v/koa-web-kit.svg)](https://nodejs.org/)
-[![Dependency Status](https://david-dm.org/JasonBoy/koa-web-kit.svg)](https://david-dm.org/JasonBoy/koa-web-kit)
+[![npm](https://img.shields.io/npm/v/koa-web-kit.svg?style=flat-square)](https://www.npmjs.com/package/koa-web-kit)
+[![Building Status](https://img.shields.io/travis/JasonBoy/koa-web-kit.svg?style=flat-square)](https://travis-ci.org/JasonBoy/koa-web-kit)
+[![node](https://img.shields.io/node/v/koa-web-kit.svg?style=flat-square)](https://nodejs.org/)
+[![Dependency Status](https://img.shields.io/david/JasonBoy/koa-web-kit.svg?style=flat-square)](https://david-dm.org/JasonBoy/koa-web-kit)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 🚀A Modern, Production-Ready, and Full-Stack Node Web Framework
