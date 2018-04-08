@@ -6,6 +6,7 @@ module.exports = {
   NODE_ENV: 'production',
   NODE_PROXY: true,
   PROXY_DEBUG_LEVEL: 0,
+  LOG_PATH: '',
   STATIC_ENDPOINT: '',
   STATIC_PREFIX: '',
   PREFIX_TRAILING_SLASH: true,

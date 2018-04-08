@@ -16,7 +16,7 @@ const cons = require('consolidate');
 const nunjucks = require('nunjucks');
 const _ = require('lodash');
 
-const logger = require('./mw/logger');
+const logger = require('./services/logger');
 const index = require('./routes/index');
 const apiRouter = require('./routes/proxy');
 const sysUtils = require('./config/utils');

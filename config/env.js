@@ -113,6 +113,9 @@ module.exports = {
   isCustomAPIPrefix: () => {
     return !!getConfigProperty('CUSTOM_API_PREFIX');
   },
+  getLogPath: () => {
+    return getConfigProperty('LOG_PATH') || 'logs';
+  },
   getEnv: key => {
     return getConfigProperty(key);
   },
