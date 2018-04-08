@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+// const jsonfile = require('jsonfile');
 
 const devConfig = require('./config.default.dev');
 const prodConfig = require('./config.default.prod');
@@ -32,6 +33,7 @@ try {
 
 if (hasCustomConfig) {
   configInfo = require(configPath);
+  // configInfo = jsonfile.readFileSync(configPath);
   checkMsg += `Using [${chalk.green(configPath)}] as app configuration`;
 } else {
   configInfo = !nodeBuildEnv ? prodConfig : devConfig;

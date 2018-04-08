@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const winston = require('winston');
+const makeDir = require('make-dir');
 const config = require('../config/env');
 const dateUtil = require('../utils/date');
 
@@ -9,7 +10,7 @@ const logPath = path.resolve(config.getLogPath());
 try {
   fs.statSync(logPath);
 } catch (e) {
-  fs.mkdirSync(logPath);
+  makeDir.sync(logPath);
 }
 
 //default app logger
