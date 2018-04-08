@@ -13,6 +13,7 @@
     "watch":
       "webpack --watch --progress --hide-modules --config config/webpack.config.dev.js",
     "node": "webpack --progress --config config/webpack.config.node.js",
+    "ssr": "webpack --progress --config config/webpack.config.ssr.js",
     "prod":
       "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js && echo '\n===Build for Production Done!==='",
     "prod:analyze":

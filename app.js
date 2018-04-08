@@ -72,10 +72,10 @@ function initApp() {
   cons.requires.nunjucks = nunjucks.configure(viewsPath, {
     autoescape: true,
     noCache: DEV_MODE,
-    tags: {
-      variableStart: '{=',
-      variableEnd: '=}',
-    },
+    // tags: {
+    //   variableStart: '{=',
+    //   variableEnd: '=}',
+    // },
   });
 
   app.use(

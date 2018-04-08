@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import './Home.scss';
+// import './Home.scss';
 
 class Home extends React.Component {
   constructor(props) {
