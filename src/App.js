@@ -16,6 +16,8 @@ const Hello = Loadable({
   loading: Loading,
 });
 
+import AppRoutes from './AppRoutes';
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -29,31 +31,33 @@ class App extends Component {
   }
   render() {
     const { Provider } = AppContext;
+    // return <Home/>;
     return (
       <Router>
-        <div>
-          <Header appName={this.state.appName} />
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/hello" component={Hello} />
-            <Route
-              exact
-              path="/hello-2"
-              render={() => (
-                <React.Fragment>
-                  <Provider value={this.state.context}>
-                    <Hello2 />
-                  </Provider>
-                  <hr />
-                  <p className="text-center">
-                    Below is default value from AppContext
-                  </p>
+        {/*<div>*/}
+        {/*<Header appName={this.state.appName} />*/}
+        <AppRoutes context={this.state.context} />
+        {/*<Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/hello" component={Hello} />
+          <Route
+            exact
+            path="/hello-2"
+            render={() => (
+              <React.Fragment>
+                <Provider value={this.state.context}>
                   <Hello2 />
-                </React.Fragment>
-              )}
-            />
-          </Switch>
-        </div>
+                </Provider>
+                <hr />
+                <p className="text-center">
+                  Below is default value from AppContext
+                </p>
+                <Hello2 />
+              </React.Fragment>
+            )}
+          />
+        </Switch>*/}
+        {/*</div>*/}
       </Router>
     );
   }

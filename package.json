@@ -9,13 +9,13 @@
     "start": "node app.js",
     "deploy": "./deploy.sh",
     "build":
-      "webpack --progress --hide-modules --config config/webpack.config.dev.js && echo '\n===Build for Development Done!==='",
+      "webpack --progress --hide-modules --config config/webpack.config.dev.js",
     "watch":
       "webpack --watch --progress --hide-modules --config config/webpack.config.dev.js",
     "node": "webpack --progress --config config/webpack.config.node.js",
     "ssr": "webpack --progress --config config/webpack.config.ssr.js",
     "prod":
-      "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js && echo '\n===Build for Production Done!==='",
+      "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
     "prod:analyze":
       "cross-env NODE_ENV=production BUNDLE_ANALYZER=true webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
     "es6-module-to-commonjs":
@@ -83,6 +83,7 @@
     "react": "16.3.1",
     "react-dom": "16.3.1",
     "react-loadable": "5.3.1",
+    "react-router": "4.2.0",
     "react-router-dom": "4.2.2",
     "request": "2.85.0",
     "request-debug": "0.2.0",
@@ -96,6 +97,7 @@
     "babel-core": "6.26.0",
     "babel-loader": "7.1.4",
     "babel-minify-webpack-plugin": "0.3.1",
+    "babel-plugin-import-inspector": "2.0.0",
     "babel-plugin-lodash": "3.3.2",
     "babel-plugin-syntax-dynamic-import": "6.18.0",
     "babel-plugin-transform-class-properties": "6.24.1",
@@ -117,11 +119,13 @@
     "html-webpack-inline-chunk-plugin": "1.1.1",
     "html-webpack-plugin": "2.30.1",
     "husky": "0.14.3",
+    "import-inspector": "2.0.0",
     "koa-webpack": "2.0.3",
     "lint-staged": "7.0.0",
     "mocha": "5.0.5",
     "moment-locales-webpack-plugin": "1.0.5",
     "node-sass": "4.8.3",
+    "nodemon": "1.17.3",
     "postcss-loader": "2.1.3",
     "prettier": "1.11.1",
     "sass-loader": "6.0.7",

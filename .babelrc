@@ -23,6 +23,9 @@
     "transform-runtime",
     "transform-object-rest-spread",
     "transform-class-properties",
-    "syntax-dynamic-import"
+    "syntax-dynamic-import",
+    ["import-inspector", {
+      "serverSideRequirePath": true
+    }]
   ]
 }

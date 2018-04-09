@@ -7,8 +7,6 @@
   <title>koa-web-kit</title>
 </head>
 <body>
-  <div id="app">
-    {{SSRHtml}}
-  </div>
+  <div id="app">{{SSRHtml | safe}}</div>
 </body>
 </html>

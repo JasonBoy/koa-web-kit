@@ -27,9 +27,8 @@ router.post('/user', koaBody({ multipart: true }), async function(ctx) {
   ctx.body = { result: body };
 });
 
-router.get('/', async function(ctx) {
-  console.log('xxx');
-  const str = s.renderHome();
+router.get('*', async function(ctx) {
+  const str = s.renderHome(ctx.url);
   console.log(str);
   ctx.state = {
     SSRHtml: str,
@@ -37,8 +36,8 @@ router.get('/', async function(ctx) {
   await ctx.render('index');
 });
 
-router.get('*', async function(ctx) {
-  await ctx.render('index');
-});
+// router.get('*', async function(ctx) {
+//   await ctx.render('index');
+// });
 
 module.exports = router;
