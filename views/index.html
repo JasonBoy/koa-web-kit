@@ -8,5 +8,8 @@
 </head>
 <body>
   <div id="app">{{SSRHtml | safe}}</div>
+  <script type="text/javascript">
+    window.__INITIAL_DATA__ = {{initialData | safe}};
+  </script>
 </body>
 </html>

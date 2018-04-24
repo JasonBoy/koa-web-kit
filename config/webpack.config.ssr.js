@@ -1,10 +1,10 @@
 'use strict';
 
-const path = require('path');
+// const path = require('path');
 const webpack = require('webpack');
-const MinifyPlugin = require('babel-minify-webpack-plugin');
+// const MinifyPlugin = require('babel-minify-webpack-plugin');
 const webpackMerge = require('webpack-merge');
-const baseWebpackConfig = require('./webpack.config.base');
+// const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
 const nodeExternals = require('webpack-node-externals');
@@ -12,13 +12,13 @@ const nodeExternals = require('webpack-node-externals');
 const DEV_MODE = config.isDevMode();
 const APP_PATH = utils.APP_PATH;
 
-const scssExtract = utils.getSCSSExtract(true, {
-  allChunks: true,
-});
-const libSCSSExtract = utils.getLibSCSSExtract(true);
-const libCSSExtract = utils.getLibCSSExtract(true, {
-  allChunks: true,
-});
+// const scssExtract = utils.getSCSSExtract(true, {
+//   allChunks: true,
+// });
+// const libSCSSExtract = utils.getLibSCSSExtract(true);
+// const libCSSExtract = utils.getLibCSSExtract(true, {
+//   allChunks: true,
+// });
 
 const webpackConfig = webpackMerge(
   {},
@@ -99,6 +99,9 @@ const webpackConfig = webpackMerge(
       ],
     },
     plugins: [
+      new webpack.DefinePlugin({
+        __isBrowser__: false,
+      }),
       new webpack.LoaderOptionsPlugin({
         debug: DEV_MODE,
         minimize: !DEV_MODE,

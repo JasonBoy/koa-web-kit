@@ -1,6 +1,9 @@
 import React from 'react';
-import { StaticRouter } from 'react-router';
+import { StaticRouter } from 'react-router-dom';
 import ReactDOMServer from 'react-dom/server';
+import Loadable from 'react-loadable';
+import { getBundles } from 'react-loadable/webpack';
+import stats from '../build/react-loadable.json';
 
 import AppRoutes from 'src/AppRoutes';
 
@@ -28,12 +31,43 @@ class SSR {
 
   renderHome(url) {
     console.log('url: %s', url);
-    const context = {};
-    return ReactDOMServer.renderToString(
-      <StaticRouter location={url} context={context}>
-        <AppRoutes context={defaultContext} />
-      </StaticRouter>
+    return this.render(url, {});
+  }
+
+  renderGithub(url, data) {
+    console.log(data);
+    return this.render(url, data);
+  }
+
+  render(url, data, routerContext = {}) {
+    let modules = [];
+    const html = ReactDOMServer.renderToString(
+      <Loadable.Capture report={moduleName => modules.push(moduleName)}>
+        <StaticRouter location={url} context={routerContext}>
+          <AppRoutes context={defaultContext} initialData={data} />
+        </StaticRouter>
+      </Loadable.Capture>
     );
+    let bundles = getBundles(stats, modules);
+    console.log('modules:', modules);
+    console.log('bundles:', bundles);
+    console.log('html:', html);
+    return {
+      html,
+      scripts: this.generateBundleScripts(bundles),
+    };
+  }
+
+  generateBundleScripts(bundles) {
+    return bundles.filter(bundle => bundle.file.endsWith('.js')).map(bundle => {
+      return `<script type="text/javascript" src="/static/${
+        bundle.file
+      }"></script>\n`;
+    });
+  }
+
+  static preloadAll() {
+    return Loadable.preloadAll();
   }
 }
 

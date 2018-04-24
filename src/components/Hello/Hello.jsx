@@ -17,9 +17,9 @@ class Hello extends React.Component {
 
   componentDidMount() {
     console.log('hello created!');
-    this.setState({
-      name: 'Hello Created!',
-    });
+    // this.setState({
+    //   name: 'Hello Created!',
+    // });
     // this.xxx();
 
     //api test

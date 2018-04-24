@@ -8,6 +8,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+const ReactLoadablePlugin = require('react-loadable/webpack')
+  .ReactLoadablePlugin;
 
 const config = require('./env');
 const utils = require('./utils');
@@ -103,6 +105,7 @@ const webpackConfig = {
   plugins: [
     new CleanWebpackPlugin(['./build/app'], { root: process.cwd() }),
     new webpack.DefinePlugin({
+      __isBrowser__: true,
       'process.env.DEV_MODE': DEV_MODE,
       'process.env.prefix': JSON.stringify(prefix),
       'process.env.appPrefix': JSON.stringify(appPrefix),
@@ -134,6 +137,9 @@ const webpackConfig = {
         to: utils.resolve('build/app/assets/static'),
       },
     ]),
+    new ReactLoadablePlugin({
+      filename: utils.resolve('build/react-loadable.json'),
+    }),
     new ManifestPlugin(),
   ],
 };
@@ -172,11 +178,14 @@ function getCommonsChunkPlugins() {
       minChunks: Infinity,
     })
   );
-  plugins.push(
-    new InlineChunkWebpackPlugin({
-      inlineChunks: ['runtime'],
-    })
-  );
+  //only inline runtime when production
+  if (!DEV_MODE) {
+    plugins.push(
+      new InlineChunkWebpackPlugin({
+        inlineChunks: ['runtime'],
+      })
+    );
+  }
 
   return plugins;
 }

@@ -1,20 +1,12 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Loadable from 'react-loadable';
-import Home from 'components/Home';
-// import Hello from 'components/Hello';
-import Hello2 from 'components/Hello2';
-import Header from 'components/Header';
+// import Loadable from 'react-loadable';
+// import Home from 'components/Home';
+// import Hello2 from 'components/Hello2';
+// import Header from 'components/Header';
+// import Header from 'components/GitHub';
 
 import { AppContext } from 'modules/context';
-
-const Loading = () => <div>Loading...</div>;
-
-const Hello = Loadable({
-  loader: () =>
-    import(/* webpackChunkName: "components_Hello" */ 'components/Hello'),
-  loading: Loading,
-});
 
 import AppRoutes from './AppRoutes';
 
@@ -28,15 +20,20 @@ class App extends Component {
         userName: 'jason-in-app',
       },
     };
+
+    this.initialData = window.__INITIAL_DATA__ || {};
   }
   render() {
-    const { Provider } = AppContext;
+    // const { Provider } = AppContext;
     // return <Home/>;
     return (
       <Router>
         {/*<div>*/}
         {/*<Header appName={this.state.appName} />*/}
-        <AppRoutes context={this.state.context} />
+        <AppRoutes
+          context={this.state.context}
+          initialData={this.initialData}
+        />
         {/*<Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/hello" component={Hello} />

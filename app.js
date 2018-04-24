@@ -21,6 +21,9 @@ const index = require('./routes/index');
 const apiRouter = require('./routes/proxy');
 const sysUtils = require('./config/utils');
 
+//React SSR
+const SSR = require('./build/node/ssr');
+
 const PORT = config.getListeningPort();
 const DEV_MODE = config.isDevMode();
 const DEFAULT_PREFIX_KEY = 'defaultPrefix';
@@ -38,6 +41,7 @@ app.use(helmet());
 
 (async function() {
   initProxy();
+  await SSR.preloadAll();
   await initHMR();
   initApp();
   logger.info(`${isHMREnabled ? 'HMR & ' : ''}Koa App initialized!`);
