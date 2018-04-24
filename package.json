@@ -54,7 +54,7 @@
   "readme": "README.md",
   "dependencies": {
     "bluebird": "3.5.1",
-    "bootstrap": "4.0.0",
+    "bootstrap": "4.1.0",
     "chalk": "2.3.2",
     "classnames": "2.2.5",
     "consolidate": "0.15.1",

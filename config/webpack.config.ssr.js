@@ -4,7 +4,6 @@ const path = require('path');
 const webpack = require('webpack');
 const MinifyPlugin = require('babel-minify-webpack-plugin');
 const webpackMerge = require('webpack-merge');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
@@ -13,27 +12,12 @@ const nodeExternals = require('webpack-node-externals');
 const DEV_MODE = config.isDevMode();
 const APP_PATH = utils.APP_PATH;
 
-const libCSSExtract = new ExtractTextPlugin({
-  filename: utils.getName('common', 'css', 'contenthash', true),
+const scssExtract = utils.getSCSSExtract(true, {
   allChunks: true,
 });
-const scssExtract = new ExtractTextPlugin({
-  filename: utils.getName('[name]', 'css', 'contenthash', true),
+const libSCSSExtract = utils.getLibSCSSExtract(true);
+const libCSSExtract = utils.getLibCSSExtract(true, {
   allChunks: true,
-});
-const scssExtracted = scssExtract.extract({
-  use: utils.getStyleLoaders(
-    'css-loader',
-    'postcss-loader',
-    'sass-loader',
-    true
-  ),
-  fallback: 'style-loader',
-});
-
-const libCSSExtracted = libCSSExtract.extract({
-  use: utils.getStyleLoaders('css-loader', 'postcss-loader', true),
-  fallback: 'style-loader',
 });
 
 const webpackConfig = webpackMerge(
@@ -75,27 +59,20 @@ const webpackConfig = webpackMerge(
           },
         },
         {
+          test: /scss\/vendors\.scss$/,
+          use: utils.getLoaders(true, true),
+        },
+        {
           test: /\.scss$/,
           include: APP_PATH,
           // exclude: /node_modules/,
-          exclude: [/node_modules/, /content\/scss\/bootstrap\.scss$/],
-          use: utils.getStyleLoaders(
-            // 'style-loader',
-            'css-loader',
-            'postcss-loader',
-            'sass-loader',
-            true
-          ),
+          exclude: [/node_modules/, /scss\/vendors\.scss$/],
+          use: utils.getLoaders(true, true),
         },
         {
           test: /\.css$/,
           // include: [APP_PATH, /node_modules/],
-          use: utils.getStyleLoaders(
-            // 'style-loader',
-            'css-loader',
-            'postcss-loader',
-            true
-          ),
+          use: utils.getLoaders(true, true, false),
         },
         {
           test: /\.(png|jpe?g|gif|svg)$/,
