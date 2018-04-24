@@ -17,11 +17,6 @@ const libCSSExtract = utils.getLibCSSExtract(true, {
   allChunks: true,
 });
 
-console.log(
-  Object.keys(scssExtract),
-  Object.keys(libSCSSExtract),
-  Object.keys(libCSSExtract)
-);
 const webpackConfig = webpackMerge(baseWebpackConfig, {
   output: {
     publicPath: isHMREnabled

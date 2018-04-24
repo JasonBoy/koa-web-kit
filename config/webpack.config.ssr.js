@@ -60,19 +60,19 @@ const webpackConfig = webpackMerge(
         },
         {
           test: /scss\/vendors\.scss$/,
-          use: utils.getLoaders(true, true),
+          use: utils.getLoaders(true, false),
         },
         {
           test: /\.scss$/,
           include: APP_PATH,
           // exclude: /node_modules/,
           exclude: [/node_modules/, /scss\/vendors\.scss$/],
-          use: utils.getLoaders(true, true),
+          use: utils.getLoaders(true, false),
         },
         {
           test: /\.css$/,
           // include: [APP_PATH, /node_modules/],
-          use: utils.getLoaders(true, true, false),
+          use: utils.getLoaders(true, false, false),
         },
         {
           test: /\.(png|jpe?g|gif|svg)$/,
