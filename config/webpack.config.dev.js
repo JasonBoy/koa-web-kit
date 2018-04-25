@@ -37,18 +37,21 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
         use: isHMREnabled
           ? utils.getLoaders(true, true)
           : libSCSSExtract.loader,
+        // use: libSCSSExtract.loader,
       },
       {
         //app scss
         test: /\.scss$/,
         exclude: [/node_modules/, /scss\/vendors\.scss$/],
         use: isHMREnabled ? utils.getLoaders(true, true) : scssExtract.loader,
+        // use: scssExtract.loader,
       },
       {
         test: /\.css$/,
         use: isHMREnabled
           ? utils.getLoaders(true, true, false)
           : libCSSExtract.loader,
+        // use: libCSSExtract.loader,
       },
     ],
   },
@@ -56,12 +59,12 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   plugins: [],
 });
 
-if (!isHMREnabled) {
-  webpackConfig.plugins.push(new DashboardPlugin());
-  webpackConfig.plugins.push(libSCSSExtract.plugin);
-  webpackConfig.plugins.push(libCSSExtract.plugin);
-  webpackConfig.plugins.push(scssExtract.plugin);
-}
+// if (!isHMREnabled) {
+// webpackConfig.plugins.push(new DashboardPlugin());
+webpackConfig.plugins.push(libSCSSExtract.plugin);
+webpackConfig.plugins.push(libCSSExtract.plugin);
+webpackConfig.plugins.push(scssExtract.plugin);
+// }
 // console.log(webpackConfig);
 // console.log(webpackConfig.plugins);
 module.exports = webpackConfig;

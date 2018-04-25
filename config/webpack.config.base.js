@@ -10,6 +10,8 @@ const InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const ReactLoadablePlugin = require('react-loadable/webpack')
   .ReactLoadablePlugin;
+const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+// const HtmlWebpackInlineStylePlugin = require('html-webpack-inline-style-plugin');
 
 const config = require('./env');
 const utils = require('./utils');
@@ -60,21 +62,34 @@ InsertSSRBundleScriptsPlugin.prototype.apply = function(compiler) {
     compilation.plugin(
       'html-webpack-plugin-after-html-processing',
       (data, cb) => {
-        const html = data.html;
+        let html = data.html;
+        console.log(data.assets);
+        const appDiv = '<div id="app"></div>';
+        const initDataScript =
+          '<script type="text/javascript">window.__INITIAL_DATA__ = {{initialData | safe}}</script>';
+
+        console.log('appDiv: ', html.indexOf(appDiv));
+        data.html = html.replace(
+          appDiv,
+          `<div id="app">{{SSRHtml | safe}}</div>\n${initDataScript}`
+        );
+
+        console.log(data.html);
+
         const vendorsAsset = data.assets.js.find(
           asset => String(asset).indexOf(ENTRY_NAME.VENDORS) >= 0
         );
+
         if (!vendorsAsset) {
           cb(null, data);
           return;
         }
         const vendorsAssetScript = `<script type="text/javascript" src="${vendorsAsset}"></script>`;
-        data.html = html.replace(
+        data.html = data.html.replace(
           vendorsAssetScript,
           `\n{{bundleScripts|safe}}\n${vendorsAssetScript}`
         );
         // console.log('html data:');
-        // console.log(data);
 
         cb(null, data);
       }
@@ -168,8 +183,10 @@ const webpackConfig = {
       filename: 'index.html',
       inject: 'body',
       chunksSortMode: 'dependency',
+      alwaysWriteToDisk: true,
+      inlineSource: '.(css)$',
     }),
-    new InsertSSRBundleScriptsPlugin(),
+
     new CopyWebpackPlugin([
       {
         from: utils.resolve('src/assets/static'),
@@ -185,6 +202,10 @@ const webpackConfig = {
 
 if (isHMREnabled) {
   webpackConfig.plugins.push(new webpack.NamedModulesPlugin());
+  // webpackConfig.plugins.push(new HtmlWebpackInlineStylePlugin());
+  webpackConfig.plugins.push(new HtmlWebpackHarddiskPlugin());
+} else {
+  webpackConfig.plugins.push(new InsertSSRBundleScriptsPlugin());
 }
 
 function getCommonsChunkPlugins() {
