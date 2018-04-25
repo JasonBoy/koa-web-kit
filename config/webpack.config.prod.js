@@ -53,9 +53,9 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   devtool: 'hidden-source-map',
   stats: 'errors-only',
   plugins: [
-    libSCSSExtract.pulgin,
-    libCSSExtract.pulgin,
-    scssExtract.pulgin,
+    libSCSSExtract.plugin,
+    libCSSExtract.plugin,
+    scssExtract.plugin,
     new webpack.HashedModuleIdsPlugin(),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new UglifyJsPlugin({
@@ -82,5 +82,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
 if (isBundleAnalyzerEnabled) {
   webpackConfig.plugins.push(new BundleAnalyzerPlugin());
 }
+
+console.log(webpackConfig);
 
 module.exports = webpackConfig;

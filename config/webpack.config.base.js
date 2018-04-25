@@ -19,6 +19,11 @@ const isHMREnabled = config.isHMREnabled();
 const APP_PATH = utils.APP_PATH;
 const CONTENT_PATH = APP_PATH;
 const APP_BUILD_PATH = utils.APP_BUILD_PATH;
+const ENTRY_NAME = {
+  APP: 'app',
+  VENDORS: 'vendors',
+  RUNTIME: 'runtime',
+};
 
 const defaultPrefix = config.getApiEndPoints().defaultPrefix;
 
@@ -40,9 +45,42 @@ if (isHMREnabled) {
   entry = [appIndex];
 } else {
   entry = {
-    app: appIndex,
+    [ENTRY_NAME.APP]: appIndex,
   };
 }
+
+function InsertSSRBundleScriptsPlugin(options) {
+  // Configure your plugin with options...
+}
+
+InsertSSRBundleScriptsPlugin.prototype.apply = function(compiler) {
+  compiler.plugin('compilation', compilation => {
+    // console.log('The compiler is starting a new compilation...');
+
+    compilation.plugin(
+      'html-webpack-plugin-after-html-processing',
+      (data, cb) => {
+        const html = data.html;
+        const vendorsAsset = data.assets.js.find(
+          asset => String(asset).indexOf(ENTRY_NAME.VENDORS) >= 0
+        );
+        if (!vendorsAsset) {
+          cb(null, data);
+          return;
+        }
+        const vendorsAssetScript = `<script type="text/javascript" src="${vendorsAsset}"></script>`;
+        data.html = html.replace(
+          vendorsAssetScript,
+          `\n{{bundleScripts|safe}}\n${vendorsAssetScript}`
+        );
+        // console.log('html data:');
+        // console.log(data);
+
+        cb(null, data);
+      }
+    );
+  });
+};
 
 const webpackConfig = {
   entry,
@@ -131,6 +169,7 @@ const webpackConfig = {
       inject: 'body',
       chunksSortMode: 'dependency',
     }),
+    new InsertSSRBundleScriptsPlugin(),
     new CopyWebpackPlugin([
       {
         from: utils.resolve('src/assets/static'),
@@ -161,7 +200,7 @@ function getCommonsChunkPlugins() {
   }
   plugins.push(
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendors',
+      name: ENTRY_NAME.VENDORS,
       minChunks: module => {
         return (
           module.context &&
@@ -174,7 +213,7 @@ function getCommonsChunkPlugins() {
   );
   plugins.push(
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'runtime',
+      name: ENTRY_NAME.RUNTIME,
       minChunks: Infinity,
     })
   );
@@ -182,7 +221,7 @@ function getCommonsChunkPlugins() {
   if (!DEV_MODE) {
     plugins.push(
       new InlineChunkWebpackPlugin({
-        inlineChunks: ['runtime'],
+        inlineChunks: [ENTRY_NAME.RUNTIME],
       })
     );
   }
