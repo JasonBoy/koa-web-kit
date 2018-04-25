@@ -22,7 +22,7 @@ const Github = Loadable({
   delay: 200,
   loading: Loading,
   loader: () =>
-    import(/* webpackChunkName: "components_Github" */ 'components/Github'),
+    import(/* webpackChunkName: "components_Github" */ 'components/GitHub'),
 });
 
 function AppRoutes(props) {
