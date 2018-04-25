@@ -6,9 +6,9 @@ const request = require('request');
 const config = require('../config/env');
 const utils = require('../config/utils');
 const SSR = require('../build/node/ssr');
-const appPrefix = utils.normalizeTailSlash(config.getAppPrefix());
 
-// console.log(SSR.prototype.renderHome);
+const isSSREnabled = config.isSSREnabled();
+const appPrefix = utils.normalizeTailSlash(config.getAppPrefix());
 
 const s = new SSR();
 
@@ -16,8 +16,13 @@ const router = new Router({
   prefix: appPrefix,
 });
 
+const emptyInitialData = JSON.stringify({});
+
 router.use(async function(ctx, next) {
   // console.log(`start of index router: ${ctx.path}`);
+  ctx.state = {
+    initialData: emptyInitialData,
+  };
   await next();
   // console.log(`end of index router: ${ctx.path}`);
 });
@@ -29,6 +34,10 @@ router.post('/user', koaBody({ multipart: true }), async function(ctx) {
 });
 
 router.get('/github', async function(ctx) {
+  if (!isSSREnabled) {
+    await ctx.render('index');
+    return;
+  }
   //use isomorphic-fetch to share the fetch logic
   const ret = await new Promise((resole, reject) => {
     request(
@@ -65,12 +74,17 @@ router.get('/github', async function(ctx) {
 });
 
 router.get('*', async function(ctx) {
+  if (!isSSREnabled) {
+    await ctx.render('index');
+    return;
+  }
+
   const rendered = s.renderHome(ctx.url);
   console.log(rendered);
   ctx.state = {
     SSRHtml: rendered.html,
     bundleScripts: rendered.scripts,
-    initialData: JSON.stringify({}),
+    initialData: ctx.state.initialData,
   };
   await ctx.render('index');
 });

@@ -108,6 +108,10 @@ module.exports = {
     const val = getConfigProperty('ENABLE_HMR');
     return module.exports.isDevMode() && isTrue(val);
   },
+  isSSREnabled: () => {
+    const val = getConfigProperty('ENABLE_SSR');
+    return isTrue(val) && !module.exports.isHMREnabled();
+  },
   isBundleAnalyzerEnabled: () => {
     const val = getConfigProperty('BUNDLE_ANALYZER');
     return isTrue(val);

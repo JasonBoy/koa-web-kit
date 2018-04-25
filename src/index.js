@@ -13,12 +13,21 @@ const elRoot = document.getElementById('app');
 
 const render = Component => {
   Loadable.preloadReady().then(() => {
-    ReactDOM.hydrate(
-      <AppError>
-        <Component />
-      </AppError>,
-      elRoot
-    );
+    if (__SSR__) {
+      ReactDOM.hydrate(
+        <AppError>
+          <Component />
+        </AppError>,
+        elRoot
+      );
+    } else {
+      ReactDOM.render(
+        <AppError>
+          <Component />
+        </AppError>,
+        elRoot
+      );
+    }
   });
 };
 

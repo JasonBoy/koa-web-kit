@@ -18,6 +18,7 @@ const utils = require('./utils');
 
 const DEV_MODE = config.isDevMode();
 const isHMREnabled = config.isHMREnabled();
+const isSSREnabled = config.isSSREnabled();
 const APP_PATH = utils.APP_PATH;
 const CONTENT_PATH = APP_PATH;
 const APP_BUILD_PATH = utils.APP_BUILD_PATH;
@@ -159,6 +160,8 @@ const webpackConfig = {
     new CleanWebpackPlugin(['./build/app'], { root: process.cwd() }),
     new webpack.DefinePlugin({
       __isBrowser__: true,
+      __HMR__: isHMREnabled,
+      __SSR__: isSSREnabled,
       'process.env.DEV_MODE': DEV_MODE,
       'process.env.prefix': JSON.stringify(prefix),
       'process.env.appPrefix': JSON.stringify(appPrefix),
