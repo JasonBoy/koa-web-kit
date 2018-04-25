@@ -63,18 +63,18 @@ InsertSSRBundleScriptsPlugin.prototype.apply = function(compiler) {
       'html-webpack-plugin-after-html-processing',
       (data, cb) => {
         let html = data.html;
-        console.log(data.assets);
+        // console.log(data.assets);
         const appDiv = '<div id="app"></div>';
         const initDataScript =
           '<script type="text/javascript">window.__INITIAL_DATA__ = {{initialData | safe}}</script>';
 
-        console.log('appDiv: ', html.indexOf(appDiv));
+        // console.log('appDiv: ', html.indexOf(appDiv));
         data.html = html.replace(
           appDiv,
           `<div id="app">{{SSRHtml | safe}}</div>\n${initDataScript}`
         );
 
-        console.log(data.html);
+        // console.log(data.html);
 
         const vendorsAsset = data.assets.js.find(
           asset => String(asset).indexOf(ENTRY_NAME.VENDORS) >= 0

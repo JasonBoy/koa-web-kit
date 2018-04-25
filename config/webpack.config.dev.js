@@ -2,7 +2,6 @@
 
 const path = require('path');
 const webpackMerge = require('webpack-merge');
-const DashboardPlugin = require('webpack-dashboard/plugin');
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
@@ -60,7 +59,6 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
 });
 
 // if (!isHMREnabled) {
-// webpackConfig.plugins.push(new DashboardPlugin());
 webpackConfig.plugins.push(libSCSSExtract.plugin);
 webpackConfig.plugins.push(libCSSExtract.plugin);
 webpackConfig.plugins.push(scssExtract.plugin);

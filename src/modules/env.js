@@ -5,7 +5,8 @@ const env = {
   apiPrefix: process.env.apiPrefix,
   NODE_ENV: process.env.NODE_ENV || 'development',
 };
-
-console.log(env);
+if (__isBrowser__) {
+  console.table(env);
+}
 
 export default env;
