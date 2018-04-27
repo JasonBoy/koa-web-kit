@@ -18,7 +18,7 @@
 - 📉Async/Await support for writing neat async code
 - 💖SASS preprocessor, PostCSS, autoprefixer for better css compatibility
 - 🎉Simple API Proxy bundled, no complex extra nginx configuration
-- 🌈Available for generating static react site
+- 🌈Available for generating static react site, also with SSR support
 - ⚡️Just one npm command to deploy your app to production
 - 👷Continuously Maintaining🍻
 
