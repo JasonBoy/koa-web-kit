@@ -47,7 +47,7 @@ npm install --no-shrinkwrap
 
 - `api` dir, the API Proxy utility, also put your api urls here for universal import across your app
 - `config` dir, all webpack build configs are put here, besides, some application-wide env configs getter utility
-- `mw` dir, some middleware here, default logger utility also located here
+- `services` dir(before `mw`), some middleware here, default logger utility also located here
 - `routes` dir, put your koa app routes here
 - `src` dir, all your front-end assets, react components, services, etc...
 - `test` dir, for your tests
