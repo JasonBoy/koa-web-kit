@@ -137,5 +137,5 @@
     "webpack-merge": "4.1.2",
     "webpack-node-externals": "1.6.0"
   },
-  "browserslist": ["> 1%", "last 2 versions"]
+  "browserslist": [">= 0.5%", "not ie 11", "not op_mini all"]
 }
