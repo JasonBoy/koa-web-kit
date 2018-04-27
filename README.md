@@ -12,7 +12,7 @@
 
 ## Features
 
-- ✨Built with all modern frameworks and libs, including Koa2, React-v16, Bootstrap-v4, Webpack, ES6, Babel...
+- ✨Built with all modern frameworks and libs, including Koa2, React(like [Vue?](https://github.com/JasonBoy/vue-web-kit)), Bootstrap-v4(css only)...
 - 📦Get all the Node.JS full stack development experience out of the box
 - 🔥Hot Module Replacement support without refreshing whole page, and bundle size analyzer support
 - 📉Async/Await support for writing neat async code
