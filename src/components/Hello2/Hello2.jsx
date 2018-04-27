@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import './Hello2.scss';
 
 import { AppContext } from 'modules/context';
 
@@ -25,6 +24,12 @@ function HeaderPortal(props) {
 }
 
 class Hello2 extends React.Component {
+  constructor(props) {
+    super(props);
+
+    console.log('in hello 2!!!');
+  }
+
   state = {
     portalCount: 0,
   };

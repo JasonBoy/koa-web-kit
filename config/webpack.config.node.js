@@ -10,15 +10,14 @@ const utils = require('./utils');
 
 const DEV_MODE = config.isDevMode();
 const APP_PATH = utils.APP_PATH;
-const CONTENT_PATH = APP_PATH;
 
-module.exports = {
+const webpackConfig = {
   entry: {
     app: utils.resolve('app'),
   },
   output: {
-    path: utils.resolve('./'),
-    filename: '[name].min.js',
+    path: utils.resolve('build/node'),
+    filename: `[name]${DEV_MODE ? '' : '.min'}.js`,
   },
   target: 'node',
   externals: [nodeExternals()],
@@ -48,7 +47,7 @@ module.exports = {
       debug: DEV_MODE,
       minimize: !DEV_MODE,
       options: {
-        context: CONTENT_PATH,
+        context: APP_PATH,
       },
     }),
     // new webpack.optimize.CommonsChunkPlugin({
@@ -56,6 +55,11 @@ module.exports = {
     //   names: ['manifest'],
     //   minChunks: Infinity
     // }),
-    new MinifyPlugin({}, {}),
   ],
 };
+
+if (!DEV_MODE) {
+  webpackConfig.plugins.push(new MinifyPlugin({}, {}));
+}
+
+module.exports = webpackConfig;

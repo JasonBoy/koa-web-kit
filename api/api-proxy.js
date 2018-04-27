@@ -6,7 +6,7 @@ const request = require('request');
 const _ = require('lodash');
 const Promise = require('bluebird');
 
-const logger = require('../mw/logger');
+const logger = require('../services/logger');
 const appConfig = require('../config/env');
 const isCustomAPIPrefix = appConfig.isCustomAPIPrefix();
 

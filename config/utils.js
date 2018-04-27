@@ -1,7 +1,16 @@
 'use strict';
 
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
 const path = require('path');
 const SLASH_REGEX = /[\\]+/g;
+
+const LOADER = {
+  STYLE_LOADER: 'style-loader',
+  CSS_LOADER: 'css-loader',
+  SASS_LOADER: 'sass-loader',
+  POSTCSS_LOADER: 'postcss-loader',
+};
 
 exports.getName = function getName(chunkName, ext, hashName, DEV_MODE) {
   return (
@@ -79,4 +88,84 @@ exports.isWindows = function isWindows() {
 };
 exports.replaceBackwardSlash = function replaceBackwardSlash(str) {
   return str.replace(SLASH_REGEX, '/');
+};
+exports.getLoaders = function getLoaders(
+  devMode = false,
+  withStyleLoader = false,
+  withSassLoader = true
+) {
+  const loaders = [LOADER.CSS_LOADER, LOADER.POSTCSS_LOADER];
+  if (withStyleLoader) {
+    loaders.unshift(LOADER.STYLE_LOADER);
+  }
+  if (withSassLoader) {
+    loaders.push(LOADER.SASS_LOADER);
+  }
+  return exports.getStyleLoaders.apply(undefined, loaders.concat([devMode]));
+};
+exports.getCommonTextExtract = function getCommonTextExtract(
+  name = '[name]',
+  devMode = false,
+  loaders,
+  options
+) {
+  const plugin = new ExtractTextPlugin(
+    Object.assign(
+      {
+        filename: exports.getName(name, 'css', 'contenthash', devMode),
+      },
+      options
+    )
+  );
+  const loader = plugin.extract(loaders);
+  return { plugin, loader };
+};
+exports.getSCSSLoaderExtract = function getSCSSLoaderExtract(devMode = false) {
+  return {
+    use: exports.getLoaders(devMode, false, true),
+    fallback: LOADER.STYLE_LOADER,
+  };
+};
+exports.getCSSLoaderExtract = function getCSSLoaderExtract(devMode = false) {
+  return {
+    use: exports.getStyleLoaders(
+      LOADER.CSS_LOADER,
+      LOADER.POSTCSS_LOADER,
+      devMode
+    ),
+    fallback: LOADER.STYLE_LOADER,
+  };
+};
+exports.getSCSSExtract = function getSCSSExtract(
+  devMode = false,
+  options = {}
+) {
+  return exports.getCommonTextExtract(
+    '[name]',
+    devMode,
+    exports.getSCSSLoaderExtract(devMode),
+    options
+  );
+};
+exports.getLibSCSSExtract = function getLibSCSSExtract(
+  devMode = false,
+  options = {}
+) {
+  return exports.getCommonTextExtract(
+    'vendors',
+    devMode,
+    exports.getSCSSLoaderExtract(devMode),
+    options
+  );
+};
+exports.getLibCSSExtract = function getLibCSSExtract(
+  devMode = false,
+  options = {}
+) {
+  return exports.getCommonTextExtract(
+    'vendors-css',
+    devMode,
+    exports.getCSSLoaderExtract(devMode),
+    options
+  );
 };

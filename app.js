@@ -16,10 +16,13 @@ const cons = require('consolidate');
 const nunjucks = require('nunjucks');
 const _ = require('lodash');
 
-const logger = require('./mw/logger');
+const logger = require('./services/logger');
 const index = require('./routes/index');
 const apiRouter = require('./routes/proxy');
 const sysUtils = require('./config/utils');
+
+//React SSR
+const SSR = require('./build/node/ssr');
 
 const PORT = config.getListeningPort();
 const DEV_MODE = config.isDevMode();
@@ -38,6 +41,7 @@ app.use(helmet());
 
 (async function() {
   initProxy();
+  await SSR.preloadAll();
   await initHMR();
   initApp();
   logger.info(`${isHMREnabled ? 'HMR & ' : ''}Koa App initialized!`);
@@ -72,10 +76,10 @@ function initApp() {
   cons.requires.nunjucks = nunjucks.configure(viewsPath, {
     autoescape: true,
     noCache: DEV_MODE,
-    tags: {
-      variableStart: '{=',
-      variableEnd: '=}',
-    },
+    // tags: {
+    //   variableStart: '{=',
+    //   variableEnd: '=}',
+    // },
   });
 
   app.use(
@@ -106,7 +110,6 @@ async function initHMR() {
     const historyApiFallback = require('koa-history-api-fallback');
     const getPort = require('get-port');
     const webpack = require('webpack');
-    const DashboardPlugin = require('webpack-dashboard/plugin');
     const availPort = await getPort();
     const webpackConfig = require('./config/webpack.config.dev');
     const compiler = webpack(
@@ -117,7 +120,6 @@ async function initHMR() {
         },
       })
     );
-    compiler.apply(new DashboardPlugin());
     const instance = hmrMiddleware({
       compiler,
       // config: webpackConfig,

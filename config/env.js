@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+// const jsonfile = require('jsonfile');
 
 const devConfig = require('./config.default.dev');
 const prodConfig = require('./config.default.prod');
@@ -32,6 +33,7 @@ try {
 
 if (hasCustomConfig) {
   configInfo = require(configPath);
+  // configInfo = jsonfile.readFileSync(configPath);
   checkMsg += `Using [${chalk.green(configPath)}] as app configuration`;
 } else {
   configInfo = !nodeBuildEnv ? prodConfig : devConfig;
@@ -106,12 +108,19 @@ module.exports = {
     const val = getConfigProperty('ENABLE_HMR');
     return module.exports.isDevMode() && isTrue(val);
   },
+  isSSREnabled: () => {
+    const val = getConfigProperty('ENABLE_SSR');
+    return isTrue(val) && !module.exports.isHMREnabled();
+  },
   isBundleAnalyzerEnabled: () => {
     const val = getConfigProperty('BUNDLE_ANALYZER');
     return isTrue(val);
   },
   isCustomAPIPrefix: () => {
     return !!getConfigProperty('CUSTOM_API_PREFIX');
+  },
+  getLogPath: () => {
+    return getConfigProperty('LOG_PATH') || 'logs';
   },
   getEnv: key => {
     return getConfigProperty(key);

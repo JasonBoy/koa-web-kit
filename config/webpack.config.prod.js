@@ -3,7 +3,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
@@ -13,28 +12,12 @@ const utils = require('./utils');
 
 const isBundleAnalyzerEnabled = config.isBundleAnalyzerEnabled();
 
-const APP_PATH = utils.APP_PATH;
-
-const libCSSExtract = new ExtractTextPlugin({
-  filename: utils.getName('common', 'css', 'contenthash', false),
+const scssExtract = utils.getSCSSExtract(false, {
   allChunks: true,
 });
-const scssExtract = new ExtractTextPlugin({
-  filename: utils.getName('[name]', 'css', 'contenthash', false),
+const libSCSSExtract = utils.getLibSCSSExtract(false);
+const libCSSExtract = utils.getLibCSSExtract(false, {
   allChunks: true,
-});
-const scssExtracted = scssExtract.extract({
-  use: utils.getStyleLoaders(
-    'css-loader',
-    'postcss-loader',
-    'sass-loader',
-    false
-  ),
-  fallback: 'style-loader',
-});
-const libCSSExtracted = libCSSExtract.extract({
-  use: utils.getStyleLoaders('css-loader', 'postcss-loader', false),
-  fallback: 'style-loader',
 });
 
 const webpackConfig = webpackMerge(baseWebpackConfig, {
@@ -53,27 +36,26 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   module: {
     rules: [
       {
-        test: /\.scss$/,
-        include: APP_PATH,
-        // exclude: /node_modules/,
-        exclude: [/node_modules/, /content\/scss\/bootstrap\.scss$/],
-        use: scssExtracted,
+        test: /scss\/vendors\.scss$/,
+        use: libSCSSExtract.loader,
       },
       {
-        test: /content\/scss\/bootstrap\.scss$/,
-        use: libCSSExtracted,
+        test: /\.scss$/,
+        exclude: [/node_modules/, /scss\/vendors\.scss$/],
+        use: scssExtract.loader,
       },
       {
         test: /\.css$/,
-        use: libCSSExtracted,
+        use: libCSSExtract.loader,
       },
     ],
   },
   devtool: 'hidden-source-map',
   stats: 'errors-only',
   plugins: [
-    libCSSExtract,
-    scssExtract,
+    libSCSSExtract.plugin,
+    libCSSExtract.plugin,
+    scssExtract.plugin,
     new webpack.HashedModuleIdsPlugin(),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new UglifyJsPlugin({
@@ -100,5 +82,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
 if (isBundleAnalyzerEnabled) {
   webpackConfig.plugins.push(new BundleAnalyzerPlugin());
 }
+
+console.log(webpackConfig);
 
 module.exports = webpackConfig;

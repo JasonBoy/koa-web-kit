@@ -1,12 +1,16 @@
 const fs = require('fs');
+const path = require('path');
 const winston = require('winston');
-// const winstonDaily = require('winston-daily-rotate-file');
+const makeDir = require('make-dir');
+const config = require('../config/env');
 const dateUtil = require('../utils/date');
 
+const logPath = path.resolve(config.getLogPath());
+
 try {
-  fs.statSync('./logs');
+  fs.statSync(logPath);
 } catch (e) {
-  fs.mkdirSync('./logs');
+  makeDir.sync(logPath);
 }
 
 //default app logger
@@ -21,10 +25,12 @@ const myLogger = new winston.Logger({
 module.exports = myLogger;
 
 function getLoggerTransports(name, filename) {
+  const logFileName = `${filename}.log`;
+  const logErrorFileName = `${filename}-err.log`;
   const loggerTransports = [
     new winston.transports.File({
       name: name,
-      filename: `./logs/${filename}.log`,
+      filename: path.join(logPath, logFileName),
       level: 'info',
       maxsize: '5242880', //5MB
       maxFiles: 50,
@@ -33,7 +39,7 @@ function getLoggerTransports(name, filename) {
     }),
     new winston.transports.File({
       name: name + '-error',
-      filename: `./logs/${filename}-err.log`,
+      filename: path.join(logPath, logErrorFileName),
       level: 'error',
       maxsize: '2097152', //2MB
       maxFiles: 50,

@@ -2,36 +2,18 @@
 
 const path = require('path');
 const webpackMerge = require('webpack-merge');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const DashboardPlugin = require('webpack-dashboard/plugin');
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
 
-const APP_PATH = utils.APP_PATH;
 const isHMREnabled = config.isHMREnabled();
 
-const libCSSExtract = new ExtractTextPlugin({
-  filename: utils.getName('common', 'css', 'contenthash', true),
+const scssExtract = utils.getSCSSExtract(true, {
   allChunks: true,
 });
-const scssExtract = new ExtractTextPlugin({
-  filename: utils.getName('[name]', 'css', 'contenthash', true),
+const libSCSSExtract = utils.getLibSCSSExtract(true);
+const libCSSExtract = utils.getLibCSSExtract(true, {
   allChunks: true,
-});
-const scssExtracted = scssExtract.extract({
-  use: utils.getStyleLoaders(
-    'css-loader',
-    'postcss-loader',
-    'sass-loader',
-    true
-  ),
-  fallback: 'style-loader',
-});
-
-const libCSSExtracted = libCSSExtract.extract({
-  use: utils.getStyleLoaders('css-loader', 'postcss-loader', true),
-  fallback: 'style-loader',
 });
 
 const webpackConfig = webpackMerge(baseWebpackConfig, {
@@ -50,31 +32,25 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   module: {
     rules: [
       {
-        test: /\.scss$/,
-        include: APP_PATH,
-        // exclude: /node_modules/,
-        exclude: [/node_modules/, /content\/scss\/bootstrap\.scss$/],
+        test: /scss\/vendors\.scss$/,
         use: isHMREnabled
-          ? utils.getStyleLoaders(
-              'style-loader',
-              'css-loader',
-              'postcss-loader',
-              'sass-loader',
-              true
-            )
-          : scssExtracted,
+          ? utils.getLoaders(true, true)
+          : libSCSSExtract.loader,
+        // use: libSCSSExtract.loader,
+      },
+      {
+        //app scss
+        test: /\.scss$/,
+        exclude: [/node_modules/, /scss\/vendors\.scss$/],
+        use: isHMREnabled ? utils.getLoaders(true, true) : scssExtract.loader,
+        // use: scssExtract.loader,
       },
       {
         test: /\.css$/,
-        // include: [APP_PATH, /node_modules/],
         use: isHMREnabled
-          ? utils.getStyleLoaders(
-              'style-loader',
-              'css-loader',
-              'postcss-loader',
-              true
-            )
-          : libCSSExtracted,
+          ? utils.getLoaders(true, true, false)
+          : libCSSExtract.loader,
+        // use: libCSSExtract.loader,
       },
     ],
   },
@@ -82,10 +58,11 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   plugins: [],
 });
 
-if (!isHMREnabled) {
-  webpackConfig.plugins.push(new DashboardPlugin());
-  webpackConfig.plugins.push(libCSSExtract);
-  webpackConfig.plugins.push(scssExtract);
-}
+// if (!isHMREnabled) {
+webpackConfig.plugins.push(libSCSSExtract.plugin);
+webpackConfig.plugins.push(libCSSExtract.plugin);
+webpackConfig.plugins.push(scssExtract.plugin);
+// }
+// console.log(webpackConfig);
 // console.log(webpackConfig.plugins);
 module.exports = webpackConfig;

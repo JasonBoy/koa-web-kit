@@ -12,13 +12,13 @@
 
 ## Features
 
-- ✨Built with all modern frameworks and libs, including Koa2, React-v16, Bootstrap-v4, Webpack, ES6, Babel...
+- ✨Built with all modern frameworks and libs, including Koa2, React(like [Vue?](https://github.com/JasonBoy/vue-web-kit)), Bootstrap-v4(css only)...
 - 📦Get all the Node.JS full stack development experience out of the box
 - 🔥Hot Module Replacement support without refreshing whole page, and bundle size analyzer support
 - 📉Async/Await support for writing neat async code
 - 💖SASS preprocessor, PostCSS, autoprefixer for better css compatibility
 - 🎉Simple API Proxy bundled, no complex extra nginx configuration
-- 🌈Available for generating static react site
+- 🌈Available for generating static react site, also with SSR support
 - ⚡️Just one npm command to deploy your app to production
 - 👷Continuously Maintaining🍻
 
@@ -47,7 +47,7 @@ npm install --no-shrinkwrap
 
 - `api` dir, the API Proxy utility, also put your api urls here for universal import across your app
 - `config` dir, all webpack build configs are put here, besides, some application-wide env configs getter utility
-- `mw` dir, some middleware here, default logger utility also located here
+- `services` dir(before `mw`), some middleware here, default logger utility also located here
 - `routes` dir, put your koa app routes here
 - `src` dir, all your front-end assets, react components, services, etc...
 - `test` dir, for your tests
