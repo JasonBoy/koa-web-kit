@@ -9,17 +9,25 @@ import Header from 'components/Header';
 
 import { AppContext } from 'modules/context';
 
-const Loading = () => <div>Loading...</div>;
+const LOADING_DELAY = 500;
+
+const Loading = ({ pastDelay, error }) => {
+  if (error) {
+    console.log(error);
+    return error.msg || 'OOPS!';
+  }
+  return pastDelay ? <h3>Loading...</h3> : null;
+};
 
 const Hello = Loadable({
-  delay: 200,
+  delay: LOADING_DELAY,
   loading: Loading,
   loader: () =>
     import(/* webpackChunkName: "components_Hello" */ 'components/Hello'),
 });
 
 const Github = Loadable({
-  delay: 200,
+  delay: LOADING_DELAY,
   loading: Loading,
   loader: () =>
     import(/* webpackChunkName: "components_Github" */ 'components/GitHub'),
