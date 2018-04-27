@@ -84,6 +84,11 @@ module.exports = {
   //global prefix for your routes, e.g http://a.com/prefix/...your app routes,
   //like a github project site
   "APP_PREFIX": "",
+  "CUSTOM_API_PREFIX": true,
+  //if enable HMR in dev mode, `npm run dev` will automatically enable that
+  "ENABLE_HMR": false,
+  //if need to enable Server Side Rendering, HMR need to be disabled for now
+  "ENABLE_SSR": false,
   //API Proxies for multiple api endpoints with different prefix in router
   "API_ENDPOINTS": {
     //set a default prefix
