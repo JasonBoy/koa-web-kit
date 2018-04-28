@@ -20,9 +20,10 @@ const logger = require('./services/logger');
 const index = require('./routes/index');
 const apiRouter = require('./routes/proxy');
 const sysUtils = require('./config/utils');
+const isSSREnabled = config.isSSREnabled();
 
 //React SSR
-const SSR = require('./build/node/ssr');
+let SSR = isSSREnabled ? require('./build/node/ssr') : null;
 
 const PORT = config.getListeningPort();
 const DEV_MODE = config.isDevMode();
@@ -41,7 +42,9 @@ app.use(helmet());
 
 (async function() {
   initProxy();
-  await SSR.preloadAll();
+  if (SSR) {
+    await SSR.preloadAll();
+  }
   await initHMR();
   initApp();
   logger.info(`${isHMREnabled ? 'HMR & ' : ''}Koa App initialized!`);
