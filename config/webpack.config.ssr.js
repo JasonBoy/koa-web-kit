@@ -1,6 +1,6 @@
 'use strict';
 
-// const path = require('path');
+const path = require('path');
 const webpack = require('webpack');
 // const MinifyPlugin = require('babel-minify-webpack-plugin');
 const webpackMerge = require('webpack-merge');
@@ -11,6 +11,13 @@ const nodeExternals = require('webpack-node-externals');
 
 const DEV_MODE = config.isDevMode();
 const APP_PATH = utils.APP_PATH;
+
+const prefix = utils.normalizeTailSlash(
+  utils.normalizePublicPath(
+    path.join(config.getAppPrefix(), config.getStaticPrefix())
+  ),
+  config.isPrefixTailSlashEnabled()
+);
 
 // const scssExtract = utils.getSCSSExtract(true, {
 //   allChunks: true,
@@ -101,6 +108,7 @@ const webpackConfig = webpackMerge(
     plugins: [
       new webpack.DefinePlugin({
         __isBrowser__: false,
+        __pathPrefix__: JSON.stringify(prefix),
       }),
       new webpack.LoaderOptionsPlugin({
         debug: DEV_MODE,

@@ -60,7 +60,7 @@ class SSR {
 
   generateBundleScripts(bundles) {
     return bundles.filter(bundle => bundle.file.endsWith('.js')).map(bundle => {
-      return `<script type="text/javascript" src="/static/${
+      return `<script type="text/javascript" src="${__pathPrefix__}${
         bundle.file
       }"></script>\n`;
     });
