@@ -5,12 +5,15 @@ const koaBody = require('koa-body');
 const request = require('request');
 const config = require('../config/env');
 const utils = require('../config/utils');
-const SSR = require('../build/node/ssr');
 
 const isSSREnabled = config.isSSREnabled();
 const appPrefix = utils.normalizeTailSlash(config.getAppPrefix());
 
-const s = new SSR();
+let s;
+if (isSSREnabled) {
+  const SSR = require('../build/node/ssr');
+  s = new SSR();
+}
 
 const router = new Router({
   prefix: appPrefix,
