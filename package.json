@@ -1,26 +1,20 @@
 {
   "name": "koa-web-kit",
   "version": "2.3.4",
-  "description":
-    "A modern, production-ready, and full-stack node web framework",
+  "description": "A modern, production-ready, and full-stack node web framework",
   "main": "index.js",
   "scripts": {
     "dev": "cross-env ENABLE_HMR=true node app.js",
     "start": "node app.js",
     "deploy": "./deploy.sh",
-    "build":
-      "webpack --progress --hide-modules --config config/webpack.config.dev.js",
-    "watch":
-      "webpack --watch --progress --hide-modules --config config/webpack.config.dev.js",
+    "build": "webpack --progress --hide-modules --config config/webpack.config.dev.js",
+    "watch": "webpack --watch --progress --hide-modules --config config/webpack.config.dev.js",
     "node": "webpack --progress --config config/webpack.config.node.js",
     "ssr": "webpack --progress --config config/webpack.config.ssr.js",
-    "prod":
-      "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
-    "prod:analyze":
-      "cross-env NODE_ENV=production BUNDLE_ANALYZER=true webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
+    "prod": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
+    "prod:analyze": "cross-env NODE_ENV=production BUNDLE_ANALYZER=true webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
     "analyze": "npm run prod:analyze",
-    "es6-module-to-commonjs":
-      "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs",
+    "es6-module-to-commonjs": "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs",
     "test": "./node_modules/.bin/_mocha ./test/mocha",
     "precommit": "lint-staged"
   },
@@ -28,7 +22,10 @@
     "node": ">= 8"
   },
   "lint-staged": {
-    "**/*.{js,jsx,json,scss}": ["prettier --write", "git add"]
+    "**/*.{js,jsx,json,scss}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -84,7 +81,7 @@
     "react-router-dom": "4.2.2",
     "request": "2.85.0",
     "request-debug": "0.2.0",
-    "url-parse": "1.2.0",
+    "url-parse": "1.4.0",
     "whatwg-fetch": "2.0.4",
     "winston": "2.4.2"
   },
@@ -137,5 +134,9 @@
     "webpack-merge": "4.1.2",
     "webpack-node-externals": "1.6.0"
   },
-  "browserslist": [">= 0.5%", "not ie 11", "not op_mini all"]
+  "browserslist": [
+    ">= 0.5%",
+    "not ie 11",
+    "not op_mini all"
+  ]
 }
