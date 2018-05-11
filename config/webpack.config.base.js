@@ -199,7 +199,21 @@ const webpackConfig = {
     new ReactLoadablePlugin({
       filename: utils.resolve('build/react-loadable.json'),
     }),
-    new ManifestPlugin(),
+    new ManifestPlugin({
+      //TODO: app.css is mapped to vendors.css with multiple extract instances, WTF:(
+      //@see https://github.com/danethurber/webpack-manifest-plugin/issues/30
+      //below is a workaround
+      map: function(obj) {
+        const cssExt = '.css';
+        if (obj.path.indexOf(cssExt) >= 0) {
+          // console.log(obj);
+          obj.name = obj.path.replace(/-[\S]+\.css/, '.css');
+          // console.log(obj);
+          // console.log('===========')
+        }
+        return obj;
+      },
+    }),
   ],
 };
 

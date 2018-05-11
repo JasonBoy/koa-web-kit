@@ -11,9 +11,11 @@ const isHMREnabled = config.isHMREnabled();
 const scssExtract = utils.getSCSSExtract(true, {
   allChunks: true,
 });
-const libSCSSExtract = utils.getLibSCSSExtract(true);
-const libCSSExtract = utils.getLibCSSExtract(true, {
+const libSCSSExtract = utils.getLibSCSSExtract(true, {
   allChunks: true,
+});
+const libCSSExtract = utils.getLibCSSExtract(true, {
+  // allChunks: true,
 });
 
 const webpackConfig = webpackMerge(baseWebpackConfig, {
@@ -59,8 +61,8 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
 });
 
 // if (!isHMREnabled) {
-webpackConfig.plugins.push(libSCSSExtract.plugin);
 webpackConfig.plugins.push(libCSSExtract.plugin);
+webpackConfig.plugins.push(libSCSSExtract.plugin);
 webpackConfig.plugins.push(scssExtract.plugin);
 // }
 // console.log(webpackConfig);

@@ -83,6 +83,6 @@ if (isBundleAnalyzerEnabled) {
   webpackConfig.plugins.push(new BundleAnalyzerPlugin());
 }
 
-console.log(webpackConfig);
+// console.log(webpackConfig);
 
 module.exports = webpackConfig;

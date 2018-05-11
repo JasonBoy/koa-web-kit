@@ -89,7 +89,22 @@ router.get('*', async function(ctx) {
     bundleScripts: rendered.scripts,
     initialData: ctx.state.initialData,
   };
-  await ctx.render('index');
+  // await ctx.render('index');
+  /* language=html */
+  let html = `
+    <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+        <title>koa-web-kit</title>
+      </head>
+      <body>
+        <div id="app">${rendered.html}</div>
+      </body>
+    </html>
+  `;
 });
 
 // router.get('*', async function(ctx) {

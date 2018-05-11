@@ -7,13 +7,13 @@ const Koa = require('koa');
 const mount = require('koa-mount');
 const compress = require('koa-compress');
 const session = require('koa-session');
-const views = require('koa-views');
+// const views = require('koa-views');
 const morgan = require('koa-morgan');
 const serveStatic = require('koa-static');
 const convert = require('koa-convert');
 const helmet = require('koa-helmet');
 const cons = require('consolidate');
-const nunjucks = require('nunjucks');
+// const nunjucks = require('nunjucks');
 const _ = require('lodash');
 
 const logger = require('./services/logger');
@@ -85,13 +85,13 @@ function initApp() {
     // },
   });
 
-  app.use(
+  /*app.use(
     views(viewsPath, {
       map: {
         html: 'nunjucks',
       },
     })
-  );
+  );*/
 
   app.use(index.routes());
 
