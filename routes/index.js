@@ -1,5 +1,6 @@
 'use strict';
-
+const fs = require('fs');
+const path = require('path');
 const Router = require('koa-router');
 const koaBody = require('koa-body');
 const request = require('request');
@@ -8,23 +9,51 @@ const utils = require('../config/utils');
 
 const isSSREnabled = config.isSSREnabled();
 const appPrefix = utils.normalizeTailSlash(config.getAppPrefix());
+const ENTRY_NAME = utils.ENTRY_NAME;
+const publicPath = utils.getPublicPath();
+const DEV_MODE = config.isDevMode();
 
+let indexHtml = '';
 let s;
+let manifest;
+let groupedManifest;
+let styleLinks = '';
+let manifestInlineScript = '';
+
 if (isSSREnabled) {
   const SSR = require('../build/node/ssr');
+  groupedManifest = SSR.groupedManifest;
+  manifest = groupedManifest.manifest;
+  styleLinks = groupedManifest.styles
+    .map(style => {
+      return `<link href="${publicPath}${style}" rel="stylesheet">`;
+    })
+    .join('\n');
+  manifestInlineScript = `<script type="text/javascript" src="${publicPath +
+    manifest[ENTRY_NAME.RUNTIME_JS]}"></script>`;
+  if (!DEV_MODE) {
+    const temp = fs.readFileSync(
+      path.join(__dirname, `../build/app/${manifest[ENTRY_NAME.RUNTIME_JS]}`),
+      { encoding: 'utf-8' }
+    );
+    manifestInlineScript = `<script type="text/javascript">${temp}</script>`;
+  }
+
   s = new SSR();
+} else {
+  indexHtml = fs.readFileSync(path.join(__dirname, `../build/app/index.html`), {
+    encoding: 'utf-8',
+  });
 }
 
 const router = new Router({
   prefix: appPrefix,
 });
 
-const emptyInitialData = JSON.stringify({});
-
 router.use(async function(ctx, next) {
   // console.log(`start of index router: ${ctx.path}`);
   ctx.state = {
-    initialData: emptyInitialData,
+    initialData: {},
   };
   await next();
   // console.log(`end of index router: ${ctx.path}`);
@@ -38,7 +67,7 @@ router.post('/user', koaBody({ multipart: true }), async function(ctx) {
 
 router.get('/github', async function(ctx) {
   if (!isSSREnabled) {
-    await ctx.render('index');
+    ctx.body = genHtml();
     return;
   }
   //use isomorphic-fetch to share the fetch logic
@@ -68,47 +97,62 @@ router.get('/github', async function(ctx) {
 
   const rendered = s.renderGithub(ctx.url, data);
   console.log(rendered);
-  ctx.state = {
+  /*ctx.state = {
     SSRHtml: rendered.html,
     bundleScripts: rendered.scripts,
     initialData: JSON.stringify(data),
-  };
-  await ctx.render('index');
+  };*/
+  rendered.initialData = data;
+  // await ctx.render('index');
+  ctx.body = genHtml(rendered.html, rendered);
 });
 
 router.get('*', async function(ctx) {
   if (!isSSREnabled) {
-    await ctx.render('index');
+    ctx.body = genHtml();
     return;
   }
 
   const rendered = s.renderHome(ctx.url);
-  console.log(rendered);
-  ctx.state = {
-    SSRHtml: rendered.html,
-    bundleScripts: rendered.scripts,
-    initialData: ctx.state.initialData,
-  };
-  // await ctx.render('index');
+  // console.log(rendered);
   /* language=html */
-  let html = `
+  ctx.body = genHtml(rendered.html, rendered);
+});
+
+function genHtml(html, extra = {}) {
+  if (indexHtml) {
+    return indexHtml;
+  }
+
+  const loadableComponents = extra.scripts || [];
+  const renderedComponentsScripts = loadableComponents.join('');
+
+  let ret = `
     <!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="UTF-8">
         <meta http-equiv="pragma" content="no-cache"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-        <title>koa-web-kit</title>
+        <title>${extra.title || 'koa-web-kit'}</title>
+        ${styleLinks}
       </head>
       <body>
-        <div id="app">${rendered.html}</div>
+        <div id="app">${html}</div>
+        <script type="text/javascript">window.__INITIAL_DATA__ = ${JSON.stringify(
+          extra.initialData || {}
+        )}</script>
+        ${manifestInlineScript}
+        ${renderedComponentsScripts}
+        <script type="text/javascript" src="${publicPath +
+          manifest[ENTRY_NAME.VENDORS_JS]}"></script>
+        <script type="text/javascript" src="${publicPath +
+          manifest[ENTRY_NAME.APP_JS]}"></script>
       </body>
     </html>
   `;
-});
 
-// router.get('*', async function(ctx) {
-//   await ctx.render('index');
-// });
+  return ret;
+}
 
 module.exports = router;

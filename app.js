@@ -7,13 +7,11 @@ const Koa = require('koa');
 const mount = require('koa-mount');
 const compress = require('koa-compress');
 const session = require('koa-session');
-// const views = require('koa-views');
 const morgan = require('koa-morgan');
 const serveStatic = require('koa-static');
 const convert = require('koa-convert');
 const helmet = require('koa-helmet');
-const cons = require('consolidate');
-// const nunjucks = require('nunjucks');
+const favicon = require('koa-favicon');
 const _ = require('lodash');
 
 const logger = require('./services/logger');
@@ -55,6 +53,8 @@ function initApp() {
     app.use(compress());
   }
 
+  app.use(favicon(__dirname + '/src/assets/static/logo.svg'));
+
   let staticPrefix = path.join(
     config.getAppPrefix(),
     config.getStaticPrefix() || '/'
@@ -74,24 +74,6 @@ function initApp() {
   );
 
   app.use(session(app));
-
-  const viewsPath = path.join(process.cwd(), 'build/app');
-  cons.requires.nunjucks = nunjucks.configure(viewsPath, {
-    autoescape: true,
-    noCache: DEV_MODE,
-    // tags: {
-    //   variableStart: '{=',
-    //   variableEnd: '=}',
-    // },
-  });
-
-  /*app.use(
-    views(viewsPath, {
-      map: {
-        html: 'nunjucks',
-      },
-    })
-  );*/
 
   app.use(index.routes());
 

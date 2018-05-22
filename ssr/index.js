@@ -28,7 +28,9 @@ const SOURCE_TYPE = {
 };
 const typeKeys = Object.keys(SOURCE_TYPE);
 
-const groupedManifest = {};
+const groupedManifest = {
+  manifest,
+};
 
 const manifestKeys = Object.keys(manifest);
 manifestKeys.forEach(key => {
@@ -39,7 +41,7 @@ manifestKeys.forEach(key => {
   groupedManifest[type.name].push(manifest[key]);
 });
 
-console.log('groupedManifest:', groupedManifest);
+// console.log('groupedManifest:', groupedManifest);
 
 function checkSourceType(sourceKey) {
   let type;
@@ -97,7 +99,7 @@ class SSR {
     let bundles = getBundles(stats, modules);
     console.log('modules:', modules);
     console.log('bundles:', bundles);
-    console.log('html:', html);
+    // console.log('html:', html);
     return {
       html,
       scripts: this.generateBundleScripts(bundles),
@@ -105,11 +107,17 @@ class SSR {
   }
 
   generateBundleScripts(bundles) {
-    return bundles.filter(bundle => bundle.file.endsWith('.js')).map(bundle => {
-      return `<script type="text/javascript" src="${__pathPrefix__}${
-        bundle.file
-      }"></script>\n`;
-    });
+    return bundles
+      .filter(bundle => bundle && bundle.file.endsWith('.js'))
+      .map(bundle => {
+        return `<script type="text/javascript" src="${__pathPrefix__}${
+          bundle.file
+        }"></script>\n`;
+      });
+  }
+
+  static get groupedManifest() {
+    return groupedManifest;
   }
 
   static preloadAll() {

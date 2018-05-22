@@ -1,6 +1,5 @@
 'use strict';
 
-const path = require('path');
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
@@ -11,6 +10,7 @@ const config = require('./env');
 const utils = require('./utils');
 
 const isBundleAnalyzerEnabled = config.isBundleAnalyzerEnabled();
+const isSSREnabled = config.isSSREnabled();
 
 const scssExtract = utils.getSCSSExtract(false, {
   allChunks: true,
@@ -22,14 +22,7 @@ const libCSSExtract = utils.getLibCSSExtract(false, {
 
 const webpackConfig = webpackMerge(baseWebpackConfig, {
   output: {
-    publicPath:
-      config.getStaticAssetsEndpoint() +
-      utils.normalizeTailSlash(
-        utils.normalizePublicPath(
-          path.join(config.getAppPrefix(), config.getStaticPrefix())
-        ),
-        config.isPrefixTailSlashEnabled()
-      ),
+    publicPath: config.getStaticAssetsEndpoint() + utils.getPublicPath(),
     filename: utils.getName('[name]', 'js', '', false),
     chunkFilename: '[name]-[chunkhash].chunk.js',
   },
@@ -57,7 +50,6 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
     libCSSExtract.plugin,
     scssExtract.plugin,
     new webpack.HashedModuleIdsPlugin(),
-    new webpack.optimize.ModuleConcatenationPlugin(),
     new UglifyJsPlugin({
       uglifyOptions: {
         warnings: false,
@@ -78,6 +70,10 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
     }),
   ],
 });
+
+if (!isSSREnabled) {
+  webpackConfig.plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
+}
 
 if (isBundleAnalyzerEnabled) {
   webpackConfig.plugins.push(new BundleAnalyzerPlugin());

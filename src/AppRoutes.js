@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Home from 'components/Home';
 // import Hello from 'components/Hello';
 import Hello2 from 'components/Hello2';
-import Header from 'components/Header';
+// import Header from 'components/Header';
 
 import { AppContext } from 'modules/context';
 
@@ -33,11 +33,18 @@ const Github = Loadable({
     import(/* webpackChunkName: "components_Github" */ 'components/GitHub'),
 });
 
+/*const HelloBackup = Loadable({
+  delay: LOADING_DELAY,
+  loading: Loading,
+  loader: () =>
+    import('components/Hello'),
+});*/
+
 function AppRoutes(props) {
   const { Provider } = AppContext;
   return (
     <Switch>
-      <Route exact path="/hello" component={Hello} />
+      {/*<Route exact path="/hello" render={(props) => <Hello {...props}/>} />*/}
       <Route
         exact
         path="/hello-2"
@@ -59,6 +66,8 @@ function AppRoutes(props) {
         path="/github"
         render={() => <Github branches={props.initialData.github} />}
       />
+      <Route exact path="/hello" component={Hello} />
+      {/*<Route exact path="/hello-backup" component={HelloBackup} />*/}
       <Route path="/" component={Home} />
     </Switch>
   );

@@ -1,6 +1,5 @@
 'use strict';
 
-const path = require('path');
 const webpackMerge = require('webpack-merge');
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
@@ -20,14 +19,7 @@ const libCSSExtract = utils.getLibCSSExtract(true, {
 
 const webpackConfig = webpackMerge(baseWebpackConfig, {
   output: {
-    publicPath: isHMREnabled
-      ? '/'
-      : utils.normalizeTailSlash(
-          utils.normalizePublicPath(
-            path.join(config.getAppPrefix(), config.getStaticPrefix())
-          ),
-          config.isPrefixTailSlashEnabled()
-        ),
+    publicPath: isHMREnabled ? '/' : utils.getPublicPath(),
     filename: '[name].js',
     chunkFilename: '[name].js',
   },
@@ -60,11 +52,11 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   plugins: [],
 });
 
-// if (!isHMREnabled) {
-webpackConfig.plugins.push(libCSSExtract.plugin);
-webpackConfig.plugins.push(libSCSSExtract.plugin);
-webpackConfig.plugins.push(scssExtract.plugin);
-// }
+if (!isHMREnabled) {
+  webpackConfig.plugins.push(libCSSExtract.plugin);
+  webpackConfig.plugins.push(libSCSSExtract.plugin);
+  webpackConfig.plugins.push(scssExtract.plugin);
+}
 // console.log(webpackConfig);
 // console.log(webpackConfig.plugins);
 module.exports = webpackConfig;

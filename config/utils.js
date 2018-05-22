@@ -3,6 +3,7 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const path = require('path');
+const config = require('./env');
 const SLASH_REGEX = /[\\]+/g;
 
 const LOADER = {
@@ -11,6 +12,17 @@ const LOADER = {
   SASS_LOADER: 'sass-loader',
   POSTCSS_LOADER: 'postcss-loader',
 };
+
+const ENTRY_NAME = {
+  APP: 'app',
+  VENDORS: 'vendors',
+  RUNTIME: 'runtime',
+  APP_JS: 'app.js',
+  VENDORS_JS: 'vendors.js',
+  RUNTIME_JS: 'runtime.js',
+};
+
+exports.ENTRY_NAME = ENTRY_NAME;
 
 exports.getName = function getName(chunkName, ext, hashName, DEV_MODE) {
   return (
@@ -81,6 +93,14 @@ exports.normalizePath = function normalizePath(publicPath, withSlash) {
   return exports.normalizeTailSlash(
     exports.normalizePublicPath(publicPath),
     withSlash
+  );
+};
+exports.getPublicPath = function() {
+  return exports.normalizeTailSlash(
+    exports.normalizePublicPath(
+      path.join(config.getAppPrefix(), config.getStaticPrefix())
+    ),
+    config.isPrefixTailSlashEnabled()
   );
 };
 exports.isWindows = function isWindows() {
