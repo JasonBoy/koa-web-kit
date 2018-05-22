@@ -119,12 +119,8 @@ The project comes with default config files just like `config.json`, which will 
 
 > Priority: *Environment Variables* > *app-config.js* > *default config.default./dev(prod).js*
 
-### Template Engines
-__Default template engine is [nunjucks](https://github.com/mozilla/nunjucks)__,
-Since we are using the [consolidate.js](https://github.com/tj/consolidate.js), you can use any template engine you want.
-
 ### Logs
-The builtin `mw/logger.js` provides some default log functionality for your app, it uses [winston](https://github.com/winstonjs/winston) for async log. You can add more `transport`s for different level logging.
+The builtin `services/logger.js` provides some default log functionality for your app, it uses [winston](https://github.com/winstonjs/winston) for async log. You can add more `transport`s for different level logging.
 
 ### Production Deployment
 
