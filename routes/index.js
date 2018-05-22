@@ -32,6 +32,8 @@ if (isSSREnabled) {
   manifestInlineScript = `<script type="text/javascript" src="${publicPath +
     manifest[ENTRY_NAME.RUNTIME_JS]}"></script>`;
   if (!DEV_MODE) {
+    console.log(manifest);
+    console.log(manifest[ENTRY_NAME.RUNTIME_JS]);
     const temp = fs.readFileSync(
       path.join(__dirname, `../build/app/${manifest[ENTRY_NAME.RUNTIME_JS]}`),
       { encoding: 'utf-8' }

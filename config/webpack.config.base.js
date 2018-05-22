@@ -204,7 +204,7 @@ function getCommonsChunkPlugins() {
     })
   );
   //only inline runtime when production
-  if (!DEV_MODE) {
+  if (!DEV_MODE && !isSSREnabled) {
     plugins.push(
       new InlineChunkWebpackPlugin({
         inlineChunks: [ENTRY_NAME.RUNTIME],
