@@ -4,6 +4,7 @@ const path = require('path');
 const Router = require('koa-router');
 const koaBody = require('koa-body');
 const request = require('request');
+const fromString = require('from2-string');
 const config = require('../config/env');
 const utils = require('../config/utils');
 
@@ -97,7 +98,7 @@ router.get('/github', async function(ctx) {
 
   const data = { github: ret };
 
-  renderSSR(ctx, data);
+  renderSSR(ctx, data, true);
 });
 
 router.get('*', async function(ctx) {
@@ -106,7 +107,7 @@ router.get('*', async function(ctx) {
     return;
   }
 
-  renderSSR(ctx);
+  renderSSR(ctx, undefined, true);
 });
 
 /**
@@ -210,9 +211,16 @@ function genHtmlStream(nodeStreamFromReact, extra = {}, res) {
       </body>
     </html>
   `;
+    //in case the initial data and the runtime code is big, also use stream here
+    const afterStream = fromString(after);
+    afterStream.pipe(res, { end: false });
+    afterStream.on('end', () => {
+      console.log('afterStream done');
+      res.end();
+    });
 
-    res.write(after);
-    res.end();
+    // res.write(after);
+    // res.end();
   });
 }
 
