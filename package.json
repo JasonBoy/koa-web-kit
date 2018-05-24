@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env ENABLE_HMR=true node app.js",
-    "start": "nodemon --ignore ./src app.js",
+    "start":
+      "nodemon -w ./api -w ./config -w ./build/node -w ./routes -w ./services -w ./utils app.js",
     "deploy": "./deploy.sh",
     "build":
       "webpack --progress --hide-modules --config config/webpack.config.dev.js",

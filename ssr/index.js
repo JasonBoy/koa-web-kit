@@ -96,14 +96,43 @@ class SSR {
         </StaticRouter>
       </Loadable.Capture>
     );
+    return {
+      html,
+      scripts: this.getRenderedBundleScripts(modules),
+    };
+  }
+
+  renderWithStream(url, data = {}, routerContext = {}) {
+    let modules = [];
+    const htmlStream = ReactDOMServer.renderToNodeStream(
+      <Loadable.Capture report={moduleName => modules.push(moduleName)}>
+        <StaticRouter location={url} context={routerContext}>
+          <AppRoutes context={defaultContext} initialData={data} />
+        </StaticRouter>
+      </Loadable.Capture>
+    );
+    /*htmlStream.on('end', (err) => {
+      if (err) {
+        console.error(err);
+      }
+      console.log('htmlStream end...');
+    });*/
+    // let bundles = this.getRenderedBundles(modules);
+    // console.log('modules:', modules);
+    // console.log('bundles:', bundles);
+    // console.log('html:', html);
+    return {
+      html: htmlStream,
+      modules,
+      scripts: [],
+    };
+  }
+
+  getRenderedBundleScripts(modules = []) {
     let bundles = getBundles(stats, modules);
     console.log('modules:', modules);
     console.log('bundles:', bundles);
-    // console.log('html:', html);
-    return {
-      html,
-      scripts: this.generateBundleScripts(bundles),
-    };
+    return this.generateBundleScripts(bundles);
   }
 
   generateBundleScripts(bundles) {

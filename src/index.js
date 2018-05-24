@@ -3,6 +3,9 @@ import 'scss/vendors.scss';
 //app scss entry
 import 'scss/index.scss';
 // import 'bootstrap/dist/css/bootstrap.css';
+
+import 'modules/env';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Loadable from 'react-loadable';
@@ -14,6 +17,7 @@ const elRoot = document.getElementById('app');
 const render = Component => {
   Loadable.preloadReady().then(() => {
     if (__SSR__) {
+      console.log('in SSR mode');
       ReactDOM.hydrate(
         <AppError>
           <Component />

@@ -98,15 +98,18 @@ router.get('/github', async function(ctx) {
   const data = { github: ret };
 
   const rendered = s.renderGithub(ctx.url, data);
-  console.log(rendered);
-  /*ctx.state = {
-    SSRHtml: rendered.html,
-    bundleScripts: rendered.scripts,
-    initialData: JSON.stringify(data),
-  };*/
   rendered.initialData = data;
-  // await ctx.render('index');
   ctx.body = genHtml(rendered.html, rendered);
+
+  // const rendered = s.renderWithStream(ctx.url, data);
+  // rendered.initialData = data;
+  // ctx.set({
+  //   'Content-Type': 'text/html'
+  // });
+  // ctx.status = 200;
+  // ctx.respond = false;
+  //
+  // genHtmlStream(rendered.html, rendered, ctx.res);
 });
 
 router.get('*', async function(ctx) {
@@ -115,10 +118,19 @@ router.get('*', async function(ctx) {
     return;
   }
 
-  const rendered = s.renderHome(ctx.url);
-  // console.log(rendered);
-  /* language=html */
-  ctx.body = genHtml(rendered.html, rendered);
+  //no stream
+  // const rendered = s.renderHome(ctx.url);
+  // ctx.body = genHtml(rendered.html, rendered);
+
+  //
+  const rendered = s.renderWithStream(ctx.url);
+  ctx.set({
+    'Content-Type': 'text/html',
+  });
+  ctx.status = 200;
+  ctx.respond = false;
+  const res = ctx.res;
+  genHtmlStream(rendered.html, rendered, res);
 });
 
 function genHtml(html, extra = {}) {
@@ -155,6 +167,53 @@ function genHtml(html, extra = {}) {
   `;
 
   return ret;
+}
+
+function genHtmlStream(nodeStreamFromReact, extra = {}, res) {
+  // const loadableComponents = extra.scripts || [];
+  // const renderedComponentsScripts = loadableComponents.join('');
+  const before = `
+    <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+        <title>${extra.title || 'koa-web-kit'}</title>
+        ${styleLinks}
+      </head>
+      <body><div id="app">`;
+
+  res.write(before);
+
+  nodeStreamFromReact.pipe(res, { end: false });
+
+  nodeStreamFromReact.on('end', () => {
+    console.log('nodeStreamFromReact end');
+    let renderedComponentsScripts = [];
+    //get rendered components for react-loadable after reactNodeStream done
+    if (extra.modules) {
+      console.log('extra.modules:', extra.modules);
+      renderedComponentsScripts = s.getRenderedBundleScripts(extra.modules);
+    }
+    const after = `</div>
+    <script type="text/javascript">window.__INITIAL_DATA__ = ${JSON.stringify(
+      extra.initialData || {}
+    )}</script>
+        ${manifestInlineScript}
+        ${renderedComponentsScripts}
+        <!--<script type="text/javascript" src="/public/components_Hello.js"></script>-->
+        <script type="text/javascript" src="${publicPath +
+          manifest[ENTRY_NAME.VENDORS_JS]}"></script>
+        <script type="text/javascript" src="${publicPath +
+          manifest[ENTRY_NAME.APP_JS]}"></script>
+      </body>
+    </html>
+  `;
+
+    res.write(after);
+    res.end();
+  });
 }
 
 module.exports = router;
