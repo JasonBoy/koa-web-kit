@@ -49,7 +49,9 @@ exports.getStyleLoaders = function getStyleLoaders() {
   ) {
     const tempLoader = {
       loader: arguments[i],
-      options: {},
+      options: {
+        convertToAbsoluteUrls: true,
+      },
     };
     if (String(arguments[i]).startsWith('sass')) {
       tempLoader.options.outputStyle = 'compressed';
@@ -59,6 +61,7 @@ exports.getStyleLoaders = function getStyleLoaders() {
     }
     temp.push(tempLoader);
   }
+  // console.log(temp);
   return temp;
 };
 

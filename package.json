@@ -5,7 +5,7 @@
     "A modern, production-ready, and full-stack node web framework",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env ENABLE_HMR=true node app.js",
+    "dev": "cross-env ENABLE_HMR=true ENABLE_SSR=false node app.js",
     "start":
       "nodemon -w ./api -w ./config -w ./build/node -w ./routes -w ./services -w ./utils app.js",
     "deploy": "./deploy.sh",

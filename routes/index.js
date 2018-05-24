@@ -9,6 +9,7 @@ const config = require('../config/env');
 const utils = require('../config/utils');
 
 const isSSREnabled = config.isSSREnabled();
+const isHMREnabled = config.isHMREnabled();
 const appPrefix = utils.normalizeTailSlash(config.getAppPrefix());
 const ENTRY_NAME = utils.ENTRY_NAME;
 const publicPath = utils.getPublicPath();
@@ -43,10 +44,18 @@ if (isSSREnabled) {
   }
 
   s = new SSR();
-} else {
-  indexHtml = fs.readFileSync(path.join(__dirname, `../build/app/index.html`), {
-    encoding: 'utf-8',
-  });
+} else if (!isHMREnabled) {
+  try {
+    indexHtml = fs.readFileSync(
+      path.join(__dirname, `../build/app/index.html`),
+      {
+        encoding: 'utf-8',
+      }
+    );
+  } catch (e) {
+    console.error('failed to read build/app/index.html...');
+    console.error(e);
+  }
 }
 
 const router = new Router({
