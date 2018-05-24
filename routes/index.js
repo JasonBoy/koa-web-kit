@@ -97,19 +97,7 @@ router.get('/github', async function(ctx) {
 
   const data = { github: ret };
 
-  const rendered = s.renderGithub(ctx.url, data);
-  rendered.initialData = data;
-  ctx.body = genHtml(rendered.html, rendered);
-
-  // const rendered = s.renderWithStream(ctx.url, data);
-  // rendered.initialData = data;
-  // ctx.set({
-  //   'Content-Type': 'text/html'
-  // });
-  // ctx.status = 200;
-  // ctx.respond = false;
-  //
-  // genHtmlStream(rendered.html, rendered, ctx.res);
+  renderSSR(ctx, data);
 });
 
 router.get('*', async function(ctx) {
@@ -118,20 +106,32 @@ router.get('*', async function(ctx) {
     return;
   }
 
-  //no stream
-  // const rendered = s.renderHome(ctx.url);
-  // ctx.body = genHtml(rendered.html, rendered);
+  renderSSR(ctx);
+});
 
-  //
-  const rendered = s.renderWithStream(ctx.url);
+/**
+ * Server side rendering components
+ * @param {object} ctx koa ctx
+ * @param {object=} data initial data
+ * @param {Boolean=} streaming whether to user streaming api or not
+ */
+function renderSSR(ctx, data = {}, streaming) {
+  if (!streaming) {
+    const rendered = s.render(ctx.url, data);
+    rendered.initialData = data;
+    ctx.body = genHtml(rendered.html, rendered);
+    return;
+  }
+  //use streaming api
+  const rendered = s.renderWithStream(ctx.url, data);
+  rendered.initialData = data;
   ctx.set({
     'Content-Type': 'text/html',
   });
   ctx.status = 200;
   ctx.respond = false;
-  const res = ctx.res;
-  genHtmlStream(rendered.html, rendered, res);
-});
+  genHtmlStream(rendered.html, rendered, ctx.res);
+}
 
 function genHtml(html, extra = {}) {
   if (indexHtml) {
