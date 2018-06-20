@@ -45,7 +45,7 @@ fi
 if [[ $2 != "1" ]]; then
 #webpack is bundling modules
 echo webpack is bundling modules...
-npm run prod
+npm run build
 npm run ssr
 echo ===build finished===
 #yarn run prod

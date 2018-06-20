@@ -7,7 +7,7 @@ class GitHub extends React.Component {
   constructor(props) {
     super(props);
 
-    console.log('props.branches:', this.props.branches);
+    // console.log('props.branches:', this.props.branches);
     this.state = {
       github: this.props.branches,
     };

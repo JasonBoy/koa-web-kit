@@ -57,7 +57,7 @@ function checkSourceType(sourceKey) {
 
 // import Hello2 from 'components/Hello2';
 // import Hello from 'components/Hello';
-import Home from 'components/Home';
+// import Home from 'components/Home';
 //
 // const RouterApp = (
 //   <StaticRouter location={}
@@ -66,9 +66,9 @@ import Home from 'components/Home';
 //   </StaticRouter>
 // );
 
-function SSRDemo(props) {
-  return <div>ssr demo</div>;
-}
+// function SSRDemo(props) {
+//   return <div>ssr demo</div>;
+// }
 
 const defaultContext = {
   userName: 'ssr-jason',
@@ -130,8 +130,8 @@ class SSR {
 
   getRenderedBundleScripts(modules = []) {
     let bundles = getBundles(stats, modules);
-    console.log('modules:', modules);
-    console.log('bundles:', bundles);
+    // console.log('modules:', modules);
+    // console.log('bundles:', bundles);
     return this.generateBundleScripts(bundles);
   }
 

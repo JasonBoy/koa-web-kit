@@ -7,6 +7,7 @@ const request = require('request');
 const fromString = require('from2-string');
 const config = require('../config/env');
 const utils = require('../config/utils');
+const logger = require('../services/logger');
 
 const isSSREnabled = config.isSSREnabled();
 const isHMREnabled = config.isHMREnabled();
@@ -34,8 +35,8 @@ if (isSSREnabled) {
   manifestInlineScript = `<script type="text/javascript" src="${publicPath +
     manifest[ENTRY_NAME.RUNTIME_JS]}"></script>`;
   if (!DEV_MODE) {
-    console.log(manifest);
-    console.log(manifest[ENTRY_NAME.RUNTIME_JS]);
+    // console.log(manifest);
+    // console.log(manifest[ENTRY_NAME.RUNTIME_JS]);
     const temp = fs.readFileSync(
       path.join(__dirname, `../build/app/${manifest[ENTRY_NAME.RUNTIME_JS]}`),
       { encoding: 'utf-8' }
@@ -54,7 +55,7 @@ if (isSSREnabled) {
     );
   } catch (e) {
     console.error('failed to read build/app/index.html...');
-    console.error(e);
+    // console.error(e);
   }
 }
 
@@ -64,6 +65,7 @@ const router = new Router({
 
 router.use(async function(ctx, next) {
   // console.log(`start of index router: ${ctx.path}`);
+  ctx.set('Cache-Control', 'no-cache');
   ctx.state = {
     initialData: {},
   };
@@ -73,7 +75,7 @@ router.use(async function(ctx, next) {
 
 router.post('/user', koaBody({ multipart: true }), async function(ctx) {
   const body = ctx.request.body;
-  console.log(body);
+  // console.log(body);
   ctx.body = { result: body };
 });
 
@@ -116,7 +118,7 @@ router.get('*', async function(ctx) {
     return;
   }
 
-  renderSSR(ctx, undefined, true);
+  renderSSR(ctx, undefined, false);
 });
 
 /**
@@ -127,11 +129,13 @@ router.get('*', async function(ctx) {
  */
 function renderSSR(ctx, data = {}, streaming) {
   if (!streaming) {
+    logger.info('-----> Use React SSR Sync API!');
     const rendered = s.render(ctx.url, data);
     rendered.initialData = data;
     ctx.body = genHtml(rendered.html, rendered);
     return;
   }
+  logger.info('-----> Use React SSR Streaming API!');
   //use streaming api
   const rendered = s.renderWithStream(ctx.url, data);
   rendered.initialData = data;
@@ -156,9 +160,8 @@ function genHtml(html, extra = {}) {
       <html lang="en">
       <head>
         <meta charset="UTF-8">
-        <meta http-equiv="pragma" content="no-cache"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-        <title>${extra.title || 'koa-web-kit'}</title>
+        <title>${extra.title || 'React App'}</title>
         ${styleLinks}
       </head>
       <body>
@@ -187,9 +190,8 @@ function genHtmlStream(nodeStreamFromReact, extra = {}, res) {
       <html lang="en">
       <head>
         <meta charset="UTF-8">
-        <meta http-equiv="pragma" content="no-cache"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-        <title>${extra.title || 'koa-web-kit'}</title>
+        <title>${extra.title || 'React App'}</title>
         ${styleLinks}
       </head>
       <body><div id="app">`;
@@ -199,11 +201,11 @@ function genHtmlStream(nodeStreamFromReact, extra = {}, res) {
   nodeStreamFromReact.pipe(res, { end: false });
 
   nodeStreamFromReact.on('end', () => {
-    console.log('nodeStreamFromReact end');
+    logger.info('nodeStreamFromReact end');
     let renderedComponentsScripts = [];
     //get rendered components for react-loadable after reactNodeStream done
     if (extra.modules) {
-      console.log('extra.modules:', extra.modules);
+      // console.log('extra.modules:', extra.modules);
       renderedComponentsScripts = s.getRenderedBundleScripts(extra.modules);
     }
     const after = `</div>
@@ -212,7 +214,6 @@ function genHtmlStream(nodeStreamFromReact, extra = {}, res) {
     )}</script>
         ${manifestInlineScript}
         ${renderedComponentsScripts}
-        <!--<script type="text/javascript" src="/public/components_Hello.js"></script>-->
         <script type="text/javascript" src="${publicPath +
           manifest[ENTRY_NAME.VENDORS_JS]}"></script>
         <script type="text/javascript" src="${publicPath +
@@ -224,7 +225,7 @@ function genHtmlStream(nodeStreamFromReact, extra = {}, res) {
     const afterStream = fromString(after);
     afterStream.pipe(res, { end: false });
     afterStream.on('end', () => {
-      console.log('afterStream done');
+      logger.info('afterStream done');
       res.end();
     });
 
