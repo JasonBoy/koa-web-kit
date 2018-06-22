@@ -1,21 +1,12 @@
 'use strict';
 
 const webpackMerge = require('webpack-merge');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
 
 const isHMREnabled = config.isHMREnabled();
-
-const scssExtract = utils.getSCSSExtract(true, {
-  allChunks: true,
-});
-const libSCSSExtract = utils.getLibSCSSExtract(true, {
-  allChunks: true,
-});
-const libCSSExtract = utils.getLibCSSExtract(true, {
-  // allChunks: true,
-});
 
 const webpackConfig = webpackMerge(baseWebpackConfig, {
   output: {
@@ -26,37 +17,47 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   module: {
     rules: [
       {
-        test: /scss\/vendors\.scss$/,
-        use: isHMREnabled
-          ? utils.getLoaders(true, true)
-          : libSCSSExtract.loader,
-        // use: libSCSSExtract.loader,
-      },
-      {
-        //app scss
-        test: /\.scss$/,
-        exclude: [/node_modules/, /scss\/vendors\.scss$/],
-        use: isHMREnabled ? utils.getLoaders(true, true) : scssExtract.loader,
-        // use: scssExtract.loader,
-      },
-      {
-        test: /\.css$/,
-        use: isHMREnabled
-          ? utils.getLoaders(true, true, false)
-          : libCSSExtract.loader,
-        // use: libCSSExtract.loader,
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          isHMREnabled ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader',
+          'sass-loader',
+        ],
       },
     ],
   },
+  mode: 'development',
   devtool: 'cheap-module-source-map',
   plugins: [],
 });
 
+// optimization new in webpack4
 if (!isHMREnabled) {
-  webpackConfig.plugins.push(libCSSExtract.plugin);
-  webpackConfig.plugins.push(libSCSSExtract.plugin);
-  webpackConfig.plugins.push(scssExtract.plugin);
+  webpackConfig.optimization = {
+    namedModules: true,
+    runtimeChunk: 'single',
+  };
 }
+
+if (!isHMREnabled) {
+  webpackConfig.plugins.push(
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+    })
+  );
+  // webpackConfig.plugins.push(libCSSExtract.plugin);
+  // webpackConfig.plugins.push(libSCSSExtract.plugin);
+  // webpackConfig.plugins.push(scssExtract.plugin);
+}
+
+console.log(
+  'webpackConfig.output.publicPath: ',
+  webpackConfig.output.publicPath
+);
 // console.log(webpackConfig);
 // console.log(webpackConfig.plugins);
 module.exports = webpackConfig;

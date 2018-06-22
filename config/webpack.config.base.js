@@ -127,7 +127,6 @@ const webpackConfig = {
         context: CONTENT_PATH,
       },
     }),
-    ...getCommonsChunkPlugins(),
     new MomentLocalesPlugin({
       localesToKeep: ['zh-cn'],
     }),
@@ -139,7 +138,6 @@ const webpackConfig = {
       alwaysWriteToDisk: true,
       inlineSource: '.(css)$',
     }),
-    new InsertSSRBundleScriptsPlugin(),
     new CopyWebpackPlugin([
       {
         from: utils.resolve('src/assets/static'),
@@ -150,26 +148,15 @@ const webpackConfig = {
       filename: utils.resolve('build/react-loadable.json'),
     }),
     new ManifestPlugin({
-      //TODO: app.css is mapped to vendors.css with multiple extract instances, WTF:(
-      //@see https://github.com/danethurber/webpack-manifest-plugin/issues/30
-      //below is a workaround
-      map: function(obj) {
-        const cssExt = '.css';
-        if (obj.path.indexOf(cssExt) >= 0) {
-          // console.log(obj);
-          obj.name = obj.path.replace(/-[\S]+\.css/, '.css');
-          // console.log(obj);
-          // console.log('===========')
-        }
-        return obj;
-      },
+      publicPath: '',
     }),
   ],
 };
 
 if (isHMREnabled) {
   webpackConfig.plugins.push(new HtmlWebpackInlineStylePlugin());
-  webpackConfig.plugins.push(new webpack.NamedModulesPlugin());
+  // removed in webpack4
+  // webpackConfig.plugins.push(new webpack.NamedModulesPlugin());
   webpackConfig.plugins.push(new HtmlWebpackHarddiskPlugin());
 }
 
@@ -214,23 +201,5 @@ function getCommonsChunkPlugins() {
 
   return plugins;
 }
-
-function InsertSSRBundleScriptsPlugin(options) {
-  // Configure your plugin with options...
-}
-
-InsertSSRBundleScriptsPlugin.prototype.apply = function(compiler) {
-  compiler.plugin('compilation', compilation => {
-    // console.log('The compiler is starting a new compilation...');
-
-    compilation.plugin(
-      'html-webpack-plugin-after-html-processing',
-      (data, cb) => {
-        // console.log(compilation.assets.main);
-        cb(null, data);
-      }
-    );
-  });
-};
 
 module.exports = webpackConfig;

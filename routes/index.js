@@ -27,11 +27,14 @@ if (isSSREnabled) {
   const SSR = require('../build/node/ssr');
   groupedManifest = SSR.groupedManifest;
   manifest = groupedManifest.manifest;
+  // console.log('manifest: ', manifest);
   styleLinks = groupedManifest.styles
-    .map(style => {
-      return `<link href="${publicPath}${style}" rel="stylesheet">`;
-    })
-    .join('\n');
+    ? groupedManifest.styles
+        .map(style => {
+          return `<link href="${publicPath}${style}" rel="stylesheet">`;
+        })
+        .join('\n')
+    : '';
   manifestInlineScript = `<script type="text/javascript" src="${publicPath +
     manifest[ENTRY_NAME.RUNTIME_JS]}"></script>`;
   if (!DEV_MODE) {
@@ -171,8 +174,7 @@ function genHtml(html, extra = {}) {
         )}</script>
         ${manifestInlineScript}
         ${renderedComponentsScripts}
-        <script type="text/javascript" src="${publicPath +
-          manifest[ENTRY_NAME.VENDORS_JS]}"></script>
+        
         <script type="text/javascript" src="${publicPath +
           manifest[ENTRY_NAME.APP_JS]}"></script>
       </body>
@@ -198,7 +200,10 @@ function genHtmlStream(nodeStreamFromReact, extra = {}, res) {
 
   res.write(before);
 
-  nodeStreamFromReact.pipe(res, { end: false });
+  nodeStreamFromReact.pipe(
+    res,
+    { end: false }
+  );
 
   nodeStreamFromReact.on('end', () => {
     logger.info('nodeStreamFromReact end');
@@ -215,15 +220,16 @@ function genHtmlStream(nodeStreamFromReact, extra = {}, res) {
         ${manifestInlineScript}
         ${renderedComponentsScripts}
         <script type="text/javascript" src="${publicPath +
-          manifest[ENTRY_NAME.VENDORS_JS]}"></script>
-        <script type="text/javascript" src="${publicPath +
           manifest[ENTRY_NAME.APP_JS]}"></script>
       </body>
     </html>
   `;
     //in case the initial data and the runtime code is big, also use stream here
     const afterStream = fromString(after);
-    afterStream.pipe(res, { end: false });
+    afterStream.pipe(
+      res,
+      { end: false }
+    );
     afterStream.on('end', () => {
       logger.info('afterStream done');
       res.end();
