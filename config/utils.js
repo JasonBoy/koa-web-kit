@@ -4,7 +4,7 @@ const path = require('path');
 const config = require('./env');
 const SLASH_REGEX = /[\\]+/g;
 
-export const LOADER = {
+const LOADER = {
   STYLE_LOADER: 'style-loader',
   CSS_LOADER: 'css-loader',
   SASS_LOADER: 'sass-loader',
@@ -21,6 +21,7 @@ const ENTRY_NAME = {
 };
 
 exports.ENTRY_NAME = ENTRY_NAME;
+exports.LOADER = LOADER;
 
 exports.getName = function getName(chunkName, ext, hashName, DEV_MODE) {
   return (
