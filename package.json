@@ -1,32 +1,24 @@
 {
   "name": "koa-web-kit",
   "version": "2.4.0",
-  "description":
-    "A modern, production-ready, and full-stack node web framework",
+  "description": "A modern, production-ready, and full-stack node web framework",
   "main": "index.js",
   "scripts": {
     "dev": "cross-env ENABLE_HMR=1 ENABLE_SSR=0 node app.js",
-    "dev:ssr":
-      "cross-env ENABLE_HMR=0 ENABLE_SSR=1 npm-run-all -p watch watch:ssr start",
-    "start":
-      "nodemon -w ./api -w ./config -w ./build/node -w ./routes -w ./services -w ./utils app.js",
+    "dev:ssr": "cross-env ENABLE_HMR=0 ENABLE_SSR=1 npm-run-all -p watch watch:ssr start",
+    "start": "nodemon -w ./api -w ./config -w ./build/node -w ./routes -w ./services -w ./utils app.js",
     "deploy": "./deploy.sh",
-    "build:dev":
-      "webpack --progress --hide-modules --config config/webpack.config.dev.js",
+    "build:dev": "webpack --progress --hide-modules --config config/webpack.config.dev.js",
     "build": "npm run prod",
     "build:analyze": "npm run prod:analyze",
-    "watch":
-      "webpack --watch --progress --hide-modules --config config/webpack.config.dev.js",
+    "watch": "webpack --watch --progress --hide-modules --config config/webpack.config.dev.js",
     "node": "webpack --progress --config config/webpack.config.node.js",
     "watch:ssr": "npm run ssr -- --watch",
     "ssr": "webpack --progress --config config/webpack.config.ssr.js",
-    "prod":
-      "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
-    "prod:analyze":
-      "cross-env NODE_ENV=production BUNDLE_ANALYZER=true webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
+    "prod": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
+    "prod:analyze": "cross-env NODE_ENV=production BUNDLE_ANALYZER=true webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
     "analyze": "npm run prod:analyze",
-    "es6-module-to-commonjs":
-      "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs",
+    "es6-module-to-commonjs": "babel test/es6/modules -d build/test/es6/modules --plugins transform-es2015-modules-commonjs",
     "test": "./node_modules/.bin/_mocha ./test/mocha",
     "precommit": "lint-staged"
   },
@@ -34,7 +26,10 @@
     "node": ">= 8"
   },
   "lint-staged": {
-    "**/*.{js,jsx,json,scss}": ["prettier --write", "git add"]
+    "**/*.{js,jsx,json,scss}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -60,12 +55,12 @@
     "bluebird": "3.5.1",
     "bootstrap": "4.1.1",
     "chalk": "2.4.1",
-    "classnames": "2.2.5",
+    "classnames": "2.2.6",
     "from2-string": "1.1.0",
     "get-port": "3.2.0",
     "jsonfile": "4.0.0",
     "koa": "2.5.1",
-    "koa-body": "2.5.0",
+    "koa-body": "4.0.3",
     "koa-compress": "3.0.0",
     "koa-convert": "1.2.0",
     "koa-favicon": "2.0.1",
@@ -75,32 +70,32 @@
     "koa-mount": "3.0.0",
     "koa-router": "7.4.0",
     "koa-session": "5.8.1",
-    "koa-static": "4.0.3",
+    "koa-static": "5.0.0",
     "lodash": "4.17.10",
     "lodash.isempty": "4.4.0",
     "make-dir": "1.3.0",
-    "moment": "2.22.1",
+    "moment": "2.22.2",
     "pm2": "2.10.4",
-    "prop-types": "15.6.1",
+    "prop-types": "15.6.2",
     "qs": "6.5.2",
-    "react": "16.3.2",
-    "react-dom": "16.3.2",
+    "react": "16.4.1",
+    "react-dom": "16.4.1",
     "react-loadable": "5.4.0",
-    "react-router-dom": "4.2.2",
+    "react-router-dom": "4.3.1",
     "request": "2.87.0",
     "request-debug": "0.2.0",
-    "url-parse": "1.4.0",
+    "url-parse": "1.4.1",
     "whatwg-fetch": "2.0.4",
     "winston": "2.4.2"
   },
   "devDependencies": {
-    "autoprefixer": "8.5.0",
+    "autoprefixer": "8.6.3",
     "babel-cli": "6.26.0",
     "babel-core": "6.26.3",
     "babel-loader": "7.1.4",
     "babel-minify-webpack-plugin": "0.3.1",
     "babel-plugin-import-inspector": "2.0.0",
-    "babel-plugin-lodash": "3.3.2",
+    "babel-plugin-lodash": "3.3.4",
     "babel-plugin-syntax-dynamic-import": "6.18.0",
     "babel-plugin-transform-class-properties": "6.24.1",
     "babel-plugin-transform-es2015-modules-commonjs": "6.26.2",
@@ -112,7 +107,7 @@
     "chai": "4.1.2",
     "clean-webpack-plugin": "0.1.19",
     "copy-webpack-plugin": "4.5.1",
-    "cross-env": "5.1.5",
+    "cross-env": "5.2.0",
     "css-loader": "0.28.11",
     "del": "3.0.0",
     "extract-text-webpack-plugin": "3.0.2",
@@ -125,23 +120,27 @@
     "husky": "0.14.3",
     "import-inspector": "2.0.0",
     "koa-webpack": "2.0.3",
-    "lint-staged": "7.1.2",
+    "lint-staged": "7.2.0",
     "mocha": "5.2.0",
-    "moment-locales-webpack-plugin": "1.0.6",
+    "moment-locales-webpack-plugin": "1.0.7",
     "node-sass": "4.9.0",
-    "nodemon": "1.17.4",
+    "nodemon": "1.17.5",
     "npm-run-all": "4.1.3",
     "postcss-loader": "2.1.5",
-    "prettier": "1.12.1",
-    "sass-loader": "7.0.1",
+    "prettier": "1.13.5",
+    "sass-loader": "7.0.3",
     "style-loader": "0.21.0",
-    "uglifyjs-webpack-plugin": "1.2.5",
+    "uglifyjs-webpack-plugin": "1.2.6",
     "url-loader": "1.0.1",
     "webpack": "3.11.0",
-    "webpack-bundle-analyzer": "2.13.0",
+    "webpack-bundle-analyzer": "2.13.1",
     "webpack-manifest-plugin": "1.3.2",
-    "webpack-merge": "4.1.2",
+    "webpack-merge": "4.1.3",
     "webpack-node-externals": "1.7.2"
   },
-  "browserslist": ["> 0.5%", "not ie 11", "not op_mini all"]
+  "browserslist": [
+    "> 0.5%",
+    "not ie 11",
+    "not op_mini all"
+  ]
 }
