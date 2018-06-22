@@ -1,10 +1,10 @@
 const fs = require('fs');
 const path = require('path');
-const winston = require('winston');
+const { transports, format, createLogger } = require('winston');
 const makeDir = require('make-dir');
 const config = require('../config/env');
-const dateUtil = require('../utils/date');
 
+const DEV_MODE = config.isDevMode();
 const logPath = path.resolve(config.getLogPath());
 
 try {
@@ -14,49 +14,57 @@ try {
 }
 
 //default app logger
-const loggerDate = () => {
-  return ['[', dateUtil.simpleDate(), ']'].join('');
-};
-
-const myLogger = new winston.Logger({
+const logger = createLogger({
   transports: getLoggerTransports('default-logger', 'app'),
+  format: getFormat(),
 });
 
-module.exports = myLogger;
+module.exports = logger;
 
-function getLoggerTransports(name, filename) {
-  const logFileName = `${filename}.log`;
-  const logErrorFileName = `${filename}-err.log`;
+function getFormat() {
+  const t = format.timestamp();
+  const p = format.printf(
+    info => `[${info.timestamp}] - ${info.level}: ${info.message}`
+  );
+  if (DEV_MODE) {
+    return format.combine(t, format.colorize(), p);
+  }
+  return format.combine(t, format.json());
+}
+
+function getLoggerTransports(loggerName, fileName) {
+  const logFileName = getLogFileName(fileName);
+  const logErrorFileName = getLogFileName(fileName, 'error');
   const loggerTransports = [
-    new winston.transports.File({
-      name: name,
+    new transports.File({
+      name: loggerName,
       filename: path.join(logPath, logFileName),
       level: 'info',
       maxsize: '5242880', //5MB
       maxFiles: 50,
       tailable: true,
-      timestamp: loggerDate,
     }),
-    new winston.transports.File({
-      name: name + '-error',
+    new transports.File({
+      name: loggerName + '-error',
       filename: path.join(logPath, logErrorFileName),
       level: 'error',
       maxsize: '2097152', //2MB
       maxFiles: 50,
       tailable: true,
-      timestamp: loggerDate,
       handleExceptions: true,
       humanReadableUnhandledException: true,
     }),
   ];
   loggerTransports.push(
-    new winston.transports.Console({
-      colorize: true,
-      timestamp: loggerDate,
+    new transports.Console({
       handleExceptions: true,
       humanReadableUnhandledException: true,
-      level: 'debug',
+      level: 'info',
     })
   );
   return loggerTransports;
+}
+
+function getLogFileName(name = 'app', level = '', ext = 'log') {
+  return `${name}${level ? '-' + level : ''}.${ext}`;
 }

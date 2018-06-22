@@ -61,7 +61,6 @@
     "classnames": "2.2.6",
     "from2-string": "1.1.0",
     "get-port": "3.2.0",
-    "jsonfile": "4.0.0",
     "koa": "2.5.1",
     "koa-body": "4.0.3",
     "koa-compress": "3.0.0",
@@ -89,7 +88,7 @@
     "request-debug": "0.2.0",
     "url-parse": "1.4.1",
     "whatwg-fetch": "2.0.4",
-    "winston": "2.4.2"
+    "winston": "3.0.0"
   },
   "devDependencies": {
     "autoprefixer": "8.6.3",
