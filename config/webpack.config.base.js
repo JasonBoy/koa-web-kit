@@ -6,12 +6,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const ReactLoadablePlugin = require('react-loadable/webpack')
   .ReactLoadablePlugin;
-// const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
-const HtmlWebpackInlineStylePlugin = require('html-webpack-inline-style-plugin');
 
 const config = require('./env');
 const utils = require('./utils');
@@ -135,8 +132,6 @@ const webpackConfig = {
       filename: isSSREnabled ? 'index-backup.html' : 'index.html',
       inject: 'body',
       chunksSortMode: 'dependency',
-      alwaysWriteToDisk: true,
-      inlineSource: '.(css)$',
     }),
     new CopyWebpackPlugin([
       {
@@ -152,54 +147,5 @@ const webpackConfig = {
     }),
   ],
 };
-
-if (isHMREnabled) {
-  // webpackConfig.plugins.push(new HtmlWebpackInlineStylePlugin());
-  // removed in webpack4
-  // webpackConfig.plugins.push(new webpack.NamedModulesPlugin());
-  // webpackConfig.plugins.push(new HtmlWebpackHarddiskPlugin());
-}
-
-function getCommonsChunkPlugins() {
-  const plugins = [];
-  if (isHMREnabled) {
-    // plugins.push(
-    //   new webpack.optimize.CommonsChunkPlugin({
-    //     names: [],
-    //     minChunks: Infinity,
-    //   })
-    // );
-    return plugins;
-  }
-  plugins.push(
-    new webpack.optimize.CommonsChunkPlugin({
-      name: ENTRY_NAME.VENDORS,
-      minChunks: module => {
-        return (
-          module.context &&
-          module.context.includes('node_modules') &&
-          !String(module.resource).endsWith('.css') &&
-          !String(module.resource).endsWith('.scss')
-        );
-      },
-    })
-  );
-  plugins.push(
-    new webpack.optimize.CommonsChunkPlugin({
-      name: ENTRY_NAME.RUNTIME,
-      minChunks: Infinity,
-    })
-  );
-  //only inline runtime when production
-  if (!DEV_MODE && !isSSREnabled) {
-    plugins.push(
-      new InlineChunkWebpackPlugin({
-        inlineChunks: [ENTRY_NAME.RUNTIME],
-      })
-    );
-  }
-
-  return plugins;
-}
 
 module.exports = webpackConfig;
