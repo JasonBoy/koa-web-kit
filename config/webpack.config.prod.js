@@ -6,6 +6,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
+const PreloadWebpackPlugin = require('preload-webpack-plugin');
+
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
@@ -40,6 +42,14 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
     new MiniCssExtractPlugin({
       filename: '[name]-[hash:9].css',
       chunkFilename: '[id]-[hash:9].css',
+    }),
+    new PreloadWebpackPlugin({
+      rel: 'preload',
+      include: 'initial',
+    }),
+    new PreloadWebpackPlugin({
+      rel: 'prefetch',
+      include: 'asyncChunks',
     }),
   ],
   //new in webpack4
