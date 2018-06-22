@@ -6,6 +6,8 @@ const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
 
+const LOADER = utils.LOADER;
+
 const isHMREnabled = config.isHMREnabled();
 
 const webpackConfig = webpackMerge(baseWebpackConfig, {
@@ -19,10 +21,10 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
-          isHMREnabled ? 'style-loader' : MiniCssExtractPlugin.loader,
-          'css-loader',
-          'postcss-loader',
-          'sass-loader',
+          isHMREnabled ? LOADER.STYLE_LOADER : MiniCssExtractPlugin.loader,
+          LOADER.CSS_LOADER,
+          LOADER.POSTCSS_LOADER,
+          LOADER.SASS_LOADER,
         ],
       },
     ],
@@ -34,13 +36,6 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
 
 // optimization new in webpack4
 if (!isHMREnabled) {
-  webpackConfig.optimization = {
-    namedModules: true,
-    runtimeChunk: 'single',
-  };
-}
-
-if (!isHMREnabled) {
   webpackConfig.plugins.push(
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
@@ -49,9 +44,10 @@ if (!isHMREnabled) {
       chunkFilename: '[id].css',
     })
   );
-  // webpackConfig.plugins.push(libCSSExtract.plugin);
-  // webpackConfig.plugins.push(libSCSSExtract.plugin);
-  // webpackConfig.plugins.push(scssExtract.plugin);
+  webpackConfig.optimization = {
+    namedModules: true,
+    runtimeChunk: 'single',
+  };
 }
 
 console.log(

@@ -7,6 +7,8 @@ const config = require('./env');
 const utils = require('./utils');
 const nodeExternals = require('webpack-node-externals');
 
+const LOADER = utils.LOADER;
+
 const DEV_MODE = config.isDevMode();
 const APP_PATH = utils.APP_PATH;
 
@@ -59,9 +61,9 @@ const webpackConfig = webpackMerge(
           test: /\.(sa|sc|c)ss$/,
           use: [
             // MiniCssExtractPlugin.loader,
-            'css-loader',
-            'postcss-loader',
-            'sass-loader',
+            LOADER.CSS_LOADER,
+            LOADER.POSTCSS_LOADER,
+            LOADER.SASS_LOADER,
           ],
         },
         {

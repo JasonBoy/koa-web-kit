@@ -9,6 +9,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
+const LOADER = utils.LOADER;
 
 const isBundleAnalyzerEnabled = config.isBundleAnalyzerEnabled();
 const isSSREnabled = config.isSSREnabled();
@@ -25,9 +26,9 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
         test: /\.(sa|sc|c)ss$/,
         use: [
           MiniCssExtractPlugin.loader,
-          'css-loader',
-          'postcss-loader',
-          'sass-loader',
+          LOADER.CSS_LOADER,
+          LOADER.POSTCSS_LOADER,
+          LOADER.SASS_LOADER,
         ],
       },
     ],

@@ -10,7 +10,7 @@ const InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const ReactLoadablePlugin = require('react-loadable/webpack')
   .ReactLoadablePlugin;
-const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+// const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const HtmlWebpackInlineStylePlugin = require('html-webpack-inline-style-plugin');
 
 const config = require('./env');
@@ -154,10 +154,10 @@ const webpackConfig = {
 };
 
 if (isHMREnabled) {
-  webpackConfig.plugins.push(new HtmlWebpackInlineStylePlugin());
+  // webpackConfig.plugins.push(new HtmlWebpackInlineStylePlugin());
   // removed in webpack4
   // webpackConfig.plugins.push(new webpack.NamedModulesPlugin());
-  webpackConfig.plugins.push(new HtmlWebpackHarddiskPlugin());
+  // webpackConfig.plugins.push(new HtmlWebpackHarddiskPlugin());
 }
 
 function getCommonsChunkPlugins() {

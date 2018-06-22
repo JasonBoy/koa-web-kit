@@ -91,11 +91,11 @@ async function initHMR() {
   //enable hmr
   if (isHMREnabled) {
     logger.info('HMR enabled, initializing HMR...');
-    const hmrMiddleware = require('koa-webpack');
+    const koaWebpack = require('koa-webpack');
     const historyApiFallback = require('koa-history-api-fallback');
-    const getPort = require('get-port');
+    // const getPort = require('get-port');
     const webpack = require('webpack');
-    const availPort = await getPort();
+    // const availPort = await getPort();
     const webpackConfig = require('./config/webpack.config.dev');
     const compiler = webpack(
       Object.assign({}, webpackConfig, {
@@ -105,43 +105,38 @@ async function initHMR() {
         },
       })
     );
-    const instance = hmrMiddleware({
+    await koaWebpack({
       compiler,
-      // config: webpackConfig,
-      hot: {
-        port: availPort,
+      hotClient: {
+        // port: availPort,
         // logLevel: 'warn',
-        hot: true,
+        hmr: true,
         reload: true,
       },
-      dev: {
-        // logLevel: 'warn',
+      devMiddleware: {
         index: 'index.html',
         publicPath: webpackConfig.output.publicPath,
         watchOptions: {
           aggregateTimeout: 0,
         },
-        hot: true,
+        writeToDisk: true,
         stats: {
           modules: false,
           colors: true,
         },
       },
-    });
-    const dev = instance.dev;
-    await new Promise((resolve, reject) => {
-      dev.waitUntilValid(() => {
+    })
+      .then(instance => {
         if (!HMRInitialized) {
           HMRInitialized = true;
-          app.use(instance);
+          // app.use(instance);
           app.use(convert(historyApiFallback()));
           app.use(instance);
         }
-        resolve();
+      })
+      .catch(err => {
+        logger.error('[koa-webpack]:', err);
       });
-    });
-    // console.log(webpackConfig);
-    // app.use();
   }
 }
 

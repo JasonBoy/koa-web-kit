@@ -1,12 +1,10 @@
 'use strict';
 
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
 const path = require('path');
 const config = require('./env');
 const SLASH_REGEX = /[\\]+/g;
 
-const LOADER = {
+export const LOADER = {
   STYLE_LOADER: 'style-loader',
   CSS_LOADER: 'css-loader',
   SASS_LOADER: 'sass-loader',
@@ -126,23 +124,6 @@ exports.getLoaders = function getLoaders(
   }
   return exports.getStyleLoaders.apply(undefined, loaders.concat([devMode]));
 };
-exports.getCommonTextExtract = function getCommonTextExtract(
-  name = '[name]',
-  devMode = false,
-  loaders,
-  options
-) {
-  const plugin = new ExtractTextPlugin(
-    Object.assign(
-      {
-        filename: exports.getName(name, 'css', 'contenthash', devMode),
-      },
-      options
-    )
-  );
-  const loader = plugin.extract(loaders);
-  return { plugin, loader };
-};
 exports.getSCSSLoaderExtract = function getSCSSLoaderExtract(devMode = false) {
   return {
     use: exports.getLoaders(devMode, false, true),
@@ -158,37 +139,4 @@ exports.getCSSLoaderExtract = function getCSSLoaderExtract(devMode = false) {
     ),
     fallback: LOADER.STYLE_LOADER,
   };
-};
-exports.getSCSSExtract = function getSCSSExtract(
-  devMode = false,
-  options = {}
-) {
-  return exports.getCommonTextExtract(
-    '[name]',
-    devMode,
-    exports.getSCSSLoaderExtract(devMode),
-    options
-  );
-};
-exports.getLibSCSSExtract = function getLibSCSSExtract(
-  devMode = false,
-  options = {}
-) {
-  return exports.getCommonTextExtract(
-    'vendors',
-    devMode,
-    exports.getSCSSLoaderExtract(devMode),
-    options
-  );
-};
-exports.getLibCSSExtract = function getLibCSSExtract(
-  devMode = false,
-  options = {}
-) {
-  return exports.getCommonTextExtract(
-    'vendors-css',
-    devMode,
-    exports.getCSSLoaderExtract(devMode),
-    options
-  );
 };
