@@ -47,10 +47,10 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
       rel: 'preload',
       include: 'initial',
     }),
-    new PreloadWebpackPlugin({
-      rel: 'prefetch',
-      include: 'asyncChunks',
-    }),
+    // new PreloadWebpackPlugin({
+    //   rel: 'prefetch',
+    //   include: 'asyncChunks',
+    // }),
   ],
   //new in webpack4
   optimization: {

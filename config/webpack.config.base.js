@@ -145,7 +145,39 @@ const webpackConfig = {
     new ManifestPlugin({
       publicPath: '',
     }),
+    new HtmlWebpackCustomPlugin(),
   ],
+};
+
+function HtmlWebpackCustomPlugin(options) {
+  // Configure your plugin with options...
+}
+
+HtmlWebpackCustomPlugin.prototype.apply = function(compiler) {
+  compiler.hooks.compilation.tap(
+    'InsertSSRBundleScriptsPlugin',
+    compilation => {
+      console.log('The compiler is starting a new compilation...');
+
+      compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync(
+        'InsertSSRBundleScriptsPlugin',
+        (data, cb) => {
+          console.log('data: ', data.assets);
+          // console.log('chunks: ', data.assets.chunks);
+          // console.log('compilation.assets.app: ', Object.getOwnPropertyNames(compilation));
+          console.log('compilation.entries: ', compilation.entries.length);
+          // console.log('compilation.entries: ', compilation.entries[0].NormalModule.dependencies);
+          console.log(
+            'compilation.chunks: ',
+            compilation.chunks.length,
+            compilation.chunks
+          );
+          // console.log('compilation.assets: ', compilation.assets);
+          cb(null, data);
+        }
+      );
+    }
+  );
 };
 
 module.exports = webpackConfig;
