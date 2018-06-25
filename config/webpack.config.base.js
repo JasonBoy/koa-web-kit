@@ -145,7 +145,7 @@ const webpackConfig = {
     new ManifestPlugin({
       publicPath: '',
     }),
-    new HtmlWebpackCustomPlugin(),
+    // new HtmlWebpackCustomPlugin(),
   ],
 };
 
