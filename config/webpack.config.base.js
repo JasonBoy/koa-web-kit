@@ -6,12 +6,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const ReactLoadablePlugin = require('react-loadable/webpack')
   .ReactLoadablePlugin;
-const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
-const HtmlWebpackInlineStylePlugin = require('html-webpack-inline-style-plugin');
 
 const config = require('./env');
 const utils = require('./utils');
@@ -127,7 +124,6 @@ const webpackConfig = {
         context: CONTENT_PATH,
       },
     }),
-    ...getCommonsChunkPlugins(),
     new MomentLocalesPlugin({
       localesToKeep: ['zh-cn'],
     }),
@@ -136,10 +132,7 @@ const webpackConfig = {
       filename: isSSREnabled ? 'index-backup.html' : 'index.html',
       inject: 'body',
       chunksSortMode: 'dependency',
-      alwaysWriteToDisk: true,
-      inlineSource: '.(css)$',
     }),
-    new InsertSSRBundleScriptsPlugin(),
     new CopyWebpackPlugin([
       {
         from: utils.resolve('src/assets/static'),
@@ -150,87 +143,41 @@ const webpackConfig = {
       filename: utils.resolve('build/react-loadable.json'),
     }),
     new ManifestPlugin({
-      //TODO: app.css is mapped to vendors.css with multiple extract instances, WTF:(
-      //@see https://github.com/danethurber/webpack-manifest-plugin/issues/30
-      //below is a workaround
-      map: function(obj) {
-        const cssExt = '.css';
-        if (obj.path.indexOf(cssExt) >= 0) {
-          // console.log(obj);
-          obj.name = obj.path.replace(/-[\S]+\.css/, '.css');
-          // console.log(obj);
-          // console.log('===========')
-        }
-        return obj;
-      },
+      publicPath: '',
     }),
+    // new HtmlWebpackCustomPlugin(),
   ],
 };
 
-if (isHMREnabled) {
-  webpackConfig.plugins.push(new HtmlWebpackInlineStylePlugin());
-  webpackConfig.plugins.push(new webpack.NamedModulesPlugin());
-  webpackConfig.plugins.push(new HtmlWebpackHarddiskPlugin());
-}
-
-function getCommonsChunkPlugins() {
-  const plugins = [];
-  if (isHMREnabled) {
-    // plugins.push(
-    //   new webpack.optimize.CommonsChunkPlugin({
-    //     names: [],
-    //     minChunks: Infinity,
-    //   })
-    // );
-    return plugins;
-  }
-  plugins.push(
-    new webpack.optimize.CommonsChunkPlugin({
-      name: ENTRY_NAME.VENDORS,
-      minChunks: module => {
-        return (
-          module.context &&
-          module.context.includes('node_modules') &&
-          !String(module.resource).endsWith('.css') &&
-          !String(module.resource).endsWith('.scss')
-        );
-      },
-    })
-  );
-  plugins.push(
-    new webpack.optimize.CommonsChunkPlugin({
-      name: ENTRY_NAME.RUNTIME,
-      minChunks: Infinity,
-    })
-  );
-  //only inline runtime when production
-  if (!DEV_MODE && !isSSREnabled) {
-    plugins.push(
-      new InlineChunkWebpackPlugin({
-        inlineChunks: [ENTRY_NAME.RUNTIME],
-      })
-    );
-  }
-
-  return plugins;
-}
-
-function InsertSSRBundleScriptsPlugin(options) {
+function HtmlWebpackCustomPlugin(options) {
   // Configure your plugin with options...
 }
 
-InsertSSRBundleScriptsPlugin.prototype.apply = function(compiler) {
-  compiler.plugin('compilation', compilation => {
-    // console.log('The compiler is starting a new compilation...');
+HtmlWebpackCustomPlugin.prototype.apply = function(compiler) {
+  compiler.hooks.compilation.tap(
+    'InsertSSRBundleScriptsPlugin',
+    compilation => {
+      console.log('The compiler is starting a new compilation...');
 
-    compilation.plugin(
-      'html-webpack-plugin-after-html-processing',
-      (data, cb) => {
-        // console.log(compilation.assets.main);
-        cb(null, data);
-      }
-    );
-  });
+      compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync(
+        'InsertSSRBundleScriptsPlugin',
+        (data, cb) => {
+          console.log('data: ', data.assets);
+          // console.log('chunks: ', data.assets.chunks);
+          // console.log('compilation.assets.app: ', Object.getOwnPropertyNames(compilation));
+          console.log('compilation.entries: ', compilation.entries.length);
+          // console.log('compilation.entries: ', compilation.entries[0].NormalModule.dependencies);
+          console.log(
+            'compilation.chunks: ',
+            compilation.chunks.length,
+            compilation.chunks
+          );
+          // console.log('compilation.assets: ', compilation.assets);
+          cb(null, data);
+        }
+      );
+    }
+  );
 };
 
 module.exports = webpackConfig;

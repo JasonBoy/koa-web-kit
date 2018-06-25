@@ -9,8 +9,6 @@ import {
 } from '../../api/api-config';
 import env from 'modules/env';
 
-// const fetch = window.fetch;
-
 const CONTENT_TYPE_JSON = 'application/json';
 const CONTENT_TYPE_FORM_URL_ENCODED =
   'application/x-www-form-urlencoded;charset=UTF-8';

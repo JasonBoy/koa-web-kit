@@ -5,7 +5,6 @@
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
-// const jsonfile = require('jsonfile');
 
 const devConfig = require('./config.default.dev');
 const prodConfig = require('./config.default.prod');
@@ -31,9 +30,11 @@ try {
   hasCustomConfig = false;
 }
 
+// console.log('process.env.STATIC_PREFIX: ', process.env.STATIC_PREFIX);
+// console.log('process.env.APP_PREFIX: ', process.env.APP_PREFIX);
+
 if (hasCustomConfig) {
   configInfo = require(configPath);
-  // configInfo = jsonfile.readFileSync(configPath);
   checkMsg += `Using [${chalk.green(configPath)}] as app configuration`;
 } else {
   configInfo = !nodeBuildEnv ? prodConfig : devConfig;
@@ -48,8 +49,9 @@ const config = {};
 //cache non-empty config from env at init time instead of accessing from process.env at runtime to improve performance
 for (let key in configInfo) {
   if (configInfo.hasOwnProperty(key)) {
-    const envValue = process.env[key];
-    config[key] = envValue || configInfo[key];
+    config[key] = process.env.hasOwnProperty(key)
+      ? process.env[key]
+      : configInfo[key];
   }
 }
 
@@ -66,6 +68,8 @@ function getConfigProperty(key) {
   }
   return value;
 }
+
+// console.log('config: ', config);
 
 module.exports = {
   getListeningPort: () => {
@@ -90,10 +94,10 @@ module.exports = {
     return getConfigProperty('STATIC_ENDPOINT');
   },
   getAppPrefix: () => {
-    return getConfigProperty('APP_PREFIX');
+    return getConfigProperty('APP_PREFIX') || '';
   },
   getStaticPrefix: () => {
-    return getConfigProperty('STATIC_PREFIX');
+    return getConfigProperty('STATIC_PREFIX') || '';
   },
   isPrefixTailSlashEnabled: () => {
     return !!getConfigProperty('PREFIX_TRAILING_SLASH');
@@ -120,7 +124,7 @@ module.exports = {
     return !!getConfigProperty('CUSTOM_API_PREFIX');
   },
   getLogPath: () => {
-    return getConfigProperty('LOG_PATH') || 'logs';
+    return getConfigProperty('LOG_PATH') || path.join(__dirname, '../logs');
   },
   getEnv: key => {
     return getConfigProperty(key);

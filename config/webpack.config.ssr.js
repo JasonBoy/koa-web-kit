@@ -2,12 +2,12 @@
 
 const path = require('path');
 const webpack = require('webpack');
-// const MinifyPlugin = require('babel-minify-webpack-plugin');
 const webpackMerge = require('webpack-merge');
-// const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
 const nodeExternals = require('webpack-node-externals');
+
+const LOADER = utils.LOADER;
 
 const DEV_MODE = config.isDevMode();
 const APP_PATH = utils.APP_PATH;
@@ -19,14 +19,6 @@ const prefix = utils.normalizeTailSlash(
   config.isPrefixTailSlashEnabled()
 );
 
-// const scssExtract = utils.getSCSSExtract(true, {
-//   allChunks: true,
-// });
-// const libSCSSExtract = utils.getLibSCSSExtract(true);
-// const libCSSExtract = utils.getLibCSSExtract(true, {
-//   allChunks: true,
-// });
-
 const webpackConfig = webpackMerge(
   {},
   {
@@ -34,13 +26,13 @@ const webpackConfig = webpackMerge(
       ssr: utils.resolve('ssr/index.js'),
     },
     target: 'node',
+    mode: DEV_MODE ? 'development' : 'production',
     output: {
       path: utils.resolve('build/node'),
-      filename: `[name]${DEV_MODE ? '' : '.min'}.js`,
+      filename: '[name].js',
       libraryExport: 'default',
       libraryTarget: 'commonjs2',
     },
-    // target: 'web',
     externals: [nodeExternals()],
     resolve: {
       modules: [APP_PATH, 'node_modules'],
@@ -61,25 +53,18 @@ const webpackConfig = webpackMerge(
           use: {
             loader: 'babel-loader',
             options: {
-              cacheDirectory: true,
+              cacheDirectory: DEV_MODE,
             },
           },
         },
         {
-          test: /scss\/vendors\.scss$/,
-          use: utils.getLoaders(true, false),
-        },
-        {
-          test: /\.scss$/,
-          include: APP_PATH,
-          // exclude: /node_modules/,
-          exclude: [/node_modules/, /scss\/vendors\.scss$/],
-          use: utils.getLoaders(true, false),
-        },
-        {
-          test: /\.css$/,
-          // include: [APP_PATH, /node_modules/],
-          use: utils.getLoaders(true, false, false),
+          test: /\.(sa|sc|c)ss$/,
+          use: [
+            // MiniCssExtractPlugin.loader,
+            LOADER.CSS_LOADER,
+            LOADER.POSTCSS_LOADER,
+            LOADER.SASS_LOADER,
+          ],
         },
         {
           test: /\.(png|jpe?g|gif|svg)$/,
@@ -117,18 +102,12 @@ const webpackConfig = webpackMerge(
           context: APP_PATH,
         },
       }),
-      // new webpack.IgnorePlugin(/\.(scss|css|svg|png)$/),
-      // new webpack.optimize.CommonsChunkPlugin({
-      //   // names: ['vendors', 'manifest'],
-      //   names: ['manifest'],
-      //   minChunks: Infinity
+      // new MiniCssExtractPlugin({
+      //   filename: "[name].css",
+      //   chunkFilename: "[id].css"
       // }),
     ],
   }
 );
-
-// if (!DEV_MODE) {
-//   webpackConfig.plugins.push(new MinifyPlugin({}, {}));
-// }
 
 module.exports = webpackConfig;
