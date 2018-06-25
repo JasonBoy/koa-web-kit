@@ -20,7 +20,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   output: {
     publicPath: config.getStaticAssetsEndpoint() + utils.getPublicPath(),
     filename: utils.getName('[name]', 'js', '', false),
-    chunkFilename: '[name]-[chunkhash].chunk.js',
+    chunkFilename: '[name]-[chunkhash:9].chunk.js',
   },
   module: {
     rules: [
