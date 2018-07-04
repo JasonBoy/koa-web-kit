@@ -13,7 +13,14 @@ const prodConfig = require('./config.default.prod');
 const customConfigPath = process.env.NODE_CONFIG_PATH;
 const nodeBuildEnv = process.env.NODE_BUILD_ENV;
 
-const defaultConfigJS = './app-config.js';
+let defaultConfigJS = '../app-config.js';
+const defaultConfigJSAlt = './app-config.js';
+
+try {
+  fs.statSync(path.join(__dirname, defaultConfigJS));
+} catch (e) {
+  defaultConfigJS = defaultConfigJSAlt;
+}
 
 const configPath = customConfigPath
   ? path.resolve(customConfigPath)
