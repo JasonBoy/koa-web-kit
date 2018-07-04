@@ -66,7 +66,7 @@ function AppRoutes(props) {
         path="/github"
         render={() => <Github branches={props.initialData.github} />}
       />
-      <Route exact path="/hello" component={Hello} />
+      <Route exact path="/hello/sub-hello" component={Hello} />
       {/*<Route exact path="/hello-backup" component={HelloBackup} />*/}
       <Route path="/" component={Home} />
     </Switch>

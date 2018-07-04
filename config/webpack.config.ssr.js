@@ -23,7 +23,7 @@ const webpackConfig = webpackMerge(
   {},
   {
     entry: {
-      ssr: utils.resolve('ssr/index.js'),
+      ssr: utils.resolve('src/ssr/index.js'),
     },
     target: 'node',
     mode: DEV_MODE ? 'development' : 'production',

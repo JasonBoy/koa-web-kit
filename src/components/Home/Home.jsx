@@ -21,7 +21,7 @@ class Home extends React.Component {
           <Link className="list-group-item active" to="/">
             Home
           </Link>
-          <Link className="list-group-item" to="/hello">
+          <Link className="list-group-item" to="/hello/sub-hello">
             Hello
           </Link>
           <Link className="list-group-item" to="/hello">

@@ -1,4 +1,7 @@
 const crypto = require('crypto');
+const slugify = require('slugify');
+
+slugify.extend({ '/': '-' });
 
 const fuckedBrands = ['huawei'];
 
@@ -12,6 +15,10 @@ exports.genHash = function genHash(content, algorithm) {
 
 exports.genSHA1 = function genSHA1(content) {
   return exports.genHash(content, 'sha1');
+};
+
+exports.genMD5 = function genSHA1(content) {
+  return exports.genHash(content, 'md5');
 };
 
 exports.getRandomSHA1 = function getRandomSHA1(byteLength) {
@@ -51,4 +58,8 @@ exports.isAndroid = function isAndroid(ua) {
 
 exports.isMobile = function isMobile(ua) {
   return this.isIOS(ua) || this.isAndroid(ua);
+};
+
+exports.slugify = function(input) {
+  return slugify(input);
 };
