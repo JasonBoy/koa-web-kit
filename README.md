@@ -137,7 +137,7 @@ The last three options are boolean values in `0`(or empty, false) and `1`(true).
 #### Examples:
 
 - `npm run deploy`: no options provided, defaults do the tasks.  
-- `npm run deploy -- 1`: this will skip the `npm install --no-shrinkwrap`, and just go to build and start server.
+- `npm run deploy -- 1`: same as `npm run deploy:noinstall`, this will skip the `npm install --no-shrinkwrap`, and just go to build and start server.
 - `npm run deploy -- 1 0 1`: which will only build your assets
 - `npm run deploy -- 1 1 0`: which will just start node server, useful when all assets were built on a different machine.
 
