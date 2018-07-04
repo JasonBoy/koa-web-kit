@@ -1,5 +1,7 @@
+.idea
 node_modules
 npm-debug.log
 build
 logs
-config.json
+app-config.js
+yarn-error.log

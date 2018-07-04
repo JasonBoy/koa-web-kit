@@ -9,8 +9,8 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 # RUN npm config set registry http://registry.npm.taobao.org
 RUN npm install
-RUN npm run build
+# RUN npm run build:dev
 
 
 EXPOSE 3000
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "dev" ]
