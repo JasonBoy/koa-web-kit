@@ -63,7 +63,7 @@ class Cache {
     for (let [key] of this.cache) {
       promises.push(this.persistSingleCache(key));
     }
-    return promises;
+    return Promise.all(promises);
   }
 
   persistSingleCache(key) {
