@@ -77,7 +77,7 @@ if (isSSREnabled) {
  */
 class ServerRenderer {
   /**
-   *
+   * ServerRenderer class
    * @param options like below:
    * {
    *   ssr: true, //enable/disable SSR manually, if provided, will use the app config
@@ -93,6 +93,10 @@ class ServerRenderer {
     this.streaming = !!options.streaming;
   }
 
+  /**
+   * Check if SSR is enabled
+   * @return {boolean|*}
+   */
   isSSREnabled() {
     return this.ssrEnabled;
   }
@@ -112,6 +116,11 @@ class ServerRenderer {
     this.renderSSR(ctx, data, streaming);
   }
 
+  /**
+   * Render content from cache
+   * @param key {string} cache key
+   * @param ctx {object} koa ctx object
+   */
   renderFromCache(key, ctx) {
     logger.info('Rendering content from cache...');
     this.setHtmlContentType(ctx);
@@ -149,7 +158,7 @@ class ServerRenderer {
   }
 
   /**
-   *
+   * Generate static html from component
    * @param {string=} html SSRed html
    * @param {object=} extra extra info from SSR#render()
    * @param {object} ctx koa ctx object
@@ -191,7 +200,7 @@ class ServerRenderer {
   }
 
   /**
-   *
+   * Generate html in stream
    * @param nodeStreamFromReact
    * @param extra
    * @param ctx
@@ -281,6 +290,11 @@ class ServerRenderer {
     });
   }
 
+  /**
+   * Check if provided key being found in the current cache pool
+   * @param key
+   * @return {boolean}
+   */
   isCacheMatched(key) {
     if (this.cache.has(key)) {
       logger.info(`Cache for [${key}] matched!`);
@@ -289,6 +303,10 @@ class ServerRenderer {
     return false;
   }
 
+  /**
+   * Set content-type for rendered html
+   * @param ctx {object} koa ctx
+   */
   setHtmlContentType(ctx) {
     ctx.set({
       'Content-Type': 'text/html',

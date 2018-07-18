@@ -6,7 +6,7 @@ const ServerRenderer = require('../services/ServerRenderer');
 
 const renderer = new ServerRenderer({
   streaming: true,
-  flushInterval: 1000 * 30,
+  // flushInterval: 1000 * 30, //flush every 30s
 });
 
 const config = require('../config/env');
@@ -20,9 +20,6 @@ const router = new Router({
 });
 
 router.use(async function(ctx, next) {
-  if (!ctx.renderer) {
-    ctx.renderer = renderer;
-  }
   // console.log(`start of index router: ${ctx.path}`);
   ctx.set('Cache-Control', 'no-cache');
   ctx.state = {
@@ -45,7 +42,6 @@ router.post('/user', koaBody({ multipart: true }), async function(ctx) {
  * Async request data for initial state demo
  */
 router.get('/github', async function(ctx) {
-  const renderer = ctx.renderer;
   if (renderer.isCacheMatched(ctx.path)) {
     renderer.renderFromCache(ctx.path, ctx);
     return;
@@ -92,7 +88,7 @@ router.get('/github', async function(ctx) {
  * Other default handler
  */
 router.get('*', async function(ctx) {
-  ctx.renderer.render(ctx);
+  renderer.render(ctx);
 });
 
 module.exports = router;
