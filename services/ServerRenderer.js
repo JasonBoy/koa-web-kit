@@ -89,7 +89,7 @@ class ServerRenderer {
     this.ssrEnabled = options.hasOwnProperty('ssr')
       ? !!options.ssr
       : isSSREnabled;
-    this.cache = options.cache || new Cache();
+    this.cache = options.cache || new Cache(options);
     this.streaming = !!options.streaming;
   }
 

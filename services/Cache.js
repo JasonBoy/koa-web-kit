@@ -70,14 +70,18 @@ class Cache {
     //persist to file
     const fileName = `${slugify(key)}.html`;
     return new Promise((resolve, reject) => {
-      fs.writeFile(path.join(cacheDir, fileName), this.get(key), err => {
-        if (err) {
-          logger.error(err);
-          return reject(err);
+      fs.writeFile(
+        path.join(this.persistentDirPath, fileName),
+        this.get(key),
+        err => {
+          if (err) {
+            logger.error(err);
+            return reject(err);
+          }
+          logger.info(`Persist cache [${key}] to file finished!`);
+          resolve(fileName);
         }
-        logger.info(`Persist cache [${key}] to file finished!`);
-        resolve(fileName);
-      });
+      );
     });
   }
 
@@ -89,7 +93,7 @@ class Cache {
         })
         .catch(err => {
           logger.error(`Flush SSR Cache Failed: ${err.message}`);
-          logger.error(err);
+          logger.error(err.stack);
         });
     }, this.flushInterval);
   }

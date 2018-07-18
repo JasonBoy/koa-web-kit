@@ -6,6 +6,7 @@ const ServerRenderer = require('../services/ServerRenderer');
 
 const renderer = new ServerRenderer({
   streaming: true,
+  flushInterval: 1000 * 30,
 });
 
 const config = require('../config/env');
