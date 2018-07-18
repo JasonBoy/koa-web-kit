@@ -8,6 +8,7 @@
 
 🚀A Modern, Production-Ready, and Full-Stack Node Web Framework
 
+[Release Notes](https://github.com/JasonBoy/koa-web-kit/releases)  
 [An Introduction for koa-web-kit](https://blog.lovemily.me/koa-web-kit-a-modern-production-ready-and-full-stack-node-web-framework/)
 
 ## Features
