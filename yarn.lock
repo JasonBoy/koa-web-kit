@@ -6324,9 +6324,9 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-dom@16.4.1:
-  version "16.4.1"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.4.1.tgz#7f8b0223b3a5fbe205116c56deb85de32685dad6"
+react-dom@16.4.2:
+  version "16.4.2"
+  resolved "http://registry.npm.taobao.org/react-dom/download/react-dom-16.4.2.tgz#4afed569689f2c561d2b8da0b819669c38a0bda4"
   dependencies:
     fbjs "^0.8.16"
     loose-envify "^1.1.0"
@@ -6943,9 +6943,9 @@ slice-ansi@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/slice-ansi/-/slice-ansi-0.0.4.tgz#edbf8903f66f7ce2f8eafd6ceed65e264c831b35"
 
-slugify@1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.3.0.tgz#787919259d28c825fbcae6da2e01c77a109793f6"
+slugify@1.3.1:
+  version "1.3.1"
+  resolved "http://registry.npm.taobao.org/slugify/download/slugify-1.3.1.tgz#f572127e8535329fbc6c1edb74ab856b61ad7de2"
 
 snapdragon-node@^2.0.1:
   version "2.1.1"
@@ -7638,7 +7638,14 @@ url-parse-lax@^1.0.0:
   dependencies:
     prepend-http "^1.0.1"
 
-url-parse@1.4.1, url-parse@^1.4.1:
+url-parse@1.4.3:
+  version "1.4.3"
+  resolved "http://registry.npm.taobao.org/url-parse/download/url-parse-1.4.3.tgz#bfaee455c889023219d757e045fa6a684ec36c15"
+  dependencies:
+    querystringify "^2.0.0"
+    requires-port "^1.0.0"
+
+url-parse@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.4.1.tgz#4dec9dad3dc8585f862fed461d2e19bbf623df30"
   dependencies:
