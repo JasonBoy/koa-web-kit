@@ -9,13 +9,6 @@
     "@babel/types" "7.0.0-beta.54"
     lodash "^4.17.5"
 
-"@babel/runtime@^7.0.0-beta.49":
-  version "7.0.0-beta.54"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.0.0-beta.54.tgz#39ebb42723fe7ca4b3e1b00e967e80138d47cadf"
-  dependencies:
-    core-js "^2.5.7"
-    regenerator-runtime "^0.12.0"
-
 "@babel/types@7.0.0-beta.54", "@babel/types@^7.0.0-beta.49":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.0.0-beta.54.tgz#025ad68492fed542c13f14c579a44c848e531063"
@@ -2061,7 +2054,7 @@ core-js@^1.0.0:
   version "1.2.7"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
 
-core-js@^2.4.0, core-js@^2.5.0, core-js@^2.5.7:
+core-js@^2.4.0, core-js@^2.5.0:
   version "2.5.7"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.7.tgz#f972608ff0cead68b841a16a932d0b183791814e"
 
@@ -6108,12 +6101,11 @@ postcss@^7.0.2:
     source-map "^0.6.1"
     supports-color "^5.4.0"
 
-preload-webpack-plugin@3.0.0-beta.1:
-  version "3.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/preload-webpack-plugin/-/preload-webpack-plugin-3.0.0-beta.1.tgz#e1c9d8e2bed2126030982b84bb4f279ac2989b19"
+preload-webpack-plugin@3.0.0-beta.2:
+  version "3.0.0-beta.2"
+  resolved "http://registry.npm.taobao.org/preload-webpack-plugin/download/preload-webpack-plugin-3.0.0-beta.2.tgz#8daa06b9f43aad7e4fccd3f52df2cb01760a86f7"
   dependencies:
-    "@babel/runtime" "^7.0.0-beta.49"
-    url-parse "^1.4.1"
+    url-parse "^1.4.3"
 
 prepend-http@^1.0.1:
   version "1.0.4"
@@ -6470,10 +6462,6 @@ regenerator-runtime@^0.10.5:
 regenerator-runtime@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
-
-regenerator-runtime@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.12.0.tgz#8052ac952d85b10f3425192cd0c53f45cf65c6cb"
 
 regenerator-transform@^0.10.0:
   version "0.10.1"
@@ -7610,16 +7598,9 @@ url-parse-lax@^1.0.0:
   dependencies:
     prepend-http "^1.0.1"
 
-url-parse@1.4.3:
+url-parse@1.4.3, url-parse@^1.4.3:
   version "1.4.3"
   resolved "http://registry.npm.taobao.org/url-parse/download/url-parse-1.4.3.tgz#bfaee455c889023219d757e045fa6a684ec36c15"
-  dependencies:
-    querystringify "^2.0.0"
-    requires-port "^1.0.0"
-
-url-parse@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.4.1.tgz#4dec9dad3dc8585f862fed461d2e19bbf623df30"
   dependencies:
     querystringify "^2.0.0"
     requires-port "^1.0.0"
