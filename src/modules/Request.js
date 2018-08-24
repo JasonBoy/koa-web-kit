@@ -75,13 +75,12 @@ class Request {
       url = this.addQueryString(url, options.qs);
     }
 
-    url = this.normalizeRestfulParams(url, options);
-
     const originalUrl = url;
     if (!options.noPrefix && !this.noPrefix) {
       url = this.getUrlWithPrefix(originalUrlConfig);
       options.hasOwnProperty('noPrefix') && (options.noPrefix = undefined);
     }
+    url = this.normalizeRestfulParams(url, options);
 
     const headers = {};
 
