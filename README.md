@@ -26,46 +26,43 @@
 ### Quick Start
 
 Get the [latest version](https://github.com/JasonBoy/koa-web-kit/releases), and go to your project root,  
-Also available on [npm](https://www.npmjs.com/package/koa-web-kit), `npm i koa-web-kit --save`
+Also available on [npm](https://www.npmjs.com/package/koa-web-kit).
 
-> Before start, recommend to copy the `config/app-config.js.sample` to `app-config.js` for local dev configuration
+> Before start, copy the `config/app-config.js.sample` to `app-config.js`(to project root or `config` dir) for local dev configuration
 
 1. Install Dependencies  
 ```bash
 #with yarn, yarn.lock is included
 yarn
 #or npm, no package-lock.json is included, use it as your own taste 
-npm install --no-shrinkwrap
+npm install
 ```
-2. Build Assets  
-`npm run build` or `npm run watch` for auto recompile your code, or  
-`npm run dev` to start koa with HMR enabled(step 2 & 3 combined, skip step 3)  
-3. Start Koa Http Server  
-`npm start`  
-4. Go to `http://localhost:3000` to view the default react page, the demo page is based on [create-react-app](https://github.com/facebookincubator/create-react-app)
+2. Start Dev Server  
+`npm run dev` to start koa with HMR enabled  
+3. Go to `http://localhost:3000` to view the default react page
 
 ### Project Structure
 
-- `api` dir, the API Proxy utility, also put your api urls here for universal import across your app
-- `config` dir, all webpack build configs are put here, besides, some application-wide env configs getter utility
-- `services` dir(before `mw`), some middleware here, default logger utility also located here
+- `api` dir, the API Proxy utility, also put your api urls in `api-config.js` for universal import across your app
+- `config` dir, all webpack build configs are put here, besides, some application-wide env configs getter utilities
+- `services` dir, some middleware here, default logger utility also located here
 - `routes` dir, put your koa app routes here
-- `src` dir, all your front-end assets, react components, services, etc...
+- `src` dir, all your front-end assets, react components, modules, etc...
 - `test` dir, for your tests
 - `utils` dir, utilities for both node.js and front-end
-- `views` dir, your view templates
+- `views` dir, your view templates(*NOTE: when SSR is enabled, it will use the template literal string*)
 - *`build`* dir, all built assets for your project, git ignored
 - *`logs`* dir, logs are put here by default, git ignored
 - All other files in project root, which indicate their purposes clearly😀.
 
 ### Application Config and Environment Variables
 
-Every project has some configuration or environment variables to make it run differently in different environment,  
-for koa-web-kit, we also provide different ways to configure your ENVs.
+Every project has some configuration or environment variables to make it run differently in different environments,  
+for koa-web-kit, it also provides different ways to configure your ENVs.
 
 #### app-config.js/app-config.js.sample
 
-The pre bundled file `app-config.js.sample` lists some common variables to use in the project, you should copy and rename it to `app-config.js` for your local config:
+The pre bundled file `config/app-config.js.sample` lists some common variables to use in the project, you should copy and rename it to `app-config.js` for your local config, both put it in `${project_root}` or the same `config` dir are supported:
 ```javascript
 module.exports = {
   //http server listen port
@@ -85,10 +82,11 @@ module.exports = {
   //global prefix for your routes, e.g http://a.com/prefix/...your app routes,
   //like a github project site
   "APP_PREFIX": "",
+  //if true, the "/prefix" below will be stripped, otherwise, the full pathname will be used for proxy
   "CUSTOM_API_PREFIX": true,
-  //if enable HMR in dev mode, `npm run dev` will automatically enable that
+  //if enable HMR in dev mode, `npm run dev` will automatically enable this
   "ENABLE_HMR": false,
-  //if need to enable Server Side Rendering, HMR need to be disabled for now
+  //if need to enable Server Side Rendering, `npm run dev:ssr` will automatically enable this, HMR need to be disabled for now
   "ENABLE_SSR": false,
   //API Proxies for multiple api endpoints with different prefix in router
   "API_ENDPOINTS": {
@@ -103,7 +101,7 @@ module.exports = {
 
 #### Environment Variables
 
-All the variables in config.json can be set with Environment Variables, which have higher priority than `app-config.js`.
+All the variables in `app-config.js` can be set with Environment Variables(except for `API_ENDPOINTS` for now, since it has nested json structure), which have higher priority than `app-config.js`.
 e.g:  
 `> NODE_ENV=production npm start`  
 or  
@@ -114,36 +112,36 @@ npm start
 ``` 
 BTW you can do Everything you can within cli to set your env.
 
-#### Default `config.default/dev(prod).js` in source code
+#### Default `config.default.[dev|prod].js` in `config` dir
 
-The project comes with default config files just like `config.json`, which will be used if neither above are provided.
+The project comes with default config files just like `app-config.js.sample`, which will be used if `app-config.js` above is not provided.
 
-> Priority: *Environment Variables* > *app-config.js* > *default config.default./dev(prod).js*
+> Priority: *Environment Variables* > *app-config.js* > *config.default.[dev|prod].js*
 
 ### Logs
 The builtin `services/logger.js` provides some default log functionality for your app, it uses [winston](https://github.com/winstonjs/winston) for async log. You can add more `transport`s for different level logging.
 
 ### Production Deployment
 
-Deploy your app to production is extremely simple with only one npm script command, you can provide different options in different deployment phases(e.g: install, build, start server),    
+Deploy your app to production is extremely simple with only one npm script command, you can provide couple of options for different deployment phases(e.g: install, build, start server),    
 [pm2](https://github.com/Unitech/pm2) inside is used as node process manager.  
-> Global installation of PM2 is not required now, we will use the locally installed pm2.
+> Global installation of PM2 is not required now, we will use the locally installed pm2, but if you want to use `pm2` cmd everywhere, you may still want to install it globally
 
 
 #### Usage
 
-`npm run deploy -- skipInstall skipBuild skipServer`  
+`npm run deploy -- [skipInstall] [skipBuild] [skipServer]`  
 The last three options are boolean values in `0`(or empty, false) and `1`(true).  
 
 #### Examples:
 
-- `npm run deploy`: no options provided, defaults do the tasks.  
-- `npm run deploy -- 1`: same as `npm run deploy:noinstall`, this will skip the `npm install --no-shrinkwrap`, and just go to build and start server.
+- `npm run deploy`: no options provided, defaults to do all the tasks.  
+- `npm run deploy -- 1`: same as `npm run deploy:noinstall` as an alias, this will skip the `npm install --no-shrinkwrap`, and just go to build and start server.
 - `npm run deploy -- 1 0 1`: which will only build your assets
 - `npm run deploy -- 1 1 0`: which will just start node server, useful when all assets were built on a different machine.
 
-> You may need to create/update the script to meet your own needs. 
+> You may need to create/update the `deploy.sh` to meet your own needs. 
 
-### License
+### LICENSE
 
 MIT @ 2016-2018 [jason](http://blog.lovemily.me)
