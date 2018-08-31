@@ -29,10 +29,12 @@
     "node": ">= 8"
   },
   "lint-staged": {
-    "**/*.{js,jsx,json,scss}": [
-      "prettier --write",
-      "git add"
-    ]
+    "linters": {
+      "**/*.{js,jsx,json,scss}": [
+        "prettier --write",
+        "git add"
+      ]
+    }
   },
   "repository": {
     "type": "git",
