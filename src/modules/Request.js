@@ -69,37 +69,46 @@ class Request {
   }
 
   sendRequest(url, options = {}) {
-    const originalUrlConfig = url;
     url = Request.isPlainUrl(url) ? url : url.path;
+    const originalUrl = url;
+    //normalize rest params
+    url = this.normalizeRestfulParams(url, options);
+    //normalize prefix
+    if (!options.noPrefix && !this.noPrefix) {
+      url = this.getUrlWithPrefix(url);
+      options.hasOwnProperty('noPrefix') && (options.noPrefix = undefined);
+    }
+    //normalize query string
     if (!isEmpty(options.qs)) {
       url = this.addQueryString(url, options.qs);
     }
-
-    const originalUrl = url;
-    if (!options.noPrefix && !this.noPrefix) {
-      url = this.getUrlWithPrefix(originalUrlConfig);
-      options.hasOwnProperty('noPrefix') && (options.noPrefix = undefined);
-    }
-    url = this.normalizeRestfulParams(url, options);
-
+    //normalize headers
     const headers = {};
-
     const defaultHeaders = this.options.headers;
     Object.assign(headers, defaultHeaders, options.headers);
     options.headers = undefined;
     const apiOptions = Object.assign({}, this.options, options, { headers });
-
-    return fetch(url, apiOptions)
-      .then(response => {
-        if (!response.ok) {
-          console.error(
-            `[koa-web-kit]:[API-ERROR]-[${response.status}]-[${originalUrl}]`
-          );
-          return Promise.reject(response);
-        }
-        return response.json();
-      })
-      .then(data => this.jsonResponseHandler(data, apiOptions));
+    return fetch(url, apiOptions).then(response => {
+      if (!response.ok) {
+        console.error(
+          `[koa-web-kit]:[API-ERROR]-[${response.status}]-[${originalUrl}]`
+        );
+        return Promise.reject(response);
+      }
+      if (response.status === 204) {
+        return Promise.resolve();
+      }
+      if (this.isJSONResponse(response)) {
+        return response
+          .json()
+          .catch(err => {
+            console.error(err);
+            return {};
+          })
+          .then(data => this.jsonResponseHandler(data, apiOptions));
+      }
+      return Promise.resolve(response);
+    });
   }
 
   addQueryString(url, params, baseUrl = '', noHost = true) {
@@ -253,6 +262,11 @@ class Request {
     }
     ret += plain ? urlConfig : urlConfig.path;
     return ret;
+  }
+
+  isJSONResponse(response) {
+    const contentType = response.headers.get('content-type') || '';
+    return contentType.indexOf('application/json') >= 0;
   }
 }
 
