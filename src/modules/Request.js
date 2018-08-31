@@ -22,6 +22,17 @@ function jsonResponseHandler(data) {
 }
 
 class Request {
+  /**
+   *
+   * @param options
+   * {
+   *   noPrefix: boolean, //if there is prefix for the instance
+   *   apiPrefix: string, //prefix for the instance if "noPrefix" is false
+   *   form: boolean, //true, body is "x-www-form-urlencoded", otherwise "json"
+   *   ...fetch_api_related_options,
+   * }
+   * @return {Request}
+   */
   constructor(options = {}) {
     if (!(this instanceof Request)) {
       return new Request(options);
@@ -68,7 +79,22 @@ class Request {
     return 'string' === typeof url;
   }
 
-  sendRequest(url, options = {}) {
+  /**
+   * Send request now
+   * @param {string|object} pathname if object, @see demo in "api-config.js"
+   * @param {object} options
+   * {
+   *   noPrefix: true, //if there is prefix for this single request, default based on the instance's "noPrefix"
+   *   qs: {}, //extra query string for the request
+   *   restParams: [Array|Object], //params in pathname, @see formatRestfulUrl
+   *   ...fetch_api_related_options,
+   * }
+   * @see https://github.com/github/fetch
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch
+   * @return {Promise<Response | Object>}
+   */
+  sendRequest(pathname, options = {}) {
+    let url = pathname;
     url = Request.isPlainUrl(url) ? url : url.path;
     const originalUrl = url;
     //normalize rest params
@@ -136,10 +162,7 @@ class Request {
    */
   get(url, params, options = {}) {
     if (!isEmpty(params)) {
-      url = this.addQueryString(
-        Request.isPlainUrl(url) ? url : url.path,
-        params
-      );
+      options.qs = params;
     }
     return this.sendRequest(url, options);
   }
