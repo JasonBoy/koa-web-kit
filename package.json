@@ -55,7 +55,6 @@
   "homepage": "https://github.com/JasonBoy/koa-web-kit#readme",
   "readme": "README.md",
   "dependencies": {
-    "bluebird": "3.5.1",
     "bootstrap": "4.1.3",
     "chalk": "2.4.1",
     "classnames": "2.2.6",

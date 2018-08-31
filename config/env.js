@@ -13,6 +13,8 @@ const prodConfig = require('./config.default.prod');
 const customConfigPath = process.env.NODE_CONFIG_PATH;
 const nodeBuildEnv = process.env.NODE_BUILD_ENV;
 
+const DEFAULT_PREFIX_KEY = 'defaultPrefix';
+
 let defaultConfigJS = '../app-config.js';
 const defaultConfigJSAlt = './app-config.js';
 
@@ -132,6 +134,16 @@ module.exports = {
   },
   getLogPath: () => {
     return getConfigProperty('LOG_PATH') || path.join(__dirname, '../logs');
+  },
+  getHttpProxy: () => {
+    return getConfigProperty('HTTP_PROXY');
+  },
+  getDefaultApiEndPoint: () => {
+    const obj = getConfigProperty('API_ENDPOINTS');
+    return obj[obj[DEFAULT_PREFIX_KEY]];
+  },
+  getDefaultApiEndPointKey: () => {
+    return DEFAULT_PREFIX_KEY;
   },
   getEnv: key => {
     return getConfigProperty(key);

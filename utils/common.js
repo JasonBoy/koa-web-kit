@@ -63,3 +63,7 @@ exports.isMobile = function isMobile(ua) {
 exports.slugify = function(input) {
   return slugify(input);
 };
+
+exports.toBase64 = function(input) {
+  return Buffer.from(input).toString('base64');
+};
