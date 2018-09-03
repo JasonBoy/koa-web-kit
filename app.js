@@ -123,6 +123,7 @@ async function initHMR() {
         stats: {
           modules: false,
           colors: true,
+          children: false,
         },
       },
     })

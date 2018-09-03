@@ -36,8 +36,8 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
     ],
   },
   mode: 'production',
-  devtool: 'hidden-source-map',
-  // stats: 'errors-only',
+  // devtool: 'hidden-source-map',
+  stats: { children: false },
   plugins: [
     new MiniCssExtractPlugin({
       filename: '[name]-[hash:9].css',
