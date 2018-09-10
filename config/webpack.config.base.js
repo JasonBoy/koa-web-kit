@@ -132,6 +132,7 @@ const webpackConfig = {
       filename: isSSREnabled ? 'index-backup.html' : 'index.html',
       inject: 'body',
       chunksSortMode: 'dependency',
+      favicon: path.join(__dirname, '../src/assets/static/favicon.ico'),
     }),
     new CopyWebpackPlugin([
       {

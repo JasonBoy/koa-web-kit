@@ -53,7 +53,7 @@ function initApp() {
     app.use(compress());
   }
 
-  app.use(favicon(__dirname + '/src/assets/static/logo.svg'));
+  app.use(favicon(__dirname + '/src/assets/static/favicon.ico'));
 
   let staticPrefix = path.join(
     config.getAppPrefix(),
