@@ -6,7 +6,7 @@ const env = {
   NODE_ENV: process.env.NODE_ENV || 'development',
 };
 if (__isBrowser__) {
-  console.table(env);
+  console.log(env);
 }
 
 export default env;

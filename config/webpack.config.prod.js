@@ -37,7 +37,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   },
   mode: 'production',
   // devtool: 'hidden-source-map',
-  stats: { children: false },
+  stats: { children: false, warnings: false },
   plugins: [
     new MiniCssExtractPlugin({
       filename: '[name]-[hash:9].css',
@@ -55,9 +55,18 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   //new in webpack4
   optimization: {
     namedModules: false,
-    runtimeChunk: 'single',
+    runtimeChunk: { name: 'vendors' },
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
     concatenateModules: !isSSREnabled, //ModuleConcatenationPlugin
+    splitChunks: {
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/i,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
+    },
     minimizer: [
       new UglifyJsPlugin({
         uglifyOptions: {
