@@ -109,7 +109,7 @@ async function initHMR() {
       compiler,
       hotClient: {
         // port: availPort,
-        // logLevel: 'warn',
+        logLevel: 'error',
         hmr: true,
         reload: true,
       },
