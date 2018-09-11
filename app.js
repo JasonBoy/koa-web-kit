@@ -12,7 +12,7 @@ const serveStatic = require('koa-static');
 const convert = require('koa-convert');
 const helmet = require('koa-helmet');
 const favicon = require('koa-favicon');
-const _ = require('lodash');
+const isEmpty = require('lodash.isempty');
 
 const logger = require('./services/logger');
 const index = require('./routes/index');
@@ -143,7 +143,7 @@ async function initHMR() {
 
 function initProxy() {
   //api proxy
-  if (config.isNodeProxyEnabled() && !_.isEmpty(API_ENDPOINTS)) {
+  if (config.isNodeProxyEnabled() && !isEmpty(API_ENDPOINTS)) {
     for (const prefix in API_ENDPOINTS) {
       if (
         API_ENDPOINTS.hasOwnProperty(prefix) &&
