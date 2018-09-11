@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './GitHub.scss';
 import isEmpty from 'lodash.isempty';
+import r, { api, Request } from 'modules/Request';
 
 class GitHub extends React.Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class GitHub extends React.Component {
   }
 
   componentDidMount() {
+    console.log(api);
     if (isEmpty(this.state.github)) {
       fetch('https://api.github.com/repos/jasonboy/wechat-jssdk/branches')
         .then(res => res.json())
