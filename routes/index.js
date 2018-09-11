@@ -11,7 +11,7 @@ const renderer = new ServerRenderer({
 
 const config = require('../config/env');
 const utils = require('../config/utils');
-const logger = require('../services/logger');
+const { logger } = require('../services/logger');
 
 const appPrefix = utils.normalizeTailSlash(config.getAppPrefix());
 
