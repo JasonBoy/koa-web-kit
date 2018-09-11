@@ -54,10 +54,8 @@ const webpackConfig = {
     extensions: ['.js', '.jsx', '.json'],
     alias: {
       src: APP_PATH,
-      content: utils.resolve('src/content'),
+      modules: utils.resolve('src/modules'),
       components: utils.resolve('src/components'),
-      store: utils.resolve('src/store'),
-      'lodash-es': 'lodash',
     },
   },
   module: {
