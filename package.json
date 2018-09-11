@@ -141,7 +141,7 @@
     "webpack-node-externals": "1.7.2"
   },
   "browserslist": [
-    "> 0.5%",
+    "> 1%",
     "not ie 11",
     "not op_mini all"
   ],
