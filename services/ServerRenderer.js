@@ -5,7 +5,7 @@ const { Transform } = require('stream');
 
 const config = require('../config/env');
 const utils = require('../config/utils');
-const logger = require('./logger');
+const { logger } = require('./logger');
 
 const Cache = require('./Cache');
 

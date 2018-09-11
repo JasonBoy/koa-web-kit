@@ -7,14 +7,13 @@ const Koa = require('koa');
 const mount = require('koa-mount');
 const compress = require('koa-compress');
 const session = require('koa-session');
-const morgan = require('koa-morgan');
 const serveStatic = require('koa-static');
 const convert = require('koa-convert');
 const helmet = require('koa-helmet');
 const favicon = require('koa-favicon');
 const isEmpty = require('lodash.isempty');
 
-const logger = require('./services/logger');
+const { logger, Logger } = require('./services/logger');
 const index = require('./routes/index');
 const apiRouter = require('./routes/proxy');
 const sysUtils = require('./config/utils');
@@ -35,7 +34,8 @@ app.env = config.getNodeEnv() || 'development';
 app.keys = ['koa-web-kit'];
 app.proxy = true;
 
-app.use(morgan(DEV_MODE ? 'dev' : 'tiny'));
+app.use(Logger.createMorganLogger());
+app.use(logger.createRequestsLogger());
 app.use(helmet());
 
 (async function() {
@@ -78,7 +78,7 @@ function initApp() {
   app.use(index.routes());
 
   app.on('error', err => {
-    logger.error(err);
+    logger.error(err.stack);
   });
 
   //and then give it a port to listen for
