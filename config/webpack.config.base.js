@@ -6,7 +6,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const ReactLoadablePlugin = require('react-loadable/webpack')
   .ReactLoadablePlugin;
 
@@ -55,10 +54,8 @@ const webpackConfig = {
     extensions: ['.js', '.jsx', '.json'],
     alias: {
       src: APP_PATH,
-      content: utils.resolve('src/content'),
+      modules: utils.resolve('src/modules'),
       components: utils.resolve('src/components'),
-      store: utils.resolve('src/store'),
-      'lodash-es': 'lodash',
     },
   },
   module: {
@@ -123,9 +120,6 @@ const webpackConfig = {
       options: {
         context: CONTENT_PATH,
       },
-    }),
-    new MomentLocalesPlugin({
-      localesToKeep: ['zh-cn'],
     }),
     new HtmlWebpackPlugin({
       template: './views/index.html',

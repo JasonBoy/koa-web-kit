@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const logger = require('../services/logger');
+const { logger } = require('../services/logger');
 const { slugify } = require('../utils/common');
 const makeDir = require('make-dir');
 

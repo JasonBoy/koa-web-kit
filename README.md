@@ -119,7 +119,23 @@ The project comes with default config files just like `app-config.js.sample`, wh
 > Priority: *Environment Variables* > *app-config.js* > *config.default.[dev|prod].js*
 
 ### Logs
-The builtin `services/logger.js` provides some default log functionality for your app, it uses [winston](https://github.com/winstonjs/winston) for async log. You can add more `transport`s for different level logging.
+The builtin `services/logger.js` provides some default log functionality for your app.
+By default, the manual log(calling like `logger.info()`) will be put into `./logs/app.log` file,  
+and the http requests will be put into `./logs/requests.log`,  
+both will also be logged to console.  
+For more options, checkout the [pino](https://github.com/pinojs/pino).  
+
+```javascript
+//use the default logger
+const { logger, Logger } = require('../services/logger');
+logger.info('message');
+logger.error(new Error('test error'));
+//create custom logger, log into a different file
+const pino = require('pino');
+//the 2nd params for the constructor is for only for pino options
+const mylogger = new Logger({destination: pino.destination('./logs/my-log.log')}, {});
+mylogger.info('my log message');
+```
 
 ### Production Deployment
 

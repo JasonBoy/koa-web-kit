@@ -5,7 +5,7 @@ const { Transform } = require('stream');
 
 const config = require('../config/env');
 const utils = require('../config/utils');
-const logger = require('./logger');
+const { logger } = require('./logger');
 
 const Cache = require('./Cache');
 
@@ -89,7 +89,7 @@ class ServerRenderer {
     this.ssrEnabled = options.hasOwnProperty('ssr')
       ? !!options.ssr
       : isSSREnabled;
-    this.cache = options.cache || new Cache(options);
+    this.cache = options.cache || (this.ssrEnabled ? new Cache(options) : null);
     this.streaming = !!options.streaming;
   }
 
@@ -195,7 +195,7 @@ class ServerRenderer {
     </html>
   `;
 
-    this.cache.set(ctx.path, ret);
+    this.cache && this.cache.set(ctx.path, ret);
     return ret;
   }
 
@@ -296,7 +296,7 @@ class ServerRenderer {
    * @return {boolean}
    */
   isCacheMatched(key) {
-    if (this.cache.has(key)) {
+    if (this.cache && this.cache.has(key)) {
       logger.info(`Cache for [${key}] matched!`);
       return true;
     }

@@ -3,9 +3,8 @@
  */
 
 const request = require('request');
-const _ = require('lodash');
 
-const logger = require('../services/logger');
+const { logger } = require('../services/logger');
 const appConfig = require('../config/env');
 const isCustomAPIPrefix = appConfig.isCustomAPIPrefix();
 const defaultEndpoint = appConfig.getDefaultApiEndPoint();

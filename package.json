@@ -26,7 +26,7 @@
     "precommit": "lint-staged"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.3"
   },
   "lint-staged": {
     "linters": {
@@ -60,6 +60,7 @@
     "bootstrap": "4.1.3",
     "chalk": "2.4.1",
     "classnames": "2.2.6",
+    "date-fns": "1.29.0",
     "from2-string": "1.1.0",
     "get-port": "4.0.0",
     "koa": "2.5.2",
@@ -71,13 +72,14 @@
     "koa-history-api-fallback": "0.1.3",
     "koa-morgan": "1.0.1",
     "koa-mount": "3.0.0",
+    "koa-pino-logger": "2.1.3",
     "koa-router": "7.4.0",
     "koa-session": "5.9.0",
     "koa-static": "5.0.0",
-    "lodash": "4.17.10",
     "lodash.isempty": "4.4.0",
     "make-dir": "1.3.0",
-    "moment": "2.22.2",
+    "pino": "5.5.0",
+    "pino-pretty": "2.2.0",
     "pm2": "3.0.4",
     "prop-types": "15.6.2",
     "qs": "6.5.2",
@@ -89,25 +91,25 @@
     "request-debug": "0.2.0",
     "slugify": "1.3.1",
     "url-parse": "1.4.3",
-    "whatwg-fetch": "2.0.4",
-    "winston": "3.0.0"
+    "whatwg-fetch": "2.0.4"
   },
   "devDependencies": {
+    "@babel/cli": "7.0.0",
+    "@babel/core": "7.0.0",
+    "@babel/helper-module-imports": "7.0.0",
+    "@babel/plugin-proposal-class-properties": "7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "7.0.0",
+    "@babel/plugin-transform-modules-commonjs": "7.0.0",
+    "@babel/plugin-transform-react-jsx-source": "7.0.0",
+    "@babel/plugin-transform-runtime": "7.0.0",
+    "@babel/preset-env": "7.0.0",
+    "@babel/preset-react": "7.0.0",
+    "@babel/runtime": "7.0.0",
     "autoprefixer": "9.1.3",
-    "babel-cli": "6.26.0",
-    "babel-core": "6.26.3",
-    "babel-loader": "7.1.5",
+    "babel-loader": "8.0.2",
     "babel-minify-webpack-plugin": "0.3.1",
-    "babel-plugin-import-inspector": "2.0.0",
-    "babel-plugin-lodash": "3.3.4",
-    "babel-plugin-syntax-dynamic-import": "6.18.0",
-    "babel-plugin-transform-class-properties": "6.24.1",
-    "babel-plugin-transform-es2015-modules-commonjs": "6.26.2",
-    "babel-plugin-transform-object-rest-spread": "6.26.0",
-    "babel-plugin-transform-react-jsx-source": "6.22.0",
-    "babel-plugin-transform-runtime": "6.23.0",
-    "babel-preset-env": "1.7.0",
-    "babel-preset-react": "6.24.1",
+    "babel-plugin-import-inspector": "nodkz/babel-plugin-import-inspector.git#babel7",
     "chai": "4.1.2",
     "clean-webpack-plugin": "0.1.19",
     "copy-webpack-plugin": "4.5.2",
@@ -123,7 +125,6 @@
     "lint-staged": "7.2.2",
     "mini-css-extract-plugin": "0.4.2",
     "mocha": "5.2.0",
-    "moment-locales-webpack-plugin": "1.0.7",
     "node-sass": "4.9.3",
     "nodemon": "1.18.4",
     "npm-run-all": "4.1.3",
@@ -143,7 +144,7 @@
     "webpack-node-externals": "1.7.2"
   },
   "browserslist": [
-    "> 0.5%",
+    "> 1%",
     "not ie 11",
     "not op_mini all"
   ],
