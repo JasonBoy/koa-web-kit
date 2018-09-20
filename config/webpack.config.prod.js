@@ -56,6 +56,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   optimization: {
     namedModules: false,
     runtimeChunk: { name: 'vendors' },
+    // runtimeChunk: 'single',
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
     concatenateModules: !isSSREnabled, //ModuleConcatenationPlugin
     splitChunks: {

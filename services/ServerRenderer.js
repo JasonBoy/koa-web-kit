@@ -45,17 +45,18 @@ if (isSSREnabled) {
         .join('\n')
     : '';
   // console.log('styleLinks: ', styleLinks);
-  manifestInlineScript = `<script type="text/javascript" src="${publicPath +
-    manifest[ENTRY_NAME.RUNTIME_JS]}"></script>`;
-  if (!DEV_MODE) {
-    // console.log(manifest);
-    // console.log(manifest[ENTRY_NAME.RUNTIME_JS]);
-    const temp = fs.readFileSync(
-      path.join(__dirname, `../build/app/${manifest[ENTRY_NAME.RUNTIME_JS]}`),
-      { encoding: 'utf-8' }
-    );
-    manifestInlineScript = `<script type="text/javascript">${temp}</script>`;
+  if (DEV_MODE) {
+    manifestInlineScript = `<script type="text/javascript" src="${publicPath +
+      manifest[ENTRY_NAME.RUNTIME_JS]}"></script>`;
   }
+
+  // if (!DEV_MODE) {
+  //   const temp = fs.readFileSync(
+  //     path.join(__dirname, `../build/app/${manifest[ENTRY_NAME.RUNTIME_JS]}`),
+  //     { encoding: 'utf-8' }
+  //   );
+  //   manifestInlineScript = `<script type="text/javascript">${temp}</script>`;
+  // }
 
   s = new SSR();
 } else if (!isHMREnabled) {
