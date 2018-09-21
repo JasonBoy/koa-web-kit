@@ -17,6 +17,7 @@ module.exports = {
   CUSTOM_API_PREFIX: true,
   ENABLE_HMR: false,
   ENABLE_SSR: false,
+  INLINE_STYLES: false,
   API_ENDPOINTS: {
     defaultPrefix: '/api-proxy',
     '/api-proxy': 'http://127.0.0.1:3001',

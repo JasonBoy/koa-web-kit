@@ -145,6 +145,9 @@ module.exports = {
   getDefaultApiEndPointKey: () => {
     return DEFAULT_PREFIX_KEY;
   },
+  isInlineStyles: () => {
+    return getConfigProperty('INLINE_STYLES');
+  },
   getEnv: key => {
     return getConfigProperty(key);
   },

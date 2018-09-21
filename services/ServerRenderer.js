@@ -14,6 +14,7 @@ const isHMREnabled = config.isHMREnabled();
 const ENTRY_NAME = utils.ENTRY_NAME;
 const publicPath = utils.getPublicPath();
 const DEV_MODE = config.isDevMode();
+const isInlineStyles = config.isInlineStyles();
 
 let indexHtml = '';
 let s;
@@ -36,11 +37,11 @@ if (isSSREnabled) {
     ? groupedManifest.styles
         .map(style => {
           //inline app css
-          // if (!DEV_MODE && appCss === style) {
-          //   return `<style>${fs.readFileSync(
-          //     path.join(__dirname, '../build/app/' + style)
-          //   )}</style>`;
-          // }
+          if (isInlineStyles && !DEV_MODE && appCss === style) {
+            return `<style>${fs.readFileSync(
+              path.join(__dirname, '../build/app/' + style)
+            )}</style>`;
+          }
           return `<link href="${publicPath}${style}" rel="stylesheet">`;
         })
         .join('\n')
