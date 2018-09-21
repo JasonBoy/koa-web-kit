@@ -21,6 +21,7 @@ let manifest;
 let groupedManifest;
 let styleLinks = '';
 let manifestInlineScript = '';
+let vendorsScript = '';
 
 if (isSSREnabled) {
   const SSR = require('../build/node/ssr');
@@ -35,19 +36,23 @@ if (isSSREnabled) {
     ? groupedManifest.styles
         .map(style => {
           //inline app css
-          if (!DEV_MODE && appCss === style) {
-            return `<style>${fs.readFileSync(
-              path.join(__dirname, '../build/app/' + style)
-            )}</style>`;
-          }
+          // if (!DEV_MODE && appCss === style) {
+          //   return `<style>${fs.readFileSync(
+          //     path.join(__dirname, '../build/app/' + style)
+          //   )}</style>`;
+          // }
           return `<link href="${publicPath}${style}" rel="stylesheet">`;
         })
         .join('\n')
     : '';
   // console.log('styleLinks: ', styleLinks);
-  if (DEV_MODE) {
+  if (manifest[ENTRY_NAME.RUNTIME_JS]) {
     manifestInlineScript = `<script type="text/javascript" src="${publicPath +
       manifest[ENTRY_NAME.RUNTIME_JS]}"></script>`;
+  }
+  if (manifest[ENTRY_NAME.VENDORS_JS]) {
+    vendorsScript = `<script type="text/javascript" src="${publicPath +
+      manifest[ENTRY_NAME.VENDORS_JS]}"></script>`;
   }
 
   // if (!DEV_MODE) {
@@ -188,8 +193,8 @@ class ServerRenderer {
           extra.initialData || {}
         )}</script>
         ${manifestInlineScript}
+        ${vendorsScript}
         ${renderedComponentsScripts}
-        
         <script type="text/javascript" src="${publicPath +
           manifest[ENTRY_NAME.APP_JS]}"></script>
       </body>
@@ -244,6 +249,7 @@ class ServerRenderer {
         extra.initialData || {}
       )}</script>
         ${manifestInlineScript}
+        ${vendorsScript}
         ${renderedComponentsScripts}
         <script type="text/javascript" src="${publicPath +
           manifest[ENTRY_NAME.APP_JS]}"></script>

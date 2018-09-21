@@ -55,7 +55,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   //new in webpack4
   optimization: {
     namedModules: false,
-    runtimeChunk: { name: 'vendors' },
+    runtimeChunk: { name: utils.ENTRY_NAME.VENDORS },
     // runtimeChunk: 'single',
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
     concatenateModules: !isSSREnabled, //ModuleConcatenationPlugin
@@ -63,7 +63,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/]/i,
-          name: 'vendors',
+          name: utils.ENTRY_NAME.VENDORS,
           chunks: 'all',
         },
       },
