@@ -38,7 +38,8 @@ yarn
 npm install
 ```
 2. Start Dev Server  
-`npm run dev` to start koa with HMR enabled  
+`npm run dev` to start koa with HMR enabled, or  
+`npm run dev:ssr` to start dev server with SSR enabled(yet HMR will be disabled for now)
 3. Go to `http://localhost:3000` to view the default react page
 
 ### Project Structure
