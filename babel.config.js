@@ -23,12 +23,6 @@ module.exports = function(api) {
       '@babel/plugin-syntax-dynamic-import',
       '@babel/plugin-transform-modules-commonjs',
       'react-loadable/babel',
-      // [
-      //   'import-inspector',
-      //   {
-      //     serverSideRequirePath: true,
-      //   },
-      // ],
     ],
   };
 };

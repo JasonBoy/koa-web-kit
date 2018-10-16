@@ -1,7 +1,6 @@
 'use strict';
 
 const webpackMerge = require('webpack-merge');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
@@ -68,27 +67,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
         },
       },
     },
-    minimizer: [
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          warnings: false,
-          compress: {
-            warnings: false,
-            drop_console: true,
-            dead_code: true,
-            drop_debugger: true,
-          },
-          output: {
-            comments: false,
-            beautify: false,
-          },
-          mangle: true,
-        },
-        parallel: true,
-        sourceMap: true,
-      }),
-      new OptimizeCSSAssetsPlugin({}),
-    ],
+    minimizer: [new OptimizeCSSAssetsPlugin({})],
   },
 });
 

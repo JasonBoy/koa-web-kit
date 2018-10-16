@@ -5,7 +5,7 @@ const request = require('request');
 const ServerRenderer = require('../services/ServerRenderer');
 
 const renderer = new ServerRenderer({
-  streaming: true,
+  streaming: false,
   // flushInterval: 1000 * 30, //flush every 30s
 });
 
