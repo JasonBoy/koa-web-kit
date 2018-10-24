@@ -2,7 +2,6 @@
 
 const webpackMerge = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 const PreloadWebpackPlugin = require('preload-webpack-plugin');
@@ -67,7 +66,6 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
         },
       },
     },
-    minimizer: [new OptimizeCSSAssetsPlugin({})],
   },
 });
 
