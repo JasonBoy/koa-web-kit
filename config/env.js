@@ -47,7 +47,7 @@ if (hasCustomConfig) {
 } else {
   configInfo = !nodeBuildEnv ? prodConfig : devConfig;
   checkMsg += `Using [${chalk.green(
-    !nodeBuildEnv ? 'config.default.dev' : 'config.default.prod'
+    !nodeBuildEnv ? 'config.default.prod' : 'config.default.dev'
   )}] as app configuration`;
 }
 
