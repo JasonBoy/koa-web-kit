@@ -9,7 +9,7 @@ module.exports = {
       name: 'koa-web-kit',
       script: './app.js',
       instances: 0,
-      exec_mode: 'cluster',
+      exec_mode: 'cluster_mode',
       watch: false,
       env: {
         NODE_ENV: 'development',
