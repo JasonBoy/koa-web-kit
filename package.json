@@ -156,7 +156,9 @@
       "build/node",
       "routes/",
       "utils/",
-      "services/"
+      "services/",
+      "app-config.js",
+      "app.js"
     ]
   }
 }
