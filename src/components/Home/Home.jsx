@@ -27,12 +27,14 @@ class Home extends React.Component {
           <Link className="list-group-item" to="/hello">
             Hello Webpack 4
           </Link>
-          <Link className="list-group-item" to="/hello-2">
-            Hello 2
-          </Link>
-          <Link className="list-group-item" to="/github">
-            Github
-          </Link>
+          <>
+            <Link className="list-group-item" to="/hello-2">
+              Hello 2
+            </Link>
+            <Link className="list-group-item" to="/github">
+              Github
+            </Link>
+          </>
         </div>
       </div>
     );
