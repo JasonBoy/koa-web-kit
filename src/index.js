@@ -1,8 +1,9 @@
 //bootstrap and custom
-import 'scss/vendors.scss';
+// import 'scss/vendors.scss';
+//import all bootstrap dist css
+import 'bootstrap/dist/css/bootstrap.css';
 //app scss entry
 import 'scss/index.scss';
-// import 'bootstrap/dist/css/bootstrap.css';
 
 import 'modules/env';
 

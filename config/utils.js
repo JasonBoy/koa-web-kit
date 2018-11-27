@@ -141,3 +141,21 @@ exports.getCSSLoaderExtract = function getCSSLoaderExtract(devMode = false) {
     fallback: LOADER.STYLE_LOADER,
   };
 };
+
+exports.getCSSLoader = function getCSSLoader(
+  modules,
+  importLoaders = 1,
+  localIdentName = '[local]_[hash:base64:5]'
+) {
+  if (!modules) {
+    return LOADER.CSS_LOADER;
+  }
+  return {
+    loader: LOADER.CSS_LOADER,
+    options: {
+      modules,
+      importLoaders,
+      localIdentName,
+    },
+  };
+};

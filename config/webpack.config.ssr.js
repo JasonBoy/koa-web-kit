@@ -10,6 +10,7 @@ const nodeExternals = require('webpack-node-externals');
 const LOADER = utils.LOADER;
 
 const DEV_MODE = config.isDevMode();
+const isCSSModules = config.isCSSModules();
 const APP_PATH = utils.APP_PATH;
 
 const prefix = utils.normalizeTailSlash(
@@ -58,8 +59,8 @@ const webpackConfig = webpackMerge(
         {
           test: /\.(sa|sc|c)ss$/,
           use: [
-            // MiniCssExtractPlugin.loader,
-            LOADER.CSS_LOADER,
+            LOADER.STYLE_LOADER,
+            utils.getCSSLoader(isCSSModules, 2),
             LOADER.POSTCSS_LOADER,
             LOADER.SASS_LOADER,
           ],

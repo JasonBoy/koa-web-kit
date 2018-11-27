@@ -9,6 +9,7 @@ const utils = require('./utils');
 const LOADER = utils.LOADER;
 
 const isHMREnabled = config.isHMREnabled();
+const isCSSModules = config.isCSSModules();
 
 const webpackConfig = webpackMerge(baseWebpackConfig, {
   output: {
@@ -19,10 +20,30 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   module: {
     rules: [
       {
-        test: /\.(sa|sc|c)ss$/,
+        //just import css, without doing CSS MODULES stuff when it's from 3rd libs
+        test: /\.css$/,
+        include: /node_modules/,
         use: [
           isHMREnabled ? LOADER.STYLE_LOADER : MiniCssExtractPlugin.loader,
           LOADER.CSS_LOADER,
+        ],
+      },
+      {
+        //app css code should check the CSS MODULES config
+        test: /\.css$/,
+        include: utils.resolve('src'),
+        use: [
+          isHMREnabled ? LOADER.STYLE_LOADER : MiniCssExtractPlugin.loader,
+          utils.getCSSLoader(isCSSModules),
+          LOADER.POSTCSS_LOADER,
+        ],
+      },
+      {
+        //app scss/sass code should check the CSS MODULES config
+        test: /\.(sa|sc)ss$/,
+        use: [
+          isHMREnabled ? LOADER.STYLE_LOADER : MiniCssExtractPlugin.loader,
+          utils.getCSSLoader(isCSSModules, 2),
           LOADER.POSTCSS_LOADER,
           LOADER.SASS_LOADER,
         ],

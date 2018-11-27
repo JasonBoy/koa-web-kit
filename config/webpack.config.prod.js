@@ -14,6 +14,7 @@ const LOADER = utils.LOADER;
 
 const isBundleAnalyzerEnabled = config.isBundleAnalyzerEnabled();
 const isSSREnabled = config.isSSREnabled();
+const isCSSModules = config.isCSSModules();
 
 const webpackConfig = webpackMerge(baseWebpackConfig, {
   output: {
@@ -24,10 +25,26 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   module: {
     rules: [
       {
-        test: /\.(sa|sc|c)ss$/,
+        //just import css, without doing CSS MODULES stuff when it's from 3rd libs
+        test: /\.css$/,
+        include: /node_modules/,
+        use: [MiniCssExtractPlugin.loader, LOADER.CSS_LOADER],
+      },
+      {
+        //app css code should check the CSS MODULES config
+        test: /\.css$/,
+        include: utils.resolve('src'),
         use: [
           MiniCssExtractPlugin.loader,
-          LOADER.CSS_LOADER,
+          utils.getCSSLoader(isCSSModules, 1, '[hash:base64:5]'),
+          LOADER.POSTCSS_LOADER,
+        ],
+      },
+      {
+        test: /\.(sa|sc)ss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          utils.getCSSLoader(isCSSModules, 2, '[hash:base64:5]'),
           LOADER.POSTCSS_LOADER,
           LOADER.SASS_LOADER,
         ],

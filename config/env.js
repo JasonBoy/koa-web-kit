@@ -147,6 +147,9 @@ module.exports = {
   isInlineStyles: () => {
     return getConfigProperty('INLINE_STYLES');
   },
+  isCSSModules: () => {
+    return getConfigProperty('CSS_MODULES');
+  },
   getEnv: key => {
     return getConfigProperty(key);
   },
