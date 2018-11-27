@@ -2,6 +2,7 @@
 
 const webpackMerge = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserWebpackPlugin = require('terser-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 const PreloadWebpackPlugin = require('preload-webpack-plugin');
@@ -66,6 +67,26 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
         },
       },
     },
+    minimizer: [
+      new TerserWebpackPlugin({
+        terserOptions: {
+          warnings: false,
+          compress: {
+            warnings: false,
+            drop_console: true,
+            dead_code: true,
+            drop_debugger: true,
+          },
+          output: {
+            comments: false,
+            beautify: false,
+          },
+          mangle: true,
+        },
+        parallel: true,
+        sourceMap: false,
+      }),
+    ],
   },
 });
 
