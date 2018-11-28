@@ -8,16 +8,16 @@
 
 🚀A Modern, Production-Ready, and Full-Stack Node Web Framework
 
-[Release Notes](https://github.com/JasonBoy/koa-web-kit/releases)  
+[Release Notes](https://github.com/JasonBoy/koa-web-kit/releases)
 [An Introduction for koa-web-kit](https://blog.lovemily.me/koa-web-kit-a-modern-production-ready-and-full-stack-node-web-framework/)
 
 ## Features
 
 - ✨Built with all modern frameworks and libs, including Koa2, React(like [Vue?](https://github.com/JasonBoy/vue-web-kit)), Bootstrap-v4(css only)...
 - 📦Get all the Node.JS full stack development experience out of the box
-- 🔥Hot Module Replacement support without refreshing whole page, and bundle size analyzer support
+- 🔥Hot Module Replacement support, and bundle size analyzer report
 - 📉Async/Await support for writing neat async code
-- 💖SASS preprocessor, PostCSS, autoprefixer for better css compatibility
+- 💖CSS Modules, SASS preprocessor, PostCSS, autoprefixer
 - 🎉Simple API Proxy bundled, no complex extra nginx configuration
 - 🌈Available for generating static react site, also with SSR support
 - ⚡️Just one npm command to deploy your app to production
@@ -25,20 +25,20 @@
 
 ### Quick Start
 
-Get the [latest version](https://github.com/JasonBoy/koa-web-kit/releases), and go to your project root,  
+Get the [latest version](https://github.com/JasonBoy/koa-web-kit/releases), and go to your project root,
 Also available on [npm](https://www.npmjs.com/package/koa-web-kit).
 
 > Before start, copy the `config/app-config.js.sample` to `app-config.js`(to project root or `config` dir) for local dev configuration
 
-1. Install Dependencies  
+1. Install Dependencies
 ```bash
 #with yarn, yarn.lock is included
 yarn
-#or npm, no package-lock.json is included, use it as your own taste 
+#or npm, no package-lock.json is included, use it as your own taste
 npm install
 ```
-2. Start Dev Server  
-`npm run dev` to start koa with HMR enabled, or  
+2. Start Dev Server
+`npm run dev` to start koa with HMR enabled, or
 `npm run dev:ssr` to start dev server with SSR enabled(yet HMR will be disabled for now)
 3. Go to `http://localhost:3000` to view the default react page
 
@@ -58,7 +58,7 @@ npm install
 
 ### Application Config and Environment Variables
 
-Every project has some configuration or environment variables to make it run differently in different environments,  
+Every project has some configuration or environment variables to make it run differently in different environments,
 for koa-web-kit, it also provides different ways to configure your ENVs.
 
 #### app-config.js/app-config.js.sample
@@ -86,9 +86,11 @@ module.exports = {
   //if true, the "/prefix" below will be stripped, otherwise, the full pathname will be used for proxy
   "CUSTOM_API_PREFIX": true,
   //if enable HMR in dev mode, `npm run dev` will automatically enable this
-  "ENABLE_HMR": false,
+  "ENABLE_HMR": true,
   //if need to enable Server Side Rendering, `npm run dev:ssr` will automatically enable this, HMR need to be disabled for now
   "ENABLE_SSR": false,
+  //enable CSS Modules, should disable this when SSR is enabled for now
+  "CSS_MODULES": true,
   //API Proxies for multiple api endpoints with different prefix in router
   "API_ENDPOINTS": {
     //set a default prefix
@@ -103,14 +105,14 @@ module.exports = {
 #### Environment Variables
 
 All the variables in `app-config.js` can be set with Environment Variables(except for `API_ENDPOINTS` for now, since it has nested json structure), which have higher priority than `app-config.js`.
-e.g:  
-`> NODE_ENV=production npm start`  
-or  
+e.g:
+`> NODE_ENV=production npm start`
+or
 ```bash
 export PORT=3001
 export NODE_ENV=production
 npm start
-``` 
+```
 BTW you can do Everything you can within cli to set your env.
 
 #### Default `config.default.[dev|prod].js` in `config` dir
@@ -121,10 +123,10 @@ The project comes with default config files just like `app-config.js.sample`, wh
 
 ### Logs
 The builtin `services/logger.js` provides some default log functionality for your app.
-By default, the manual log(calling like `logger.info()`) will be put into `./logs/app.log` file,  
-and the http requests will be put into `./logs/requests.log`,  
-both will also be logged to console.  
-For more options, checkout the [pino](https://github.com/pinojs/pino).  
+By default, the manual log(calling like `logger.info()`) will be put into `./logs/app.log` file,
+and the http requests will be put into `./logs/requests.log`,
+both will also be logged to console.
+For more options, checkout the [pino](https://github.com/pinojs/pino).
 
 ```javascript
 //use the default logger
@@ -140,24 +142,24 @@ mylogger.info('my log message');
 
 ### Production Deployment
 
-Deploy your app to production is extremely simple with only one npm script command, you can provide couple of options for different deployment phases(e.g: install, build, start server),    
-[pm2](https://github.com/Unitech/pm2) inside is used as node process manager.  
+Deploy your app to production is extremely simple with only one npm script command, you can provide couple of options for different deployment phases(e.g: install, build, start server),
+[pm2](https://github.com/Unitech/pm2) inside is used as node process manager.
 > Global installation of PM2 is not required now, we will use the locally installed pm2, but if you want to use `pm2` cmd everywhere, you may still want to install it globally
 
 
 #### Usage
 
-`npm run deploy -- [skipInstall] [skipBuild] [skipServer]`  
-The last three options are boolean values in `0`(or empty, false) and `1`(true).  
+`npm run deploy -- [skipInstall] [skipBuild] [skipServer]`
+The last three options are boolean values in `0`(or empty, false) and `1`(true).
 
 #### Examples:
 
-- `npm run deploy`: no options provided, defaults to do all the tasks.  
+- `npm run deploy`: no options provided, defaults to do all the tasks.
 - `npm run deploy -- 1`: same as `npm run deploy:noinstall` as an alias, this will skip the `npm install --no-shrinkwrap`, and just go to build and start server.
 - `npm run deploy -- 1 0 1`: which will only build your assets
 - `npm run deploy -- 1 1 0`: which will just start node server, useful when all assets were built on a different machine.
 
-> You may need to create/update the `deploy.sh` to meet your own needs. 
+> You may need to create/update the `deploy.sh` to meet your own needs.
 
 ### LICENSE
 
