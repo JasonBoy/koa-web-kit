@@ -16,6 +16,7 @@ module.exports = {
   APP_PREFIX: '',
   CUSTOM_API_PREFIX: true,
   ENABLE_HMR: true,
+  HMR_PORT: 12345,
   ENABLE_SSR: false,
   INLINE_STYLES: false,
   CSS_MODULES: true,

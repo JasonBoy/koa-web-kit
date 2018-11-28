@@ -150,6 +150,9 @@ module.exports = {
   isCSSModules: () => {
     return isTrue(getConfigProperty('CSS_MODULES'));
   },
+  getHMRPort: () => {
+    return getConfigProperty('HMR_PORT');
+  },
   getEnv: key => {
     return getConfigProperty(key);
   },

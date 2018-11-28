@@ -93,9 +93,12 @@ async function initHMR() {
     logger.info('HMR enabled, initializing HMR...');
     const koaWebpack = require('koa-webpack');
     const historyApiFallback = require('koa-history-api-fallback');
-    // const getPort = require('get-port');
+    // let availPort = config.getHMRPort();
+    // if (!availPort) {
+    //   const getPort = require('get-port');
+    //   availPort = await getPort();
+    // }
     const webpack = require('webpack');
-    // const availPort = await getPort();
     const webpackConfig = require('./config/webpack.config.dev');
     const compiler = webpack(
       Object.assign({}, webpackConfig, {
@@ -105,39 +108,43 @@ async function initHMR() {
         },
       })
     );
-    await koaWebpack({
-      compiler,
-      hotClient: {
-        // port: availPort,
-        logLevel: 'error',
-        hmr: true,
-        reload: true,
-      },
-      devMiddleware: {
-        index: 'index.html',
-        publicPath: webpackConfig.output.publicPath,
-        watchOptions: {
-          aggregateTimeout: 0,
+    return new Promise((resolve, reject) => {
+      koaWebpack({
+        compiler,
+        hotClient: {
+          // port: availPort,
+          port: 0,
+          logLevel: 'error',
+          hmr: true,
+          reload: true,
         },
-        writeToDisk: true,
-        stats: {
-          modules: false,
-          colors: true,
-          children: false,
+        devMiddleware: {
+          index: 'index.html',
+          publicPath: webpackConfig.output.publicPath,
+          watchOptions: {
+            aggregateTimeout: 0,
+          },
+          writeToDisk: true,
+          stats: {
+            modules: false,
+            colors: true,
+            children: false,
+          },
         },
-      },
-    })
-      .then(instance => {
-        if (!HMRInitialized) {
-          HMRInitialized = true;
-          // app.use(instance);
-          app.use(convert(historyApiFallback()));
-          app.use(instance);
-        }
       })
-      .catch(err => {
-        logger.error('[koa-webpack]:', err);
-      });
+        .then(middleware => {
+          if (!HMRInitialized) {
+            HMRInitialized = true;
+            app.use(convert(historyApiFallback()));
+            app.use(middleware);
+            middleware.devMiddleware.waitUntilValid(resolve);
+          }
+        })
+        .catch(err => {
+          logger.error('[koa-webpack]:', err);
+          reject();
+        });
+    });
   }
 }
 
