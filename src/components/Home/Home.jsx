@@ -2,8 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 
-// import './Home.scss';
-import style from 'bootstrap/scss/bootstrap.scss';
+import s from './Home.scss';
 
 class Home extends React.Component {
   constructor(props) {
@@ -12,32 +11,27 @@ class Home extends React.Component {
     this.state = {};
   }
 
-  componentDidMount() {
-    console.log('style["list-group-item"]: ', style);
-  }
+  componentDidMount() {}
 
   render() {
     return (
-      <div className={style.container}>
-        <h3 className={style['text-center']}>Home page</h3>
-        <div className={style['list-group']}>
-          <Link
-            className={classnames(style['list-group-item'], style.active)}
-            to="/"
-          >
+      <div className={classnames('container', s.home)}>
+        <h3 className={'text-center'}>Home page</h3>
+        <div className={'list-group'}>
+          <Link className={classnames('list-group-item', 'active')} to="/">
             Home
           </Link>
-          <Link className={style['list-group-item']} to="/hello/sub-hello">
+          <Link className={'list-group-item'} to="/hello/sub-hello">
             Hello
           </Link>
-          <Link className={style['list-group-item']} to="/hello">
+          <Link className={'list-group-item'} to="/hello">
             Hello Webpack 4
           </Link>
           <>
             <Link className="list-group-item" to="/hello-2">
               Hello 2
             </Link>
-            <Link className={style['list-group-item']} to="/github">
+            <Link className={'list-group-item'} to="/github">
               Github
             </Link>
           </>

@@ -15,6 +15,7 @@ const ENTRY_NAME = utils.ENTRY_NAME;
 const publicPath = utils.getPublicPath();
 const DEV_MODE = config.isDevMode();
 const isInlineStyles = config.isInlineStyles();
+const isCSSModules = config.isCSSModules();
 
 let indexHtml = '';
 let s;
@@ -25,6 +26,11 @@ let manifestInlineScript = '';
 let vendorsScript = '';
 
 if (isSSREnabled) {
+  if (isCSSModules) {
+    logger.error(
+      'When SSR is enabled, [CSS_MODULES] should be disabled for now, you can manually add plugin like "isomorphic-style-loader" to enable both SSR and CSS Modules'
+    );
+  }
   const SSR = require('../build/node/ssr');
   groupedManifest = SSR.groupedManifest;
   manifest = groupedManifest.manifest;

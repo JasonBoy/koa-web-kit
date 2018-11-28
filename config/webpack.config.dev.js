@@ -5,9 +5,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
-
-const LOADER = utils.LOADER;
-
 const isHMREnabled = config.isHMREnabled();
 const isCSSModules = config.isCSSModules();
 
@@ -19,35 +16,14 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   },
   module: {
     rules: [
-      {
-        //just import css, without doing CSS MODULES stuff when it's from 3rd libs
-        test: /\.css$/,
-        include: /node_modules/,
-        use: [
-          isHMREnabled ? LOADER.STYLE_LOADER : MiniCssExtractPlugin.loader,
-          LOADER.CSS_LOADER,
-        ],
-      },
-      {
-        //app css code should check the CSS MODULES config
-        test: /\.css$/,
-        include: utils.resolve('src'),
-        use: [
-          isHMREnabled ? LOADER.STYLE_LOADER : MiniCssExtractPlugin.loader,
-          utils.getCSSLoader(isCSSModules),
-          LOADER.POSTCSS_LOADER,
-        ],
-      },
-      {
-        //app scss/sass code should check the CSS MODULES config
-        test: /\.(sa|sc)ss$/,
-        use: [
-          isHMREnabled ? LOADER.STYLE_LOADER : MiniCssExtractPlugin.loader,
-          utils.getCSSLoader(isCSSModules, 2),
-          LOADER.POSTCSS_LOADER,
-          LOADER.SASS_LOADER,
-        ],
-      },
+      ...utils.getAllStyleRelatedLoaders(
+        true,
+        isHMREnabled,
+        isCSSModules,
+        undefined,
+        false,
+        !isHMREnabled
+      ),
     ],
   },
   mode: 'development',
@@ -72,10 +48,10 @@ if (!isHMREnabled) {
   };
 }
 
-console.log(
-  'webpackConfig.output.publicPath: ',
-  webpackConfig.output.publicPath
-);
+// console.log(
+//   'webpackConfig.output.publicPath: ',
+//   webpackConfig.output.publicPath
+// );
 // console.log(webpackConfig);
 // console.log(webpackConfig.plugins);
 module.exports = webpackConfig;

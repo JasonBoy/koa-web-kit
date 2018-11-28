@@ -7,10 +7,7 @@ const config = require('./env');
 const utils = require('./utils');
 const nodeExternals = require('webpack-node-externals');
 
-const LOADER = utils.LOADER;
-
 const DEV_MODE = config.isDevMode();
-const isCSSModules = config.isCSSModules();
 const APP_PATH = utils.APP_PATH;
 
 const prefix = utils.normalizeTailSlash(
@@ -36,57 +33,20 @@ const webpackConfig = webpackMerge(
     },
     externals: [nodeExternals()],
     resolve: {
-      modules: [APP_PATH, 'node_modules'],
-      extensions: ['.js', '.jsx', '.json'],
-      alias: {
-        src: APP_PATH,
-        modules: utils.resolve('src/modules'),
-        components: utils.resolve('src/components'),
-      },
+      ...utils.getWebpackResolveConfig(),
     },
     module: {
       rules: [
-        {
-          test: /\.jsx?$/,
-          exclude: /node_modules/,
-          use: {
-            loader: 'babel-loader',
-            options: {
-              cacheDirectory: DEV_MODE,
-            },
-          },
-        },
-        {
-          test: /\.(sa|sc|c)ss$/,
-          use: [
-            LOADER.STYLE_LOADER,
-            utils.getCSSLoader(isCSSModules, 2),
-            LOADER.POSTCSS_LOADER,
-            LOADER.SASS_LOADER,
-          ],
-        },
-        {
-          test: /\.(png|jpe?g|gif|svg)$/,
-          use: [
-            {
-              loader: 'url-loader',
-              options: {
-                context: APP_PATH,
-                name: utils.getResourceName(DEV_MODE),
-                limit: 1024,
-              },
-            },
-          ],
-        },
-        {
-          test: /\.(woff|woff2|eot|ttf|wav|mp3)$/,
-          loader: 'file-loader',
-          options: {
-            context: APP_PATH,
-            name: utils.getResourceName(DEV_MODE),
-            limit: 5000,
-          },
-        },
+        utils.getBabelLoader(true),
+        ...utils.getAllStyleRelatedLoaders(
+          DEV_MODE,
+          false,
+          false,
+          undefined,
+          true
+        ),
+        utils.getImageLoader(DEV_MODE, APP_PATH),
+        utils.getMediaLoader(DEV_MODE, APP_PATH),
       ],
     },
     plugins: [

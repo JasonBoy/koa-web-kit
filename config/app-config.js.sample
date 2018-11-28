@@ -15,7 +15,7 @@ module.exports = {
   PREFIX_TRAILING_SLASH: true,
   APP_PREFIX: '',
   CUSTOM_API_PREFIX: true,
-  ENABLE_HMR: false,
+  ENABLE_HMR: true,
   ENABLE_SSR: false,
   INLINE_STYLES: false,
   CSS_MODULES: true,

@@ -10,8 +10,6 @@ const PreloadWebpackPlugin = require('preload-webpack-plugin');
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
-const LOADER = utils.LOADER;
-
 const isBundleAnalyzerEnabled = config.isBundleAnalyzerEnabled();
 const isSSREnabled = config.isSSREnabled();
 const isCSSModules = config.isCSSModules();
@@ -24,31 +22,12 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   },
   module: {
     rules: [
-      {
-        //just import css, without doing CSS MODULES stuff when it's from 3rd libs
-        test: /\.css$/,
-        include: /node_modules/,
-        use: [MiniCssExtractPlugin.loader, LOADER.CSS_LOADER],
-      },
-      {
-        //app css code should check the CSS MODULES config
-        test: /\.css$/,
-        include: utils.resolve('src'),
-        use: [
-          MiniCssExtractPlugin.loader,
-          utils.getCSSLoader(isCSSModules, 1, '[hash:base64:5]'),
-          LOADER.POSTCSS_LOADER,
-        ],
-      },
-      {
-        test: /\.(sa|sc)ss$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          utils.getCSSLoader(isCSSModules, 2, '[hash:base64:5]'),
-          LOADER.POSTCSS_LOADER,
-          LOADER.SASS_LOADER,
-        ],
-      },
+      ...utils.getAllStyleRelatedLoaders(
+        false,
+        false,
+        isCSSModules,
+        '[local]-[hash:base64:5]'
+      ),
     ],
   },
   mode: 'production',

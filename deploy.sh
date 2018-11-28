@@ -48,7 +48,7 @@ echo webpack is bundling modules...
 npm run build
 npm run ssr
 echo =====Build Finished=====
-#yarn run prod
+#yarn run build
 fi
 
 ##Start server with pm2

@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const config = require('./env');
 const SLASH_REGEX = /[\\]+/g;
 
@@ -9,6 +10,7 @@ const LOADER = {
   CSS_LOADER: 'css-loader',
   SASS_LOADER: 'sass-loader',
   POSTCSS_LOADER: 'postcss-loader',
+  IGNORE_LOADER: 'ignore-loader',
 };
 
 const ENTRY_NAME = {
@@ -145,7 +147,7 @@ exports.getCSSLoaderExtract = function getCSSLoaderExtract(devMode = false) {
 exports.getCSSLoader = function getCSSLoader(
   modules,
   importLoaders = 1,
-  localIdentName = '[local]_[hash:base64:5]'
+  localIdentName = '[name]_[local]-[hash:base64:5]'
 ) {
   if (!modules) {
     return LOADER.CSS_LOADER;
@@ -156,6 +158,125 @@ exports.getCSSLoader = function getCSSLoader(
       modules,
       importLoaders,
       localIdentName,
+    },
+  };
+};
+
+exports.getAllStyleRelatedLoaders = function(
+  DEV_MODE,
+  isHMREnabled,
+  isCSSModules,
+  cssModulesIndent,
+  isSSR,
+  isSSREnabled
+) {
+  let styleLoader = LOADER.STYLE_LOADER;
+  if (!DEV_MODE || isSSREnabled) {
+    styleLoader = MiniCssExtractPlugin.loader;
+  } else {
+    if (isHMREnabled) {
+      styleLoader = LOADER.STYLE_LOADER;
+    }
+  }
+  if (isSSR) {
+    styleLoader = LOADER.IGNORE_LOADER;
+  }
+  return [
+    {
+      //just import css, without doing CSS MODULES stuff when it's from 3rd libs
+      test: /\.css$/,
+      include: /node_modules/,
+      use: [styleLoader, LOADER.CSS_LOADER],
+    },
+    {
+      //app css code should check the CSS MODULES config
+      test: /\.css$/,
+      include: exports.resolve('src'),
+      use: [
+        styleLoader,
+        exports.getCSSLoader(isCSSModules, 1, cssModulesIndent),
+        LOADER.POSTCSS_LOADER,
+      ],
+    },
+    {
+      //app scss/sass code should check the CSS MODULES config
+      test: /\.(sa|sc)ss$/,
+      include: /node_modules|vendors/,
+      use: [
+        styleLoader,
+        exports.getCSSLoader(false),
+        LOADER.POSTCSS_LOADER,
+        LOADER.SASS_LOADER,
+      ],
+    },
+    {
+      //app scss/sass code should check the CSS MODULES config
+      test: /\.(sa|sc)ss$/,
+      exclude: /node_modules|vendors/,
+      use: [
+        styleLoader,
+        exports.getCSSLoader(isCSSModules, 2, cssModulesIndent),
+        LOADER.POSTCSS_LOADER,
+        LOADER.SASS_LOADER,
+      ],
+    },
+  ];
+};
+
+exports.getImageLoader = function(devMode, context) {
+  return {
+    test: /\.(png|jpe?g|gif|svg)$/,
+    use: [
+      {
+        loader: 'url-loader',
+        options: {
+          context,
+          name: exports.getResourceName(devMode),
+          limit: 1024,
+        },
+      },
+      // {
+      //   loader: 'image-webpack-loader',
+      //   options: {
+      //     bypassOnDebug: devMode,
+      //   },
+      // },
+    ],
+  };
+};
+exports.getMediaLoader = function(devMode, context) {
+  return {
+    test: /\.(woff|woff2|eot|ttf|wav|mp3)$/,
+    loader: 'file-loader',
+    options: {
+      context,
+      name: exports.getResourceName(devMode),
+      limit: 5000,
+    },
+  };
+};
+exports.getBabelLoader = function(cache) {
+  return {
+    test: /\.jsx?$/,
+    exclude: /node_modules/,
+    use: {
+      loader: 'babel-loader',
+      options: {
+        cacheDirectory: cache,
+      },
+    },
+  };
+};
+exports.getWebpackResolveConfig = function(customAlias = {}) {
+  const appPath = exports.APP_PATH;
+  return {
+    modules: [appPath, 'node_modules'],
+    extensions: ['.js', '.jsx', '.json'],
+    alias: {
+      src: appPath,
+      modules: exports.resolve('src/modules'),
+      components: exports.resolve('src/components'),
+      ...customAlias,
     },
   };
 };

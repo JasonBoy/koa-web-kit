@@ -50,54 +50,13 @@ const webpackConfig = {
     path: APP_BUILD_PATH,
   },
   resolve: {
-    modules: [APP_PATH, 'node_modules'],
-    extensions: ['.js', '.jsx', '.json'],
-    alias: {
-      src: APP_PATH,
-      modules: utils.resolve('src/modules'),
-      components: utils.resolve('src/components'),
-    },
+    ...utils.getWebpackResolveConfig(),
   },
   module: {
     rules: [
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-          },
-        },
-      },
-      {
-        test: /\.(png|jpe?g|gif|svg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              context: CONTENT_PATH,
-              name: utils.getResourceName(DEV_MODE),
-              limit: 1024,
-            },
-          },
-          // {
-          //   loader: 'image-webpack-loader',
-          //   options: {
-          //     bypassOnDebug: DEV_MODE,
-          //   },
-          // },
-        ],
-      },
-      {
-        test: /\.(woff|woff2|eot|ttf|wav|mp3)$/,
-        loader: 'file-loader',
-        options: {
-          context: CONTENT_PATH,
-          name: utils.getResourceName(DEV_MODE),
-          limit: 5000,
-        },
-      },
+      utils.getBabelLoader(DEV_MODE),
+      utils.getImageLoader(DEV_MODE, CONTENT_PATH),
+      utils.getMediaLoader(DEV_MODE, CONTENT_PATH),
     ],
   },
   plugins: [
