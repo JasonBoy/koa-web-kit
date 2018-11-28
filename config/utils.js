@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const autoprefixer = require('autoprefixer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const config = require('./env');
 const SLASH_REGEX = /[\\]+/g;
@@ -37,28 +38,24 @@ exports.getResourceName = function getResourceName(DEV_MODE) {
   return exports.getName('[path][name]', '[ext]', 'hash', DEV_MODE);
 };
 
-exports.getStyleLoaders = function getStyleLoaders() {
-  const lastArg = arguments[arguments.length - 1];
-  const isLastArgBoolean = typeof lastArg === 'boolean';
-  const DEV_MODE = isLastArgBoolean ? lastArg : true;
+exports.getStyleLoaders = function getStyleLoaders(devMode, ...loaders) {
   const temp = [];
-  for (
-    let i = 0,
-      length = isLastArgBoolean ? arguments.length - 1 : arguments.length;
-    i < length;
-    i++
-  ) {
-    const tempLoader = {
-      loader: arguments[i],
+  for (let i = 0, length = loaders.length; i < length; i++) {
+    let loader = loaders[i];
+    const loaderOptions = loader.options || {};
+    if (loader.loader) {
+      loader = loader.loader;
+    }
+    let tempLoader = {
+      loader,
       options: {
         convertToAbsoluteUrls: true,
+        sourceMap: devMode,
+        ...loaderOptions,
       },
     };
-    if (String(arguments[i]).startsWith('sass')) {
+    if (typeof loader === 'string' && loader.startsWith('sass')) {
       tempLoader.options.outputStyle = 'compressed';
-    }
-    if (DEV_MODE) {
-      tempLoader.options.sourceMap = true;
     }
     temp.push(tempLoader);
   }
@@ -125,7 +122,7 @@ exports.getLoaders = function getLoaders(
   if (withSassLoader) {
     loaders.push(LOADER.SASS_LOADER);
   }
-  return exports.getStyleLoaders.apply(undefined, loaders.concat([devMode]));
+  return exports.getStyleLoaders.apply(undefined, [devMode, ...loaders]);
 };
 exports.getSCSSLoaderExtract = function getSCSSLoaderExtract(devMode = false) {
   return {
@@ -136,9 +133,9 @@ exports.getSCSSLoaderExtract = function getSCSSLoaderExtract(devMode = false) {
 exports.getCSSLoaderExtract = function getCSSLoaderExtract(devMode = false) {
   return {
     use: exports.getStyleLoaders(
+      devMode,
       LOADER.CSS_LOADER,
-      LOADER.POSTCSS_LOADER,
-      devMode
+      LOADER.POSTCSS_LOADER
     ),
     fallback: LOADER.STYLE_LOADER,
   };
@@ -186,39 +183,60 @@ exports.getAllStyleRelatedLoaders = function(
       //just import css, without doing CSS MODULES stuff when it's from 3rd libs
       test: /\.css$/,
       include: /node_modules/,
-      use: [styleLoader, LOADER.CSS_LOADER],
+      // use: [styleLoader, LOADER.CSS_LOADER],
+      use: exports.getStyleLoaders(DEV_MODE, styleLoader, LOADER.CSS_LOADER),
     },
     {
       //app css code should check the CSS MODULES config
       test: /\.css$/,
       include: exports.resolve('src'),
-      use: [
+      /*use: [
         styleLoader,
         exports.getCSSLoader(isCSSModules, 1, cssModulesIndent),
         LOADER.POSTCSS_LOADER,
-      ],
+      ],*/
+      use: exports.getStyleLoaders(
+        DEV_MODE,
+        styleLoader,
+        exports.getCSSLoader(isCSSModules, 1, cssModulesIndent),
+        exports.getPostCSSLoader()
+      ),
     },
     {
       //app scss/sass code should check the CSS MODULES config
       test: /\.(sa|sc)ss$/,
       include: /node_modules|vendors/,
-      use: [
+      /*use: [
         styleLoader,
         exports.getCSSLoader(false),
         LOADER.POSTCSS_LOADER,
         LOADER.SASS_LOADER,
-      ],
+      ],*/
+      use: exports.getStyleLoaders(
+        DEV_MODE,
+        styleLoader,
+        exports.getCSSLoader(false),
+        exports.getPostCSSLoader(),
+        LOADER.SASS_LOADER
+      ),
     },
     {
       //app scss/sass code should check the CSS MODULES config
       test: /\.(sa|sc)ss$/,
       exclude: /node_modules|vendors/,
-      use: [
+      /*use: [
         styleLoader,
         exports.getCSSLoader(isCSSModules, 2, cssModulesIndent),
         LOADER.POSTCSS_LOADER,
         LOADER.SASS_LOADER,
-      ],
+      ],*/
+      use: exports.getStyleLoaders(
+        DEV_MODE,
+        styleLoader,
+        exports.getCSSLoader(isCSSModules, 2, cssModulesIndent),
+        exports.getPostCSSLoader(),
+        LOADER.SASS_LOADER
+      ),
     },
   ];
 };
@@ -277,6 +295,14 @@ exports.getWebpackResolveConfig = function(customAlias = {}) {
       modules: exports.resolve('src/modules'),
       components: exports.resolve('src/components'),
       ...customAlias,
+    },
+  };
+};
+exports.getPostCSSLoader = function() {
+  return {
+    loader: LOADER.POSTCSS_LOADER,
+    options: {
+      plugins: [autoprefixer],
     },
   };
 };
