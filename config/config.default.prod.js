@@ -8,7 +8,7 @@ module.exports = {
   PROXY_DEBUG_LEVEL: 0,
   LOG_PATH: '',
   STATIC_ENDPOINT: '',
-  STATIC_PREFIX: '',
+  STATIC_PREFIX: '/static',
   PREFIX_TRAILING_SLASH: true,
   APP_PREFIX: '',
   CUSTOM_API_PREFIX: true,

@@ -4,7 +4,7 @@
   "description": "A modern, production-ready, and full-stack node web framework",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env ENABLE_HMR=1 ENABLE_SSR=0 node app.js",
+    "dev": "cross-env ENABLE_HMR=1 ENABLE_SSR=0 STATIC_PREFIX='' node app.js",
     "dev:ssr": "cross-env ENABLE_HMR=0 CSS_MODULES=0 ENABLE_SSR=1 npm-run-all -p watch watch:ssr start",
     "dev:watch": "cross-env ENABLE_HMR=0 ENABLE_SSR=0 npm-run-all -p watch start",
     "start": "nodemon --trace-warnings app.js",
