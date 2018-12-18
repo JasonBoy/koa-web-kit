@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 
-import s from './Home.scss';
+// import s from './Home.scss'; //CSS_MODULES
+import './Home.scss';
 
 class Home extends React.Component {
   constructor(props) {
@@ -15,7 +16,12 @@ class Home extends React.Component {
 
   render() {
     return (
-      <div className={classnames('container', s.home)}>
+      <div
+        className={classnames(
+          'container'
+          // s.home,
+        )}
+      >
         <h3 className={'text-center'}>Home page</h3>
         <div className={'list-group'}>
           <Link className={classnames('list-group-item', 'active')} to="/">

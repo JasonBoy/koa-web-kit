@@ -31,15 +31,19 @@ Also available on [npm](https://www.npmjs.com/package/koa-web-kit).
 > Before start, copy the `config/app-config.js.sample` to `app-config.js`(to project root or `config` dir) for local dev configuration
 
 1. Install Dependencies
+
 ```bash
 #with yarn, yarn.lock is included
 yarn
 #or npm, no package-lock.json is included, use it as your own taste
 npm install
 ```
+
 2. Start Dev Server
+
 `npm run dev` to start koa with HMR enabled, or
 `npm run dev:ssr` to start dev server with SSR enabled(yet HMR will be disabled for now)
+
 3. Go to `http://localhost:3000` to view the default react page
 
 ### Project Structure
@@ -90,7 +94,7 @@ module.exports = {
   //if need to enable Server Side Rendering, `npm run dev:ssr` will automatically enable this, HMR need to be disabled for now
   "ENABLE_SSR": false,
   //enable CSS Modules, should disable this when SSR is enabled for now
-  "CSS_MODULES": true,
+  "CSS_MODULES": false,
   //API Proxies for multiple api endpoints with different prefix in router
   "API_ENDPOINTS": {
     //set a default prefix

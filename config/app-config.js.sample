@@ -19,7 +19,7 @@ module.exports = {
   HMR_PORT: 12345,
   ENABLE_SSR: false,
   INLINE_STYLES: false,
-  CSS_MODULES: true,
+  CSS_MODULES: false,
   API_ENDPOINTS: {
     defaultPrefix: '/api-proxy',
     '/api-proxy': 'http://127.0.0.1:3001',
