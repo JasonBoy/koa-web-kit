@@ -48,7 +48,7 @@ npm-debug.log
 config.json
 bundle*.js
 *cache
-package-lock.json
+#package-lock.json
 app.min.js
 app-config.js
 config/app-config.json
