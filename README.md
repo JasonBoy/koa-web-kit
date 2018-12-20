@@ -33,9 +33,6 @@ Also available on [npm](https://www.npmjs.com/package/koa-web-kit).
 1. Install Dependencies
 
 ```bash
-#with yarn, yarn.lock is included
-yarn
-#or npm, no package-lock.json is included, use it as your own taste
 npm install
 ```
 
