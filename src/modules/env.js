@@ -5,7 +5,7 @@ const env = {
   apiPrefix: process.env.apiPrefix,
   NODE_ENV: process.env.NODE_ENV || 'development',
 };
-if (__isBrowser__) {
+if (typeof __isBrowser__ !== 'undefined' && __isBrowser__) {
   console.log(env);
 }
 

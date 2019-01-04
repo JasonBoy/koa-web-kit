@@ -5,7 +5,7 @@ import {
   formatRestfulUrl,
   numberOfRestParams,
 } from '../../api/api-config';
-import env from 'modules/env';
+import env from './env';
 
 const CONTENT_TYPE_JSON = 'application/json';
 const CONTENT_TYPE_FORM_URL_ENCODED =
@@ -323,6 +323,5 @@ class Request {
   }
 }
 
-window.temp = new Request();
 export { Request, api };
 export default new Request();
