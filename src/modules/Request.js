@@ -1,5 +1,5 @@
-import qs from 'qs';
-import URL from 'url-parse';
+// import qs from 'qs';
+// import URL from 'url-parse';
 import isEmpty from 'lodash.isempty';
 import 'whatwg-fetch';
 import {
@@ -114,6 +114,9 @@ class Request {
     Object.assign(headers, defaultHeaders, options.headers);
     options.headers = undefined;
     const apiOptions = Object.assign({}, this.options, options, { headers });
+    if (apiOptions.multipart) {
+      delete apiOptions.headers['Content-Type'];
+    }
     return fetch(url, apiOptions).then(response => {
       if (!response.ok) {
         console.error(
@@ -137,14 +140,25 @@ class Request {
     });
   }
 
-  addQueryString(url, params, baseUrl = '', noHost = true) {
-    if (isEmpty(params)) return url;
+  /**
+   * Add query to the current url
+   * @param {string} url - current url
+   * @param {object} query - query object which will be added
+   * @param {string=} baseUrl - baseUrl
+   * @param {boolean=} noHost - return the url without the host, default true
+   * @return {string} - new url string
+   */
+  addQueryString(url, query, baseUrl = location.origin, noHost = true) {
+    if (isEmpty(query)) return url;
     const obj = new URL(url, baseUrl);
-    const addedQuery =
-      'string' === typeof params ? params : qs.stringify(params);
-    const query = obj.query ? `${obj.query}&${addedQuery}` : `?${addedQuery}`;
-    const fullHost = obj.protocol ? `${obj.protocol}//${obj.host}` : '';
-    return `${noHost ? '' : fullHost}${obj.pathname}${query}${obj.hash}`;
+    for (const key of Object.keys(query)) {
+      obj.searchParams.append(key, query[key]);
+    }
+    if (!noHost) {
+      return obj.toString();
+    }
+
+    return `${obj.pathname}${obj.search}${obj.hash}`;
   }
 
   /**
@@ -200,7 +214,16 @@ class Request {
     return this.sendRequest(url, deleteOptions);
   }
 
-  upload(url, inputFiles, extraData, fileFieldName, options = {}) {
+  /**
+   * Upload files
+   * @param {string} url - upload url
+   * @param {Array} inputFiles - File objects in array
+   * @param {object=} extraData - extra body object
+   * @param {string=} fileFieldName - field name for inputFiles
+   * @param {object=} options - other request options
+   * @return {Promise<Response|Object>}
+   */
+  upload(url, inputFiles, extraData, fileFieldName = 'files', options = {}) {
     const formData = new FormData();
     if (!isEmpty(extraData)) {
       const keys = Object.keys(extraData);
@@ -208,43 +231,52 @@ class Request {
         formData.append(key, extraData[key]);
       }
     }
-    const fieldName = fileFieldName || 'files';
     let i = 0;
     for (; i < inputFiles.length; i++) {
-      formData.append(fieldName, inputFiles[i]);
+      formData.append(fileFieldName, inputFiles[i]);
     }
-
-    if (!Request.isPlainUrl(url)) {
-      url = `${url.prefix}${url.path}`;
-    }
-
-    url = this.normalizeRestfulParams(url, options);
 
     const apiOptions = Object.assign(
       {
         method: 'POST',
         body: formData,
         credentials: 'same-origin',
+        multipart: true,
       },
       options
     );
-    return fetch(url, apiOptions)
-      .then(response => response.json())
-      .then(data => this.jsonResponseHandler(data, apiOptions));
+    return this.sendRequest(url, apiOptions);
   }
 
-  getQueryString(url = location.href) {
-    const obj = new URL(url, true);
-    return obj.query;
+  /**
+   * Get the query from url
+   * @param url
+   * @param baseUrl
+   * @return {object} - parsed query string
+   */
+  getQueryString(url = location.href, baseUrl = location.origin) {
+    const obj = new URL(url, baseUrl);
+    const query = {};
+    for (const [key, value] of obj.searchParams.entries()) {
+      if (query.hasOwnProperty(key)) {
+        query[key] = [].concat(query[key], value);
+      } else {
+        query[key] = value;
+      }
+    }
+    return query;
   }
 
-  genURL(url, parseQS = false) {
-    return new URL(url, parseQS);
-  }
-
-  stripUrlHash(url) {
-    const u = this.genURL(url);
-    return `${u.origin}${u.pathname}${u.query}`;
+  /**
+   * Remove the hash from url
+   * @param url
+   * @param baseUrl
+   * @return {string} - new url without the hash
+   */
+  stripUrlHash(url, baseUrl = location.origin) {
+    const u = new URL(url, baseUrl);
+    u.hash = '';
+    return u.toString();
   }
 
   normalizeRestfulParams(url, options) {
@@ -293,5 +325,6 @@ class Request {
   }
 }
 
+window.temp = new Request();
 export { Request, api };
 export default new Request();

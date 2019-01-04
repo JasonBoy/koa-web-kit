@@ -1,7 +1,7 @@
 'use strict';
 const Router = require('koa-router');
 const koaBody = require('koa-body');
-const request = require('request');
+const got = require('got');
 const ServerRenderer = require('../services/ServerRenderer');
 
 const renderer = new ServerRenderer({
@@ -52,35 +52,19 @@ router.get('/github', async function(ctx) {
     return;
   }
 
-  //use isomorphic-fetch to share the fetch logic
+  //you can use isomorphic-fetch to share the fetch logic
   logger.info('requesting github data...');
-  const ret = await new Promise((resole, reject) => {
-    request(
-      'https://api.github.com/repos/jasonboy/wechat-jssdk/branches',
-      {
-        headers: {
-          'User-Agent':
-            'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
-        },
-        json: true,
+  const res = await got(
+    'https://api.github.com/repos/jasonboy/wechat-jssdk/branches',
+    {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
       },
-      (error, response, body) => {
-        if (error) {
-          console.log('error:', error); // Print the error if one occurred
-          reject(error);
-        }
-        // Print the response status code if a response was received
-        logger.info(
-          `request data done, statusCode: ${response && response.statusCode}`
-        );
-        // console.log('body:', body); // Print the HTML for the Google homepage.
-        resole(body);
-      }
-    );
-  });
-
-  const data = { github: ret };
-
+      json: true,
+    }
+  );
+  const data = { github: res.body };
   renderer.render(ctx, data);
 });
 
