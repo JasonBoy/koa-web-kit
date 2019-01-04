@@ -1,5 +1,3 @@
-// import qs from 'qs';
-// import URL from 'url-parse';
 import isEmpty from 'lodash.isempty';
 import 'whatwg-fetch';
 import {

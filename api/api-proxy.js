@@ -36,7 +36,7 @@ const defaultRequestOptions = {
 //Simple proxy tunnel for easier debug
 if (httpProxy) {
   const parsedUrl = new URL(httpProxy);
-  defaultGotOptions.agent = tunnel.httpOverHttp({
+  defaultRequestOptions.agent = tunnel.httpOverHttp({
     proxy: {
       host: parsedUrl.hostname,
       port: parsedUrl.port,
