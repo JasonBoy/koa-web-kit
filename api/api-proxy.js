@@ -5,6 +5,7 @@
 const got = require('got');
 const tunnel = require('tunnel');
 const { URL } = require('url');
+const util = require('util');
 
 const { logger } = require('../services/logger');
 const appConfig = require('../config/env');
@@ -93,16 +94,50 @@ class Proxy {
    * @return {Stream}
    */
   proxyRequest(ctx, options = {}) {
-    let apiRequest;
+    let requestStream;
     const opts = this._prepareRequestOptions(ctx, options);
     // console.log('opts: ', opts);
 
-    apiRequest = ctx.req.pipe(got.stream(opts.url, opts));
-    apiRequest.on('error', (error, body) => {
+    requestStream = ctx.req.pipe(got.stream(opts.url, opts));
+    if (this.debugLevel) {
+      this.handleProxyEvents(requestStream);
+    }
+    requestStream.on('error', (error, body) => {
       this._log(null, error, LOG_LEVEL.ERROR);
       this._log(`response body: ${JSON.stringify(body)}`);
     });
-    return apiRequest;
+    return requestStream;
+  }
+
+  handleProxyEvents(requestStream) {
+    let chunks = buff;
+    requestStream.on('response', response => {
+      const request = response.request;
+      if (request) {
+        this._log(
+          `[${response.url}] request options: \n${util.inspect(
+            request.gotOptions
+          )}`
+        );
+      }
+      this._log(
+        `[${response.url}] response headers: \n${util.inspect(
+          response.headers
+        )}`
+      );
+    });
+
+    if (this.debugLevel > DEBUG_LEVEL.PLAIN) {
+      requestStream.on('data', chunk => {
+        // console.log('data: ', chunk.length);
+        chunks.push(chunk);
+      });
+      requestStream.on('end', () => {
+        const ret = Buffer.concat(chunks);
+        // console.log('ret.length: ', ret.length);
+        console.log('ret.toString(): ', ret.toString());
+      });
+    }
   }
 
   /**
