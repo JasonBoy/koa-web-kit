@@ -63,14 +63,15 @@ class Proxy {
   constructor(options = {}, requestOptions = {}) {
     this.endPoint = options.endPoint || defaultEndpoint;
     this.options = options;
-    this.requestOptions = Object.assign(
-      {
-        baseUrl: this.endPoint,
-      },
-      defaultRequestOptions,
-      requestOptions
+    this.got = got.extend(
+      Object.assign(
+        {
+          baseUrl: this.endPoint,
+        },
+        defaultRequestOptions,
+        requestOptions
+      )
     );
-
     this.debugLevel = options.debugLevel || debugLevel;
   }
 
@@ -98,7 +99,7 @@ class Proxy {
     const opts = this._prepareRequestOptions(ctx, options);
     // console.log('opts: ', opts);
 
-    requestStream = ctx.req.pipe(got.stream(opts.url, opts));
+    requestStream = ctx.req.pipe(this.got.stream(opts.url, opts));
     if (this.debugLevel) {
       this.handleProxyEvents(requestStream);
     }
@@ -154,7 +155,7 @@ class Proxy {
     // console.log('opts: ', opts);
     let ret = {};
     try {
-      const response = await got(opts.url, opts);
+      const response = await this.got(opts.url, opts);
       ret = response.body;
     } catch (err) {
       this._log(null, err, LOG_LEVEL.ERROR);
@@ -234,12 +235,7 @@ class Proxy {
     if (isCustomAPIPrefix && optionPrefix) {
       options.url = options.url.substring(optionPrefix.length);
     }
-    options.headers = Object.assign(
-      {},
-      this.requestOptions.headers,
-      options.headers
-    );
-    return Object.assign({}, this.requestOptions, options);
+    return options;
   }
 }
 
