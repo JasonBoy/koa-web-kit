@@ -2,12 +2,15 @@ import isEmpty from 'lodash.isempty';
 import 'whatwg-fetch';
 import {
   api,
-  BODY_TYPE,
   formatRestfulUrl,
-  isJSONResponse,
   numberOfRestParams,
-  HEADER,
 } from '../../api/api-config';
+import {
+  HEADER,
+  BODY_TYPE,
+  isJSONResponse,
+  HTTP_METHOD,
+} from '../../api/http-config';
 import env from './env';
 
 const CONTENT_TYPE_JSON = BODY_TYPE.JSON;
@@ -162,44 +165,49 @@ class Request {
    * @param options
    * @return {*}
    */
-  get(url, params, options = {}) {
-    if (!isEmpty(params)) {
-      options.qs = params;
-    }
-    return this.sendRequest(url, options);
+  get(url, params = {}, options = {}) {
+    const getOptions = Object.assign(
+      {
+        method: HTTP_METHOD.GET,
+        qs: params,
+      },
+      options
+    );
+    return this.sendRequest(url, getOptions);
   }
 
   post(url, data = {}, options = {}) {
-    const postOptions = Object.assign(
-      {
-        method: 'POST',
-        body: this.normalizeBodyData(data),
-      },
-      options
-    );
-    return this.sendRequest(url, postOptions);
+    this.sendRequestWithBody(url, data, HTTP_METHOD.POST, options);
   }
 
   put(url, data = {}, options = {}) {
-    const putOptions = Object.assign(
-      {
-        method: 'PUT',
-        body: this.normalizeBodyData(data),
-      },
-      options
-    );
-    return this.sendRequest(url, putOptions);
+    this.sendRequestWithBody(url, data, HTTP_METHOD.PUT, options);
+  }
+
+  patch(url, data = {}, options = {}) {
+    this.sendRequestWithBody(url, data, HTTP_METHOD.PATCH, options);
   }
 
   delete(url, data = {}, options = {}) {
     const deleteOptions = Object.assign(
       {
-        method: 'DELETE',
+        method: HTTP_METHOD.DELETE,
         body: this.normalizeBodyData(data),
       },
       options
     );
     return this.sendRequest(url, deleteOptions);
+  }
+
+  sendRequestWithBody(url, body, method, options) {
+    const sendOptions = Object.assign(
+      {
+        method,
+        body: this.normalizeBodyData(body),
+      },
+      options
+    );
+    return this.sendRequest(url, sendOptions);
   }
 
   /**

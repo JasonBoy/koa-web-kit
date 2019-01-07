@@ -8,6 +8,7 @@ const { URL } = require('url');
 
 const { logger } = require('../services/logger');
 const appConfig = require('../config/env');
+const { HTTP_METHOD } = require('./http-config');
 const isCustomAPIPrefix = appConfig.isCustomAPIPrefix();
 const defaultEndpoint = appConfig.getDefaultApiEndPoint();
 const httpProxy = appConfig.getHttpProxy();
@@ -147,7 +148,7 @@ class Proxy {
   }
 
   get(url, query, options = {}) {
-    options.method = 'GET';
+    options.method = HTTP_METHOD.GET;
     if (query) {
       options.query = query;
     }
@@ -155,19 +156,25 @@ class Proxy {
   }
 
   post(url, body, options = {}) {
-    this._normalizeBodyContentType(body, options);
-    options.method = 'POST';
-    return this.sendRequest(url, options);
+    return this.sendRequestWithBody(url, body, HTTP_METHOD.POST, options);
   }
 
   put(url, body, options = {}) {
-    this._normalizeBodyContentType(body, options);
-    options.method = 'PUT';
-    return this.sendRequest(url, options);
+    return this.sendRequestWithBody(url, body, HTTP_METHOD.PUT, options);
+  }
+
+  patch(url, body, options = {}) {
+    return this.sendRequestWithBody(url, body, HTTP_METHOD.PATCH, options);
   }
 
   delete(url, options = {}) {
-    options.method = 'DELETE';
+    options.method = HTTP_METHOD.DELETE;
+    return this.sendRequest(url, options);
+  }
+
+  sendRequestWithBody(url, body, method, options = {}) {
+    this._normalizeBodyContentType(body, options);
+    options.method = method;
     return this.sendRequest(url, options);
   }
 
