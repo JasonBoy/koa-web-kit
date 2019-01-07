@@ -2,14 +2,16 @@ import isEmpty from 'lodash.isempty';
 import 'whatwg-fetch';
 import {
   api,
+  BODY_TYPE,
   formatRestfulUrl,
+  isJSONResponse,
   numberOfRestParams,
+  HEADER,
 } from '../../api/api-config';
 import env from './env';
 
-const CONTENT_TYPE_JSON = 'application/json';
-const CONTENT_TYPE_FORM_URL_ENCODED =
-  'application/x-www-form-urlencoded;charset=UTF-8';
+const CONTENT_TYPE_JSON = BODY_TYPE.JSON;
+const CONTENT_TYPE_FORM_URL_ENCODED = BODY_TYPE.FORM_URL_ENCODED;
 
 const defaultOptions = {
   credentials: 'same-origin',
@@ -48,7 +50,7 @@ class Request {
     this.formURLEncoded = !!options.form;
 
     ops.headers = {
-      'Content-Type': this.formURLEncoded
+      [HEADER.CONTENT_TYPE]: this.formURLEncoded
         ? CONTENT_TYPE_FORM_URL_ENCODED
         : CONTENT_TYPE_JSON,
     };
@@ -59,18 +61,6 @@ class Request {
     }
     //set custom fetch options for the instance
     this.options = Object.assign(ops, options);
-  }
-
-  static get fetch() {
-    return fetch;
-  }
-
-  static get api() {
-    return api;
-  }
-
-  static get formatRestfulUrl() {
-    return formatRestfulUrl;
   }
 
   static isPlainUrl(url) {
@@ -113,7 +103,7 @@ class Request {
     options.headers = undefined;
     const apiOptions = Object.assign({}, this.options, options, { headers });
     if (apiOptions.multipart) {
-      delete apiOptions.headers['Content-Type'];
+      delete apiOptions.headers[HEADER.CONTENT_TYPE];
     }
     return fetch(url, apiOptions).then(response => {
       if (!response.ok) {
@@ -125,7 +115,7 @@ class Request {
       if (response.status === 204) {
         return Promise.resolve();
       }
-      if (this.isJSONResponse(response)) {
+      if (isJSONResponse(response)) {
         return response
           .json()
           .catch(err => {
@@ -183,7 +173,7 @@ class Request {
     const postOptions = Object.assign(
       {
         method: 'POST',
-        body: this.normalizePostBodyData(data),
+        body: this.normalizeBodyData(data),
       },
       options
     );
@@ -194,7 +184,7 @@ class Request {
     const putOptions = Object.assign(
       {
         method: 'PUT',
-        body: this.normalizePostBodyData(data),
+        body: this.normalizeBodyData(data),
       },
       options
     );
@@ -205,7 +195,7 @@ class Request {
     const deleteOptions = Object.assign(
       {
         method: 'DELETE',
-        body: this.normalizePostBodyData(data),
+        body: this.normalizeBodyData(data),
       },
       options
     );
@@ -281,9 +271,6 @@ class Request {
     const restLength = numberOfRestParams(url);
     const restParams = !isEmpty(options.restParams) ? options.restParams : [];
     if (restLength > 0) {
-      if (restLength > restParams.length) {
-        restParams.unshift(this.storeId || '0');
-      }
       url = formatRestfulUrl(url, restParams);
     }
     return url;
@@ -299,7 +286,7 @@ class Request {
     return params.toString();
   }
 
-  normalizePostBodyData(data = {}) {
+  normalizeBodyData(data = {}) {
     return this.formURLEncoded
       ? this.formatFormUrlEncodeData(data)
       : JSON.stringify(data);
@@ -316,12 +303,7 @@ class Request {
     ret += plain ? urlConfig : urlConfig.path;
     return ret;
   }
-
-  isJSONResponse(response) {
-    const contentType = response.headers.get('content-type') || '';
-    return contentType.indexOf('application/json') >= 0;
-  }
 }
 
-export { Request, api };
+export { Request, api, formatRestfulUrl };
 export default new Request();

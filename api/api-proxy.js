@@ -44,11 +44,6 @@ if (httpProxy) {
   });
 }
 
-//Some common used http headers
-const HEADER = {
-  CONTENT_TYPE: 'Content-Type',
-};
-
 /**
  * Proxy for apis or other http requests
  */
@@ -81,13 +76,13 @@ class Proxy {
    * Customize real options for destination
    * @param ctx
    * @param options
-   * @return {any}
+   * @return {object}
    */
-  prepareRequestOptions(ctx, options = { headers: {} }) {
+  _prepareRequestOptions(ctx, options = { headers: {} }) {
     options.url = ctx.url;
     options.method = ctx.method;
     options.headers = Object.assign({}, ctx.headers, options.headers);
-    return this.finalizeRequestOptions(options);
+    return this._finalizeRequestOptions(options);
   }
 
   /**
@@ -98,13 +93,13 @@ class Proxy {
    */
   proxyRequest(ctx, options = {}) {
     let apiRequest;
-    const opts = this.prepareRequestOptions(ctx, options);
+    const opts = this._prepareRequestOptions(ctx, options);
     // console.log('opts: ', opts);
 
     apiRequest = ctx.req.pipe(got.stream(opts.url, opts));
     apiRequest.on('error', (error, body) => {
-      this.log(null, error, LOG_LEVEL.ERROR);
-      this.log(`response body: ${JSON.stringify(body)}`);
+      this._log(null, error, LOG_LEVEL.ERROR);
+      this._log(`response body: ${JSON.stringify(body)}`);
     });
     return apiRequest;
   }
@@ -119,14 +114,14 @@ class Proxy {
     if ('string' === typeof url) {
       options.url = url;
     }
-    const opts = this.finalizeRequestOptions(options);
+    const opts = this._finalizeRequestOptions(options);
     // console.log('opts: ', opts);
     let ret = {};
     try {
       const response = await got(opts.url, opts);
       ret = response.body;
     } catch (err) {
-      this.log(null, err, LOG_LEVEL.ERROR);
+      this._log(null, err, LOG_LEVEL.ERROR);
       return Promise.reject(err);
     }
     return Promise.resolve(ret);
@@ -134,11 +129,11 @@ class Proxy {
 
   /**
    * Proxy logger
-   * @param {string=} msg - log message
+   * @param {*=} msg - log message
    * @param {Error=} error - the Error instance
    * @param {string=} level - log level
    */
-  log(msg, error, level = LOG_LEVEL.INFO) {
+  _log(msg, error, level = LOG_LEVEL.INFO) {
     msg && logger[level](msg);
     error && logger[level](error.stack);
   }
@@ -147,7 +142,7 @@ class Proxy {
    * Throw an exception
    * @param msg
    */
-  exception(msg) {
+  _exception(msg) {
     throw new Error(msg);
   }
 
@@ -160,13 +155,13 @@ class Proxy {
   }
 
   post(url, body, options = {}) {
-    this.normalizeBodyContentType(body, options);
+    this._normalizeBodyContentType(body, options);
     options.method = 'POST';
     return this.sendRequest(url, options);
   }
 
   put(url, body, options = {}) {
-    this.normalizeBodyContentType(body, options);
+    this._normalizeBodyContentType(body, options);
     options.method = 'PUT';
     return this.sendRequest(url, options);
   }
@@ -182,7 +177,7 @@ class Proxy {
    * @param options - to which the body data will be attached
    * @return {object}
    */
-  normalizeBodyContentType(data, options = {}) {
+  _normalizeBodyContentType(data, options = {}) {
     options.body = data;
     return options;
   }
@@ -192,7 +187,7 @@ class Proxy {
    * @param options - custom options
    * @return {object} final request options
    */
-  finalizeRequestOptions(options = {}) {
+  _finalizeRequestOptions(options = {}) {
     let optionPrefix = options.prefix || this.options.prefix;
     if (isCustomAPIPrefix && optionPrefix) {
       options.url = options.url.substring(optionPrefix.length);
@@ -203,27 +198,6 @@ class Proxy {
       options.headers
     );
     return Object.assign({}, this.requestOptions, options);
-  }
-
-  /**
-   * Get content-type from response
-   * @param response
-   * @return {*|string}
-   */
-  getResponseContentType(response) {
-    return response.headers[HEADER.CONTENT_TYPE.toLowerCase()] || '';
-  }
-
-  /**
-   * Check if the response has JSON body
-   * @param response
-   * @return {boolean}
-   */
-  isJSONResponse(response) {
-    if (!response) return false;
-    return (
-      this.getResponseContentType(response).indexOf('application/json') >= 0
-    );
   }
 }
 
