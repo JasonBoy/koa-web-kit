@@ -3,7 +3,8 @@ const slugify = require('slugify');
 
 slugify.extend({ '/': '-' });
 
-const fuckedBrands = ['huawei'];
+//Some weired phone brands with weired browser features support
+const fuckedBrands = [];
 
 // some hash and crypto stuff
 
@@ -39,11 +40,6 @@ exports.isFuckedPhone = function isFuckedPhone(ua) {
     }
   }
   return false;
-};
-
-exports.isHuawei = function isHuawei(ua) {
-  ua = this.normalizeUA(ua);
-  return ua.indexOf(fuckedBrands[0]) >= 0;
 };
 
 exports.isIOS = function isIOS(ua) {

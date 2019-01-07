@@ -1,11 +1,15 @@
 /**
- * proxy request to backend
+ * Proxy/Send requests to backend or other endpoints
  */
 
-const request = require('request');
+const got = require('got');
+const tunnel = require('tunnel');
+const { URL } = require('url');
+const util = require('util');
 
 const { logger } = require('../services/logger');
 const appConfig = require('../config/env');
+const { HTTP_METHOD } = require('./http-config');
 const isCustomAPIPrefix = appConfig.isCustomAPIPrefix();
 const defaultEndpoint = appConfig.getDefaultApiEndPoint();
 const httpProxy = appConfig.getHttpProxy();
@@ -23,209 +27,216 @@ const LOG_LEVEL = {
   ERROR: 'error',
 };
 
-const defaultRequestOptions = {};
-if (httpProxy) {
-  defaultRequestOptions.proxy = httpProxy;
-}
+/**
+ * proxy global default got options
+ * @type {{throwHttpErrors: boolean}}
+ */
+const defaultRequestOptions = {
+  throwHttpErrors: false,
+};
 
-class APIError extends Error {
-  constructor(message, response = {}, body = {}) {
-    super(message);
-    this.response = response;
-    this.body = body;
-  }
+//Simple proxy tunnel for easier debug
+if (httpProxy) {
+  const parsedUrl = new URL(httpProxy);
+  defaultRequestOptions.agent = tunnel.httpOverHttp({
+    proxy: {
+      host: parsedUrl.hostname,
+      port: parsedUrl.port,
+    },
+  });
 }
 
 /**
  * Proxy for apis or other http requests
  */
-class APIProxy {
+class Proxy {
   /**
    *
-   * @param {object=} options - APIProxy instance options
+   * @param {object=} options - Proxy instance options
    * {
    *   endPoint: string, //endpoint for the instance, e.g: http://domain.com
    *   prefix: string, //extra prefix for url path
-   *   pipeResponse: boolean, //default true, if need to pipe the response stream directly
    *   debugLevel: number, //default based on the global app config
    * }
-   * @param {object=} requestOptions - default options for request module
+   * @param {object=} requestOptions - default options for "got" module
    */
   constructor(options = {}, requestOptions = {}) {
     this.endPoint = options.endPoint || defaultEndpoint;
-    this.options = Object.assign(
-      {
-        pipeResponse: true,
-      },
-      options
+    this.options = options;
+    this.got = got.extend(
+      Object.assign(
+        {
+          baseUrl: this.endPoint,
+        },
+        defaultRequestOptions,
+        requestOptions
+      )
     );
-    this.requestOptions = Object.assign(
-      {
-        baseUrl: this.endPoint,
-      },
-      defaultRequestOptions,
-      requestOptions
-    );
-
-    //init debug for proxy requests
     this.debugLevel = options.debugLevel || debugLevel;
-    this.initDebugger();
   }
 
-  initDebugger() {
-    if (this.debugLevel <= 0) return;
-    if (this.debugLevel >= DEBUG_LEVEL.PLAIN) request.debug = true;
-    if (this.debugLevel >= DEBUG_LEVEL.VERBOSE)
-      require('request-debug')(request);
+  /**
+   * Customize real options for destination
+   * @param ctx
+   * @param options
+   * @return {object}
+   */
+  _prepareRequestOptions(ctx, options = { headers: {} }) {
+    options.url = ctx.url;
+    options.method = ctx.method;
+    options.headers = Object.assign({}, ctx.headers, options.headers);
+    return this._finalizeRequestOptions(options);
   }
 
   /**
    * Proxy koa http request to another endpoint
-   * @param ctx
+   * @param ctx - koa ctx
    * @param options - custom request options
-   * @return {Promise<any | never>}
+   * @return {Stream}
    */
   proxyRequest(ctx, options = {}) {
-    if (!ctx) {
-      this.exception('koa ctx is required when proxy request');
+    let requestStream;
+    const opts = this._prepareRequestOptions(ctx, options);
+    // console.log('opts: ', opts);
+
+    requestStream = ctx.req.pipe(this.got.stream(opts.url, opts));
+    if (this.debugLevel) {
+      this.handleProxyEvents(requestStream);
     }
-    const req = ctx.req;
-    options.url = ctx.url;
-    let apiRequest = null;
-    let pipeResponse = options.hasOwnProperty('pipeResponse')
-      ? options.pipeResponse
-      : this.options.pipeResponse;
-    const opts = this.finalizeRequestOptions(options);
-    const p = new Promise((resolve, reject) => {
-      apiRequest = req.pipe(
-        request(opts, (err, response, body) => {
-          this.responseHandler(err, response, body, resolve, reject);
-        })
+    requestStream.on('error', (error, body) => {
+      this._log(null, error, LOG_LEVEL.ERROR);
+      this._log(`response body: ${JSON.stringify(body)}`);
+    });
+    return requestStream;
+  }
+
+  handleProxyEvents(requestStream) {
+    let chunks = buff;
+    requestStream.on('response', response => {
+      const request = response.request;
+      if (request) {
+        this._log(
+          `[${response.url}] request options: \n${util.inspect(
+            request.gotOptions
+          )}`
+        );
+      }
+      this._log(
+        `[${response.url}] response headers: \n${util.inspect(
+          response.headers
+        )}`
       );
     });
-    if (pipeResponse) {
-      if (apiRequest) {
-        ctx.respond = false;
-        apiRequest.pipe(ctx.res);
-      } else {
-        ctx.throw(500);
-      }
+
+    if (this.debugLevel > DEBUG_LEVEL.PLAIN) {
+      requestStream.on('data', chunk => {
+        // console.log('data: ', chunk.length);
+        chunks.push(chunk);
+      });
+      requestStream.on('end', () => {
+        const ret = Buffer.concat(chunks);
+        // console.log('ret.length: ', ret.length);
+        console.log('ret.toString(): ', ret.toString());
+      });
     }
-    return p.catch(rejectData => rejectData);
   }
 
   /**
    * Send http requests
-   * @param url
-   * @param options - custom request options
-   * @see https://github.com/request/request
+   * @param {string|object} url - request url in string or object which has a "url" property
+   * @param {object=} options - custom request options
    * @return {Promise<any>}
    */
-  sendRequest(url, options = {}) {
+  async sendRequest(url, options = {}) {
     if ('string' === typeof url) {
       options.url = url;
     }
-    return new Promise((resolve, reject) => {
-      request(this.finalizeRequestOptions(options), (err, response, body) => {
-        this.responseHandler(err, response, body, resolve, reject);
-      });
-    });
+    const opts = this._finalizeRequestOptions(options);
+    // console.log('opts: ', opts);
+    let ret = {};
+    try {
+      const response = await this.got(opts.url, opts);
+      ret = response.body;
+    } catch (err) {
+      this._log(null, err, LOG_LEVEL.ERROR);
+      return Promise.reject(err);
+    }
+    return Promise.resolve(ret);
   }
 
-  responseHandler(err, response, body, resolve, reject) {
-    if (err) {
-      this.log(err.message, err, LOG_LEVEL.ERROR);
-    }
-    const options = this.requestOptions;
-    const code = response ? response.statusCode : -1;
-    let jsonBody = options.json ? body : {};
-    //parse response as json
-    if (!options.json && body && code !== 204) {
-      try {
-        jsonBody = JSON.parse(body);
-      } catch (parseError) {
-        this.log(parseError.message, parseError, LOG_LEVEL.ERROR);
-      }
-    }
-    if (code < 200 || code >= 300) {
-      reject(
-        new APIError(response ? response.statusMessage : '', response, jsonBody)
-      );
-    } else {
-      resolve(jsonBody);
-    }
+  /**
+   * Proxy logger
+   * @param {*=} msg - log message
+   * @param {Error=} error - the Error instance
+   * @param {string=} level - log level
+   */
+  _log(msg, error, level = LOG_LEVEL.INFO) {
+    msg && logger[level](msg);
+    error && logger[level](error.stack);
   }
 
-  log(msg, error, type = LOG_LEVEL.INFO) {
-    msg && logger[type](msg);
-    error && logger[type](error.stack);
-  }
-
-  exception(msg) {
+  /**
+   * Throw an exception
+   * @param msg
+   */
+  _exception(msg) {
     throw new Error(msg);
   }
 
-  get(url, params, options = {}) {
-    options.method = 'GET';
-    if (params) {
-      options.qs = params;
+  get(url, query, options = {}) {
+    options.method = HTTP_METHOD.GET;
+    if (query) {
+      options.query = query;
     }
     return this.sendRequest(url, options);
   }
 
-  post(url, data, options = {}) {
-    this.normalizeBodyContentType(data, options);
-    options.method = 'POST';
+  post(url, body, options = {}) {
+    return this.sendRequestWithBody(url, body, HTTP_METHOD.POST, options);
+  }
+
+  put(url, body, options = {}) {
+    return this.sendRequestWithBody(url, body, HTTP_METHOD.PUT, options);
+  }
+
+  patch(url, body, options = {}) {
+    return this.sendRequestWithBody(url, body, HTTP_METHOD.PATCH, options);
+  }
+
+  delete(url, options = {}) {
+    options.method = HTTP_METHOD.DELETE;
     return this.sendRequest(url, options);
   }
 
-  put(url, data, options = {}) {
-    this.normalizeBodyContentType(data, options);
-    options.method = 'PUT';
+  sendRequestWithBody(url, body, method, options = {}) {
+    this._normalizeBodyContentType(body, options);
+    options.method = method;
     return this.sendRequest(url, options);
   }
 
-  delete(url, data, options = {}) {
-    this.normalizeBodyContentType(data, options);
-    options.method = 'DELETE';
-    return this.sendRequest(url, options);
-  }
-
-  normalizeBodyContentType(data, options = {}) {
-    if (!this.requestOptions.json) {
-      options.form = data;
-      return options;
-    }
+  /**
+   * Normalize body for the upcoming request
+   * @param data - body data
+   * @param options - to which the body data will be attached
+   * @return {object}
+   */
+  _normalizeBodyContentType(data, options = {}) {
     options.body = data;
-    options.json = true;
     return options;
   }
 
   /**
    * Get final request options
-   * @param options
+   * @param options - custom options
    * @return {object} final request options
    */
-  finalizeRequestOptions(options = {}) {
-    if (!options.url) {
-      this.exception('request url must be provided!');
-    }
+  _finalizeRequestOptions(options = {}) {
     let optionPrefix = options.prefix || this.options.prefix;
     if (isCustomAPIPrefix && optionPrefix) {
       options.url = options.url.substring(optionPrefix.length);
     }
-    options.headers = Object.assign(
-      {},
-      this.requestOptions.headers,
-      options.headers
-    );
-    // console.log('before opts: ', this.options, options);
-    const ops = Object.assign({}, this.requestOptions, options);
-    // console.log('opts: ', ops);
-    return ops;
+    return options;
   }
 }
 
-exports.APIProxy = APIProxy;
-exports.APIError = APIError;
-exports.proxy = new APIProxy({}, { json: true });
+exports.Proxy = Proxy;

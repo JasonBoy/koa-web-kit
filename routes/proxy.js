@@ -4,17 +4,13 @@
 
 const Router = require('koa-router');
 
-const { APIProxy } = require('../api/api-proxy');
+const { Proxy } = require('../api/api-proxy');
 
-module.exports = {
-  handleApiRequests,
-};
-
-function handleApiRequests(prefix, endPoint) {
+exports.handleApiRequests = function(prefix, endPoint) {
   const router = new Router({ prefix });
-  const proxy = new APIProxy({ endPoint, prefix });
-  router.all('*', async function(ctx) {
-    proxy.proxyRequest(ctx);
+  const apiProxy = new Proxy({ endPoint, prefix });
+  router.all('*', ctx => {
+    ctx.body = apiProxy.proxyRequest(ctx);
   });
   return router.routes();
-}
+};

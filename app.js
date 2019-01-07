@@ -15,7 +15,7 @@ const isEmpty = require('lodash.isempty');
 
 const { logger, Logger } = require('./services/logger');
 const index = require('./routes/index');
-const apiRouter = require('./routes/proxy');
+const { handleApiRequests } = require('./routes/proxy');
 const sysUtils = require('./config/utils');
 const isSSREnabled = config.isSSREnabled();
 
@@ -93,11 +93,6 @@ async function initHMR() {
     logger.info('HMR enabled, initializing HMR...');
     const koaWebpack = require('koa-webpack');
     const historyApiFallback = require('koa-history-api-fallback');
-    // let availPort = config.getHMRPort();
-    // if (!availPort) {
-    //   const getPort = require('get-port');
-    //   availPort = await getPort();
-    // }
     const webpack = require('webpack');
     const webpackConfig = require('./config/webpack.config.dev');
     const compiler = webpack(
@@ -112,7 +107,6 @@ async function initHMR() {
       koaWebpack({
         compiler,
         hotClient: {
-          // port: availPort,
           port: 0,
           logLevel: 'error',
           hmr: true,
@@ -160,7 +154,7 @@ function initProxy() {
         if ('string' !== typeof endPoint) {
           endPoint = endPoint.endpoint;
         }
-        app.use(apiRouter.handleApiRequests(prefix, endPoint));
+        app.use(handleApiRequests(prefix, endPoint));
         logger.info('Node proxy[' + endPoint + '] enabled for path: ' + prefix);
       }
     }

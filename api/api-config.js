@@ -47,13 +47,12 @@ exports.formatRestfulUrl = function(url, params) {
   return parts.join('/');
 };
 
-const restRegex = /\/:/g;
 /**
  * Check the number of rest params in the current url definition
  * @param url
  * @return {number}
  */
 exports.numberOfRestParams = function(url) {
-  const matched = url.match(restRegex);
+  const matched = url.match(/\/:/g);
   return matched ? matched.length : 0;
 };
