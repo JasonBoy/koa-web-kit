@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const fromString = require('from2-string');
+const intoStream = require('into-stream');
 const { Transform } = require('stream');
 
 const config = require('../config/env');
@@ -264,7 +264,7 @@ class ServerRenderer {
     </html>
   `;
       //in case the initial data and the runtime code is big, also use stream here
-      const afterStream = fromString(after);
+      const afterStream = intoStream(after);
       afterStream.pipe(
         cacheStream,
         { end: false }
