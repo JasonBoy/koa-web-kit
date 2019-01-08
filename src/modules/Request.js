@@ -243,11 +243,11 @@ class Request {
 
     const apiOptions = Object.assign(
       {
-        method: 'POST',
+        method: HTTP_METHOD.POST,
         body: formData,
-        credentials: 'same-origin',
         multipart: true,
       },
+      defaultOptions,
       options
     );
     return this.sendRequest(url, apiOptions);
