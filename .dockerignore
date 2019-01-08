@@ -3,5 +3,5 @@ node_modules
 npm-debug.log
 build
 logs
-app-config.js
 yarn-error.log
+.Ds_Store

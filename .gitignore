@@ -39,16 +39,13 @@ node_modules
 .idea
 results
 build
-public/build
 npm-debug.log
 *.map
 --no-cache
 .Ds_Store
 .sass-cache
-config.json
 bundle*.js
 *cache
 #package-lock.json
 app.min.js
 app-config.js
-config/app-config.json
