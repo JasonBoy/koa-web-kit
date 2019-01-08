@@ -213,23 +213,32 @@ class Request {
   /**
    * Upload files
    * @param {string} url - upload url
-   * @param {Array} inputFiles - File objects in array
-   * @param {object=} extraData - extra body object
-   * @param {string=} fileFieldName - field name for inputFiles
-   * @param {object=} options - other request options
+   * @param {Array|Object} files - files in array or in object where key is the file field name
+   * @param {Object} fields - extra body data
+   * @param {Object} options - other request options
    * @return {Promise<Response|Object>}
    */
-  upload(url, inputFiles, extraData, fileFieldName = 'files', options = {}) {
+  upload(url, files, fields, options = {}) {
     const formData = new FormData();
-    if (!isEmpty(extraData)) {
-      const keys = Object.keys(extraData);
-      for (const key of keys) {
-        formData.append(key, extraData[key]);
+    if (!isEmpty(fields)) {
+      for (const key of Object.keys(fields)) {
+        formData.append(key, fields[key]);
       }
     }
-    let i = 0;
-    for (; i < inputFiles.length; i++) {
-      formData.append(fileFieldName, inputFiles[i]);
+    if (Array.isArray(files)) {
+      const fileFieldName = options.fileFieldName || 'files';
+      let i = 0;
+      for (; i < files.length; i++) {
+        formData.append(fileFieldName, files[i]);
+      }
+    } else {
+      for (const key of Object.keys(files)) {
+        let value = files[key];
+        if (!Array.isArray(value)) {
+          value = [value];
+        }
+        value.forEach(v => formData.append(key, v));
+      }
     }
 
     const apiOptions = Object.assign(
