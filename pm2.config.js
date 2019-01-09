@@ -7,7 +7,7 @@ module.exports = {
     // First application
     {
       name: 'koa-web-kit',
-      script: './app.js',
+      script: './server.js',
       instances: 0,
       exec_mode: 'cluster_mode',
       watch: false,

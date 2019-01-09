@@ -38,16 +38,6 @@ app.use(Logger.createMorganLogger());
 app.use(logger.createRequestsLogger());
 app.use(helmet());
 
-(async function() {
-  initProxy();
-  if (SSR) {
-    await SSR.preloadAll();
-  }
-  await initHMR();
-  initApp();
-  logger.info(`${isHMREnabled ? 'HMR & ' : ''}Koa App initialized!`);
-})();
-
 function initApp() {
   if (!DEV_MODE) {
     app.use(compress());
@@ -81,9 +71,21 @@ function initApp() {
     logger.error(err.stack);
   });
 
+  return app;
+
+  /*if (skipListen) {
+    return app;
+  }
   //and then give it a port to listen for
-  app.listen(PORT, '0.0.0.0');
+  const server = app.listen(PORT, '0.0.0.0');
   logger.info(`Koa listening on port ${PORT}`);
+  return server;*/
+}
+
+function listen(koaApp = app) {
+  const server = koaApp.listen(PORT, '0.0.0.0');
+  logger.info(`Koa listening on port ${PORT}`);
+  return server;
 }
 
 async function initHMR() {
@@ -160,3 +162,17 @@ function initProxy() {
     }
   }
 }
+
+module.exports = {
+  koaApp: app,
+  listen,
+  initialize: async function() {
+    initProxy();
+    if (SSR) {
+      await SSR.preloadAll();
+    }
+    await initHMR();
+    return initApp();
+    // logger.info(`${isHMREnabled ? 'HMR & ' : ''}Koa App initialized!`);
+  },
+};
