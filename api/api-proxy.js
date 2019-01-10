@@ -111,7 +111,7 @@ class Proxy {
   }
 
   handleProxyEvents(requestStream) {
-    let chunks = buff;
+    let chunks = [];
     requestStream.on('response', response => {
       const request = response.request;
       if (request) {

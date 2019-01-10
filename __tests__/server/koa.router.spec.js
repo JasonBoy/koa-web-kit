@@ -1,21 +1,32 @@
+const config = require('../../config/env');
 const path = require('path');
 const supertest = require('supertest');
 const cheerio = require('cheerio');
 const app = require('../../app');
-// let requestHandler;
-let server;
-beforeAll(async () => {
-  const koaApp = await app.initialize();
-  // requestHandler = koaApp.callback();
-  server = supertest.agent(app.listen(koaApp));
-});
-
-/*afterAll(done => {
-  // console.log('server.app: ', server.app);
-  server.app.close(done);
-});*/
+const { startJSONServer, XAccessToken } = require('../../mocks/server');
+const endPoints = config.getApiEndPoints('API_ENDPOINTS');
+const defaultEndpointKey = config.getDefaultApiEndPointKey();
+const defaultPrefix = endPoints[defaultEndpointKey];
 
 describe('normal routes', () => {
+  let server;
+  beforeAll(async () => {
+    const koaApp = await app.initialize();
+    // server = supertest(koaApp.callback());
+    // server = supertest.agent(app.listen(koaApp));
+    server = supertest.agent(koaApp.callback());
+  });
+
+  /*afterAll(async () => {
+    await wait(500);
+    return new Promise((resolve) => {
+      server.app.close(() => {
+        console.log('server closed');
+        resolve();
+      });
+    });
+  });*/
+
   test('get home page', async () => {
     // const response = await supertest(requestHandler).get('/');
     const response = await server.get('/');
@@ -47,4 +58,88 @@ describe('normal routes', () => {
   });*/
 });
 
-describe('request proxy for koa', () => {});
+describe('request proxying', () => {
+  let server;
+  const profileUrl = `${defaultPrefix}/profile`;
+  const newPostId = String(Date.now());
+  beforeAll(async () => {
+    await startJSONServer();
+    const koaApp = await app.initialize();
+    server = supertest.agent(koaApp.callback());
+  });
+
+  test('check passed headers and returned headers', async () => {
+    const response = await server
+      .get(profileUrl)
+      .set(XAccessToken, 'some_token');
+    // console.log('response.header: ', response.header);
+    expect(response.header).toHaveProperty(
+      `${XAccessToken}-back`,
+      'some_token'
+    );
+    expect(response.header).toHaveProperty('x-powered-by', 'Express');
+  });
+
+  test('get profile', async () => {
+    const response = await server.get(profileUrl);
+    // console.log('response.body: ', response.body);
+    // console.log('response.header: ', response.header);
+    expect(response.status).toEqual(200);
+    expect(response.body).toHaveProperty('name', 'jason');
+  });
+
+  test('get posts', async () => {
+    const response = await server
+      .get(`${defaultPrefix}/posts`)
+      .query({ id: 1 });
+    expect(response.body.length).toEqual(1);
+    expect(response.body[0]).toHaveProperty('id', 1);
+  });
+
+  test('post a post', async () => {
+    const response = await server.post(`${defaultPrefix}/posts`).send({
+      id: newPostId,
+      title: `koa-json-server_${Date.now()}`,
+      author: 'jason2',
+    });
+    const response2 = await server
+      .get(`${defaultPrefix}/posts`)
+      .query({ id: newPostId });
+    expect(response.status).toEqual(201);
+    expect(response.ok).toEqual(true);
+    expect(response2.body[0]).toHaveProperty('id', newPostId);
+  });
+  test('put a post', async () => {
+    const response = await server
+      .put(`${defaultPrefix}/posts/${newPostId}`)
+      .send({
+        title: `json-server_${Date.now()}`,
+        author: 'jason',
+      });
+    const response2 = await server
+      .get(`${defaultPrefix}/posts`)
+      .query({ id: newPostId });
+    expect(response.ok).toEqual(true);
+    expect(response2.body[0]).toHaveProperty('author', 'jason');
+  });
+  test('patch a post', async () => {
+    const response = await server
+      .patch(`${defaultPrefix}/posts/${newPostId}`)
+      .send({
+        author: 'jason2',
+      });
+    const response2 = await server
+      .get(`${defaultPrefix}/posts`)
+      .query({ id: newPostId });
+    expect(response.ok).toEqual(true);
+    expect(response2.body[0]).toHaveProperty('author', 'jason2');
+  });
+  test('delete a post', async () => {
+    const response = await server.delete(`${defaultPrefix}/posts/${newPostId}`);
+    const response2 = await server
+      .get(`${defaultPrefix}/posts`)
+      .query({ id: newPostId });
+    expect(response.ok).toEqual(true);
+    expect(response2.body).toHaveLength(0);
+  });
+});

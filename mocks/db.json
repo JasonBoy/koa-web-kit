@@ -1,0 +1,34 @@
+{
+  "posts": [
+    {
+      "title": "json-server_1547112231263",
+      "author": "jason2",
+      "id": 1
+    },
+    {
+      "title": "koa-json-server_1547112557660",
+      "author": "jason2",
+      "id": 2
+    },
+    {
+      "id": "1547113206653",
+      "title": "koa-json-server_1547113206680",
+      "author": "jason2"
+    },
+    {
+      "id": "1547113364394",
+      "title": "koa-json-server_1547113364420",
+      "author": "jason2"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "jason"
+  }
+}

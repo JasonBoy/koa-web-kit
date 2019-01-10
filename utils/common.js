@@ -1,30 +1,9 @@
-const crypto = require('crypto');
 const slugify = require('slugify');
 
 slugify.extend({ '/': '-' });
 
 //Some weired phone brands with weired browser features support
 const fuckedBrands = [];
-
-// some hash and crypto stuff
-
-exports.genHash = function genHash(content, algorithm) {
-  const c = crypto.createHash(algorithm);
-  c.update(content);
-  return c.digest('hex');
-};
-
-exports.genSHA1 = function genSHA1(content) {
-  return exports.genHash(content, 'sha1');
-};
-
-exports.genMD5 = function genSHA1(content) {
-  return exports.genHash(content, 'md5');
-};
-
-exports.getRandomSHA1 = function getRandomSHA1(byteLength) {
-  return crypto.randomBytes(byteLength ? byteLength : 20).toString('hex');
-};
 
 //some UA related utilities, and some simple device check
 
@@ -60,6 +39,8 @@ exports.slugify = function(input) {
   return slugify(input);
 };
 
-exports.toBase64 = function(input) {
-  return Buffer.from(input).toString('base64');
+exports.wait = function(ms = 0) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
 };
