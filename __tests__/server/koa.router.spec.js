@@ -1,6 +1,5 @@
 const supertest = require('supertest');
 const cheerio = require('cheerio');
-// const mime = require('mime');
 const app = require('../../app');
 let requestHandler;
 beforeAll(async () => {
