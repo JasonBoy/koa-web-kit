@@ -31,7 +31,7 @@ module.exports = {
     return new Promise(resolve => {
       server.listen(jsonServerConfig.port, () => {
         console.log('JSON Server is running');
-        resolve();
+        resolve(server);
       });
     });
   },

@@ -8,10 +8,12 @@ const endPoints = config.getApiEndPoints('API_ENDPOINTS');
 const defaultEndpointKey = config.getDefaultApiEndPointKey();
 const defaultPrefix = endPoints[defaultEndpointKey];
 
+console.log('endPoints: ', endPoints);
+
 describe('normal routes', () => {
   let server;
   beforeAll(async () => {
-    const koaApp = await app.initialize();
+    const koaApp = await app.create();
     // server = supertest(koaApp.callback());
     // server = supertest.agent(app.listen(koaApp));
     server = supertest.agent(koaApp.callback());
@@ -60,13 +62,24 @@ describe('normal routes', () => {
 
 describe('request proxying', () => {
   let server;
+  let server2;
+  let jsonServer;
   const profileUrl = `${defaultPrefix}/profile`;
   const newPostId = String(Date.now());
   beforeAll(async () => {
-    await startJSONServer();
-    const koaApp = await app.initialize();
-    server = supertest.agent(koaApp.callback());
+    jsonServer = await startJSONServer();
+    const apps = await Promise.all([app.create(), app.create()]);
+    server = supertest.agent(apps[0].callback());
+    server2 = supertest.agent(app.listen(apps[1], 3002));
   });
+
+  /*afterAll(done => {
+    console.log('closing jsonServer...');
+    jsonServer.close(() => {
+      console.log('close jsonServer done');
+      done();
+    });
+  });*/
 
   test('check passed headers and returned headers', async () => {
     const response = await server
@@ -141,5 +154,25 @@ describe('request proxying', () => {
       .query({ id: newPostId });
     expect(response.ok).toEqual(true);
     expect(response2.body).toHaveLength(0);
+  });
+
+  /**
+   * app-config.js config:
+   * API_ENDPOINTS: {
+      defaultPrefix: '/api-proxy',
+      '/api-proxy': 'http://127.0.0.1:3001',
+      '/proxy2': 'http://127.0.0.1:3002',
+    },
+   */
+  test('upload proxying', async () => {
+    const response = await server
+      .post('/proxy2/upload')
+      .attach('image', path.join(__dirname, '../../src/assets/static/logo.svg'))
+      .field({
+        name: 'jason',
+      });
+    expect(response.status).toEqual(200);
+    expect(response.body).toHaveProperty('body.name');
+    expect(response.body).toHaveProperty('files.image');
   });
 });

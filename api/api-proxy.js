@@ -232,6 +232,7 @@ class Proxy {
    */
   _finalizeRequestOptions(options = {}) {
     let optionPrefix = options.prefix || this.options.prefix;
+    // TODO: a path rewrite could be better
     if (isCustomAPIPrefix && optionPrefix) {
       options.url = options.url.substring(optionPrefix.length);
     }

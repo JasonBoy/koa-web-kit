@@ -25,17 +25,19 @@ const DEFAULT_PREFIX_KEY = 'defaultPrefix';
 const API_ENDPOINTS = config.getApiEndPoints();
 const isHMREnabled = config.isHMREnabled();
 
-//and initialize it with
-const app = new Koa();
-app.env = config.getNodeEnv() || 'development';
-app.keys = ['koa-web-kit'];
-app.proxy = true;
+function initAppCommon() {
+  const app = new Koa();
+  app.env = config.getNodeEnv() || 'development';
+  app.keys = ['koa-web-kit'];
+  app.proxy = true;
 
-app.use(Logger.createMorganLogger());
-app.use(logger.createRequestsLogger());
-app.use(helmet());
+  app.use(Logger.createMorganLogger());
+  app.use(logger.createRequestsLogger());
+  app.use(helmet());
+  return app;
+}
 
-function initApp() {
+function initApp(app) {
   if (!DEV_MODE) {
     app.use(compress());
   }
@@ -69,19 +71,11 @@ function initApp() {
   });
 
   return app;
-
-  /*if (skipListen) {
-    return app;
-  }
-  //and then give it a port to listen for
-  const server = app.listen(PORT, '0.0.0.0');
-  logger.info(`Koa listening on port ${PORT}`);
-  return server;*/
 }
 
-function listen(koaApp = app) {
-  const server = koaApp.listen(PORT, '0.0.0.0');
-  logger.info(`Koa listening on port ${PORT}`);
+function listen(app, port = PORT) {
+  const server = app.listen(port, '0.0.0.0');
+  logger.info(`Koa listening on port ${port}`);
   return server;
 }
 
@@ -92,7 +86,7 @@ async function initSSR() {
   await SSR.preloadAll();
 }
 
-async function initHMR() {
+async function initHMR(app) {
   if (!isHMREnabled) return;
   let HMRInitialized = false;
   logger.info('HMR enabled, initializing HMR...');
@@ -146,7 +140,7 @@ async function initHMR() {
   });
 }
 
-function initProxy() {
+function initProxy(app) {
   //api proxy
   if (config.isNodeProxyEnabled() && !isEmpty(API_ENDPOINTS)) {
     for (const prefix in API_ENDPOINTS) {
@@ -166,13 +160,13 @@ function initProxy() {
 }
 
 module.exports = {
-  koaApp: app,
   listen,
-  initialize: async function() {
-    initProxy();
+  create: async function() {
+    const app = initAppCommon();
+    initProxy(app);
     await initSSR();
-    await initHMR();
-    return initApp();
+    await initHMR(app);
+    return initApp(app);
     // logger.info(`${isHMREnabled ? 'HMR & ' : ''}Koa App initialized!`);
   },
 };
