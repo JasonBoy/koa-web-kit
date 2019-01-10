@@ -19,9 +19,6 @@ const { handleApiRequests } = require('./routes/proxy');
 const sysUtils = require('./config/utils');
 const isSSREnabled = config.isSSREnabled();
 
-//React SSR
-let SSR = isSSREnabled ? require('./build/node/ssr') : null;
-
 const PORT = config.getListeningPort();
 const DEV_MODE = config.isDevMode();
 const DEFAULT_PREFIX_KEY = 'defaultPrefix';
@@ -88,60 +85,65 @@ function listen(koaApp = app) {
   return server;
 }
 
+//React SSR
+async function initSSR() {
+  if (!isSSREnabled) return;
+  let SSR = require('./build/node/ssr');
+  await SSR.preloadAll();
+}
+
 async function initHMR() {
+  if (!isHMREnabled) return;
   let HMRInitialized = false;
-  //enable hmr
-  if (isHMREnabled) {
-    logger.info('HMR enabled, initializing HMR...');
-    const koaWebpack = require('koa-webpack');
-    const historyApiFallback = require('koa-history-api-fallback');
-    const webpack = require('webpack');
-    const webpackConfig = require('./config/webpack.config.dev');
-    const compiler = webpack(
-      Object.assign({}, webpackConfig, {
+  logger.info('HMR enabled, initializing HMR...');
+  const koaWebpack = require('koa-webpack');
+  const historyApiFallback = require('koa-history-api-fallback');
+  const webpack = require('webpack');
+  const webpackConfig = require('./config/webpack.config.dev');
+  const compiler = webpack(
+    Object.assign({}, webpackConfig, {
+      stats: {
+        modules: false,
+        colors: true,
+      },
+    })
+  );
+  return new Promise((resolve, reject) => {
+    koaWebpack({
+      compiler,
+      hotClient: {
+        port: 0,
+        logLevel: 'error',
+        hmr: true,
+        reload: true,
+      },
+      devMiddleware: {
+        index: 'index.html',
+        publicPath: webpackConfig.output.publicPath,
+        watchOptions: {
+          aggregateTimeout: 0,
+        },
+        writeToDisk: true,
         stats: {
           modules: false,
           colors: true,
+          children: false,
         },
+      },
+    })
+      .then(middleware => {
+        if (!HMRInitialized) {
+          HMRInitialized = true;
+          app.use(convert(historyApiFallback()));
+          app.use(middleware);
+          middleware.devMiddleware.waitUntilValid(resolve);
+        }
       })
-    );
-    return new Promise((resolve, reject) => {
-      koaWebpack({
-        compiler,
-        hotClient: {
-          port: 0,
-          logLevel: 'error',
-          hmr: true,
-          reload: true,
-        },
-        devMiddleware: {
-          index: 'index.html',
-          publicPath: webpackConfig.output.publicPath,
-          watchOptions: {
-            aggregateTimeout: 0,
-          },
-          writeToDisk: true,
-          stats: {
-            modules: false,
-            colors: true,
-            children: false,
-          },
-        },
-      })
-        .then(middleware => {
-          if (!HMRInitialized) {
-            HMRInitialized = true;
-            app.use(convert(historyApiFallback()));
-            app.use(middleware);
-            middleware.devMiddleware.waitUntilValid(resolve);
-          }
-        })
-        .catch(err => {
-          logger.error('[koa-webpack]:', err);
-          reject();
-        });
-    });
-  }
+      .catch(err => {
+        logger.error('[koa-webpack]:', err);
+        reject();
+      });
+  });
 }
 
 function initProxy() {
@@ -168,9 +170,7 @@ module.exports = {
   listen,
   initialize: async function() {
     initProxy();
-    if (SSR) {
-      await SSR.preloadAll();
-    }
+    await initSSR();
     await initHMR();
     return initApp();
     // logger.info(`${isHMREnabled ? 'HMR & ' : ''}Koa App initialized!`);

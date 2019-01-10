@@ -32,11 +32,17 @@ router.use(async function(ctx, next) {
 /**
  * File upload demo
  */
-router.post('/user', koaBody({ multipart: true }), async function(ctx) {
-  const body = ctx.request.body;
-  // console.log(body);
-  ctx.body = { result: body };
-});
+router.post(
+  '/upload',
+  koaBody({
+    multipart: true,
+    keepExtensions: true,
+  }),
+  async function(ctx) {
+    const { body, files } = ctx.request;
+    ctx.body = { body, files };
+  }
+);
 
 /**
  * Async request data for initial state demo
