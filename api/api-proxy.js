@@ -112,9 +112,11 @@ class Proxy {
 
   handleProxyEvents(requestStream) {
     let chunks = [];
+    let gotOptions = {};
     requestStream.on('response', response => {
       const request = response.request;
       if (request) {
+        gotOptions = request.gotOptions;
         this._log(
           `[${response.url}] request options: \n${util.inspect(
             request.gotOptions
@@ -130,13 +132,15 @@ class Proxy {
 
     if (this.debugLevel > DEBUG_LEVEL.PLAIN) {
       requestStream.on('data', chunk => {
-        // console.log('data: ', chunk.length);
         chunks.push(chunk);
       });
       requestStream.on('end', () => {
         const ret = Buffer.concat(chunks);
-        // console.log('ret.length: ', ret.length);
-        console.log('ret.toString(): ', ret.toString());
+        this._log(
+          `[${gotOptions.method}][${
+            gotOptions.href
+          }] response body: ${ret.toString()}`
+        );
       });
     }
   }
