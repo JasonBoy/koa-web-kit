@@ -161,12 +161,17 @@ function initProxy(app) {
 
 module.exports = {
   listen,
+  /**
+   *
+   * @return {Promise<Koa>}
+   */
   create: async function() {
     const app = initAppCommon();
     initProxy(app);
     await initSSR();
     await initHMR(app);
-    return initApp(app);
+    initApp(app);
+    return Promise.resolve(app);
     // logger.info(`${isHMREnabled ? 'HMR & ' : ''}Koa App initialized!`);
   },
 };

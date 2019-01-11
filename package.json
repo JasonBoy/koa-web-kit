@@ -18,7 +18,7 @@
     "ssr": "webpack --progress --config config/webpack.config.ssr.js",
     "build": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
     "report": "cross-env NODE_ENV=production BUNDLE_ANALYZER=true webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
-    "test": "npm run build:dev && npm run build && npm run ssr",
+    "test": "npm run build:dev && npm run jest:node",
     "jest": "npm run jest-node && npm run jest-client",
     "jest:node": "jest --config=jest.config.node.js --forceExit",
     "jest:client": "jest --config=jest.config.client.js"

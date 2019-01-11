@@ -1,9 +1,12 @@
 const config = require('../../config/env');
 const path = require('path');
+const fs = require('fs');
 const supertest = require('supertest');
 const cheerio = require('cheerio');
 const app = require('../../app');
 const { startJSONServer, XAccessToken } = require('../../mocks/server');
+const { genMD5 } = require('../../utils/hash');
+
 const endPoints = config.getApiEndPoints('API_ENDPOINTS');
 const defaultEndpointKey = config.getDefaultApiEndPointKey();
 const defaultPrefix = endPoints[defaultEndpointKey];
@@ -64,13 +67,14 @@ describe('request proxying', () => {
   let server;
   let server2;
   let jsonServer;
+  let server2Port = 3002;
   const profileUrl = `${defaultPrefix}/profile`;
   const newPostId = String(Date.now());
   beforeAll(async () => {
     jsonServer = await startJSONServer();
     const apps = await Promise.all([app.create(), app.create()]);
     server = supertest.agent(apps[0].callback());
-    server2 = supertest.agent(app.listen(apps[1], 3002));
+    server2 = supertest.agent(app.listen(apps[1], server2Port));
   });
 
   /*afterAll(done => {
@@ -161,7 +165,7 @@ describe('request proxying', () => {
    * API_ENDPOINTS: {
       defaultPrefix: '/api-proxy',
       '/api-proxy': 'http://127.0.0.1:3001',
-      '/proxy2': 'http://127.0.0.1:3002',
+      '/api-proxy2': 'http://127.0.0.1:3002',
     },
    */
   test('upload proxying', async () => {
@@ -174,5 +178,26 @@ describe('request proxying', () => {
     expect(response.status).toEqual(200);
     expect(response.body).toHaveProperty('body.name');
     expect(response.body).toHaveProperty('files.image');
+  });
+  test('download proxying', async () => {
+    const fileBuffer = fs.readFileSync(
+      path.join(__dirname, '../../build/app/assets/static/favicon.ico')
+    );
+    const originalFileHash = genMD5(fileBuffer);
+    return new Promise((resolve, reject) => {
+      const writePath = path.join(__dirname, '../../build/favicon.ico');
+      const writeStream = fs.createWriteStream(writePath);
+      writeStream.on('finish', () => {
+        const downloadHash = genMD5(fs.readFileSync(writePath));
+        expect(downloadHash).toBe(originalFileHash);
+        resolve();
+      });
+      writeStream.on('error', err => {
+        reject(err);
+      });
+      server
+        .get('/api-proxy2/static/assets/static/favicon.ico')
+        .pipe(writeStream);
+    });
   });
 });
