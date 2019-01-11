@@ -5,8 +5,8 @@ const util = require('util');
 const supertest = require('supertest');
 const cheerio = require('cheerio');
 const makeDir = require('make-dir');
+const getPort = require('get-port');
 makeDir.sync(path.join(__dirname, '../../build'));
-
 const { startJSONServer, XAccessToken } = require('../../mocks/server');
 const { genMD5 } = require('../../utils/hash');
 const testConfig = {
@@ -32,6 +32,8 @@ const testConfig = {
   },
 };
 
+let jsonServerPort;
+let server2Port;
 let config;
 let app;
 let endPoints;
@@ -40,7 +42,15 @@ let defaultPrefix;
 const configPath = path.join(__dirname, '../../build/app-config.js');
 process.env.NODE_CONFIG_PATH = configPath;
 
-beforeAll(() => {
+beforeAll(async () => {
+  jsonServerPort = await getPort();
+  server2Port = await getPort();
+  testConfig.API_ENDPOINTS = {
+    defaultPrefix: '/api-proxy',
+    '/api-proxy': `http://127.0.0.1:${jsonServerPort}`,
+    '/api-proxy2': `http://127.0.0.1:${server2Port}`,
+  };
+
   fs.writeFileSync(configPath, `module.exports=${util.inspect(testConfig)}`);
   console.log('building assets...');
   shell.exec(`NODE_CONFIG_PATH=${configPath} npm run build:dev`, {
@@ -105,16 +115,15 @@ describe('normal routes', () => {
 
 describe('request proxying', () => {
   let server;
-  let server2;
+  let proxyServer2;
   let jsonServer;
-  let server2Port = 3002;
   let profileUrl;
   const newPostId = String(Date.now());
   beforeAll(async () => {
-    jsonServer = await startJSONServer();
+    jsonServer = await startJSONServer(jsonServerPort);
     const apps = await Promise.all([app.create(), app.create()]);
     server = supertest.agent(apps[0].callback());
-    server2 = supertest.agent(app.listen(apps[1], server2Port));
+    proxyServer2 = supertest.agent(app.listen(apps[1], server2Port));
     profileUrl = `${defaultPrefix}/profile`;
   });
 

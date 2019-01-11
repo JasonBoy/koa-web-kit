@@ -4,7 +4,6 @@
  */
 
 const path = require('path');
-const jsonServerConfig = require('./json-server');
 const jsonServer = require('json-server');
 const server = jsonServer.create();
 const router = jsonServer.router(path.join(__dirname, './db.json'));
@@ -26,11 +25,10 @@ server.use(router);
 
 module.exports = {
   XAccessToken,
-  jsonServerConfig,
-  startJSONServer() {
+  startJSONServer(port) {
     return new Promise(resolve => {
-      server.listen(jsonServerConfig.port, () => {
-        console.log('JSON Server is running');
+      server.listen(port, () => {
+        console.log(`JSON Server is running on ${port}`);
         resolve(server);
       });
     });
