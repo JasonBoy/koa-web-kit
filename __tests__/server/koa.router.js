@@ -1,17 +1,57 @@
-const config = require('../../config/env');
+const shell = require('shelljs');
 const path = require('path');
 const fs = require('fs');
+const util = require('util');
 const supertest = require('supertest');
 const cheerio = require('cheerio');
-const app = require('../../app');
+const makeDir = require('make-dir');
+makeDir.sync(path.join(__dirname, '../../build'));
+
 const { startJSONServer, XAccessToken } = require('../../mocks/server');
 const { genMD5 } = require('../../utils/hash');
+const testConfig = {
+  NODE_ENV: 'development',
+  NODE_PROXY: true,
+  HTTP_PROXY: '',
+  PROXY_DEBUG_LEVEL: 0,
+  STATIC_ENDPOINT: '',
+  LOG_PATH: '',
+  STATIC_PREFIX: '/static',
+  PREFIX_TRAILING_SLASH: true,
+  APP_PREFIX: '',
+  CUSTOM_API_PREFIX: true,
+  ENABLE_HMR: false,
+  ENABLE_SSR: false,
+  INLINE_STYLES: false,
+  CSS_MODULES: false,
+  HMR_PORT: 12333,
+  API_ENDPOINTS: {
+    defaultPrefix: '/api-proxy',
+    '/api-proxy': 'http://127.0.0.1:3001',
+    '/api-proxy2': 'http://127.0.0.1:3002',
+  },
+};
 
-const endPoints = config.getApiEndPoints('API_ENDPOINTS');
-const defaultEndpointKey = config.getDefaultApiEndPointKey();
-const defaultPrefix = endPoints[defaultEndpointKey];
+let config;
+let app;
+let endPoints;
+let defaultEndpointKey;
+let defaultPrefix;
+const configPath = path.join(__dirname, '../../build/app-config.js');
+process.env.NODE_CONFIG_PATH = configPath;
 
-console.log('endPoints: ', endPoints);
+beforeAll(() => {
+  fs.writeFileSync(configPath, `module.exports=${util.inspect(testConfig)}`);
+  console.log('building assets...');
+  shell.exec(`NODE_CONFIG_PATH=${configPath} npm run build:dev`, {
+    silent: true,
+  });
+  config = require('../../config/env');
+  app = require('../../app');
+  endPoints = config.getApiEndPoints('API_ENDPOINTS');
+  defaultEndpointKey = config.getDefaultApiEndPointKey();
+  defaultPrefix = endPoints[defaultEndpointKey];
+});
 
 describe('normal routes', () => {
   let server;
@@ -68,13 +108,14 @@ describe('request proxying', () => {
   let server2;
   let jsonServer;
   let server2Port = 3002;
-  const profileUrl = `${defaultPrefix}/profile`;
+  let profileUrl;
   const newPostId = String(Date.now());
   beforeAll(async () => {
     jsonServer = await startJSONServer();
     const apps = await Promise.all([app.create(), app.create()]);
     server = supertest.agent(apps[0].callback());
     server2 = supertest.agent(app.listen(apps[1], server2Port));
+    profileUrl = `${defaultPrefix}/profile`;
   });
 
   /*afterAll(done => {
