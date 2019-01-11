@@ -234,7 +234,7 @@ class Proxy {
     let optionPrefix = options.prefix || this.options.prefix;
     // TODO: a path rewrite could be better
     if (isCustomAPIPrefix && optionPrefix) {
-      options.url = options.url.substring(optionPrefix.length);
+      options.url = options.url.replace(new RegExp(`^${optionPrefix}`), '');
     }
     return options;
   }
