@@ -45,12 +45,13 @@ npm install
 
 ### Project Structure
 
+- `__tests__` dir, for your tests
+- `mocks` dir, for your mock json server and other mock data
 - `api` dir, the API Proxy utility, also put your api urls in `api-config.js` for universal import across your app
 - `config` dir, all webpack build configs are put here, besides, some application-wide env configs getter utilities
 - `services` dir, some middleware here, default logger utility also located here
 - `routes` dir, put your koa app routes here
 - `src` dir, all your front-end assets, react components, modules, etc...
-- `test` dir, for your tests
 - `utils` dir, utilities for both node.js and front-end
 - `views` dir, your view templates(*NOTE: when SSR is enabled, it will use the template literal string*)
 - *`build`* dir, all built assets for your project, git ignored
