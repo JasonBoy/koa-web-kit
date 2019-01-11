@@ -166,7 +166,7 @@ describe('request proxying', () => {
    */
   test('upload proxying', async () => {
     const response = await server
-      .post('/api-proxy2/upload')
+      .post('/api-proxy2/upload?a=b')
       .attach('image', path.join(__dirname, '../../src/assets/static/logo.svg'))
       .field({
         name: 'jason',
