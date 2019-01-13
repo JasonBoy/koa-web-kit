@@ -4,10 +4,10 @@
   "description": "A modern, production-ready, and full-stack node web framework",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env ENABLE_HMR=1 ENABLE_SSR=0 STATIC_PREFIX='' node app.js",
+    "dev": "cross-env ENABLE_HMR=1 ENABLE_SSR=0 STATIC_PREFIX='' node server.js",
     "dev:ssr": "cross-env ENABLE_HMR=0 CSS_MODULES=0 ENABLE_SSR=1 npm-run-all -p watch watch:ssr start",
     "dev:watch": "cross-env ENABLE_HMR=0 ENABLE_SSR=0 npm-run-all -p watch start",
-    "start": "nodemon --trace-warnings app.js",
+    "start": "nodemon --trace-warnings server.js",
     "deploy": "./deploy.sh",
     "deploy:noinstall": "npm run deploy -- 1",
     "build:dev": "webpack --progress --hide-modules --config config/webpack.config.dev.js",
@@ -18,8 +18,9 @@
     "ssr": "webpack --progress --config config/webpack.config.ssr.js",
     "build": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
     "report": "cross-env NODE_ENV=production BUNDLE_ANALYZER=true webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
-    "test": "npm run build:dev && npm run build && npm run ssr",
-    "jest": "jest"
+    "test": "npm run jest:node && npm run jest:client",
+    "jest:node": "jest --config=jest.config.node.js --forceExit",
+    "jest:client": "jest --config=jest.config.client.js"
   },
   "engines": {
     "node": ">= 8.3"
@@ -70,7 +71,6 @@
     "koa-convert": "1.2.0",
     "koa-favicon": "2.0.1",
     "koa-helmet": "4.0.0",
-    "koa-history-api-fallback": "0.1.3",
     "koa-morgan": "1.0.1",
     "koa-mount": "4.0.0",
     "koa-pino-logger": "2.1.3",
@@ -108,28 +108,35 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-loader": "8.0.4",
     "babel-minify-webpack-plugin": "0.3.1",
+    "cheerio": "1.0.0-rc.2",
     "clean-webpack-plugin": "1.0.0",
     "copy-webpack-plugin": "4.6.0",
     "cross-env": "5.2.0",
     "css-loader": "1.0.1",
-    "del": "3.0.0",
     "file-loader": "2.0.0",
+    "get-port": "4.1.0",
     "html-loader": "0.5.5",
     "html-webpack-plugin": "3.2.0",
     "husky": "1.3.0",
     "ignore-loader": "0.1.2",
     "jest": "23.6.0",
+    "jquery": "3.3.1",
+    "json-server": "0.14.2",
+    "koa-history-api-fallback": "0.1.3",
     "koa-webpack": "5.1.1",
     "lint-staged": "8.1.0",
     "mini-css-extract-plugin": "0.5.0",
     "node-sass": "4.11.0",
     "nodemon": "1.18.9",
     "npm-run-all": "4.1.5",
+    "popper.js": "1.14.6",
     "postcss-loader": "3.0.0",
     "preload-webpack-plugin": "3.0.0-beta.2",
     "prettier": "1.15.3",
     "sass-loader": "7.1.0",
+    "shelljs": "0.8.3",
     "style-loader": "0.23.1",
+    "supertest": "3.3.0",
     "terser-webpack-plugin": "1.1.0",
     "url-loader": "1.1.2",
     "webpack": "4.28.0",
@@ -153,7 +160,7 @@
       "utils/",
       "services/",
       "app-config.js",
-      "app.js"
+      "server.js"
     ]
   }
 }

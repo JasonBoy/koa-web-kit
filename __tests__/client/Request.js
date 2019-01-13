@@ -1,4 +1,4 @@
-import r, { api, Request } from './Request';
+import r, { api, Request } from 'modules/Request';
 
 const origin = 'http://127.0.0.1:3000';
 const myUrl = `${origin}${api.TEST}?a=b&b=c&a=bb`;

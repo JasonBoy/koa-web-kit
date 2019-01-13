@@ -19,36 +19,25 @@ const { handleApiRequests } = require('./routes/proxy');
 const sysUtils = require('./config/utils');
 const isSSREnabled = config.isSSREnabled();
 
-//React SSR
-let SSR = isSSREnabled ? require('./build/node/ssr') : null;
-
 const PORT = config.getListeningPort();
 const DEV_MODE = config.isDevMode();
 const DEFAULT_PREFIX_KEY = 'defaultPrefix';
 const API_ENDPOINTS = config.getApiEndPoints();
 const isHMREnabled = config.isHMREnabled();
 
-//and initialize it with
-const app = new Koa();
-app.env = config.getNodeEnv() || 'development';
-app.keys = ['koa-web-kit'];
-app.proxy = true;
+function initAppCommon() {
+  const app = new Koa();
+  app.env = config.getNodeEnv() || 'development';
+  app.keys = ['koa-web-kit'];
+  app.proxy = true;
 
-app.use(Logger.createMorganLogger());
-app.use(logger.createRequestsLogger());
-app.use(helmet());
+  app.use(Logger.createMorganLogger());
+  app.use(logger.createRequestsLogger());
+  app.use(helmet());
+  return app;
+}
 
-(async function() {
-  initProxy();
-  if (SSR) {
-    await SSR.preloadAll();
-  }
-  await initHMR();
-  initApp();
-  logger.info(`${isHMREnabled ? 'HMR & ' : ''}Koa App initialized!`);
-})();
-
-function initApp() {
+function initApp(app) {
   if (!DEV_MODE) {
     app.use(compress());
   }
@@ -81,68 +70,77 @@ function initApp() {
     logger.error(err.stack);
   });
 
-  //and then give it a port to listen for
-  app.listen(PORT, '0.0.0.0');
-  logger.info(`Koa listening on port ${PORT}`);
+  return app;
 }
 
-async function initHMR() {
+function listen(app, port = PORT) {
+  const server = app.listen(port, '0.0.0.0');
+  logger.info(`Koa listening on port ${port}`);
+  return server;
+}
+
+//React SSR
+async function initSSR() {
+  if (!isSSREnabled) return;
+  let SSR = require('./build/node/ssr');
+  await SSR.preloadAll();
+}
+
+async function initHMR(app) {
+  if (!isHMREnabled) return;
   let HMRInitialized = false;
-  //enable hmr
-  if (isHMREnabled) {
-    logger.info('HMR enabled, initializing HMR...');
-    const koaWebpack = require('koa-webpack');
-    const historyApiFallback = require('koa-history-api-fallback');
-    const webpack = require('webpack');
-    const webpackConfig = require('./config/webpack.config.dev');
-    const compiler = webpack(
-      Object.assign({}, webpackConfig, {
+  logger.info('HMR enabled, initializing HMR...');
+  const koaWebpack = require('koa-webpack');
+  const historyApiFallback = require('koa-history-api-fallback');
+  const webpack = require('webpack');
+  const webpackConfig = require('./config/webpack.config.dev');
+  const compiler = webpack(
+    Object.assign({}, webpackConfig, {
+      stats: {
+        modules: false,
+        colors: true,
+      },
+    })
+  );
+  return new Promise((resolve, reject) => {
+    koaWebpack({
+      compiler,
+      hotClient: {
+        port: 0,
+        logLevel: 'error',
+        hmr: true,
+        reload: true,
+      },
+      devMiddleware: {
+        index: 'index.html',
+        publicPath: webpackConfig.output.publicPath,
+        watchOptions: {
+          aggregateTimeout: 0,
+        },
+        writeToDisk: true,
         stats: {
           modules: false,
           colors: true,
+          children: false,
         },
+      },
+    })
+      .then(middleware => {
+        if (!HMRInitialized) {
+          HMRInitialized = true;
+          app.use(convert(historyApiFallback()));
+          app.use(middleware);
+          middleware.devMiddleware.waitUntilValid(resolve);
+        }
       })
-    );
-    return new Promise((resolve, reject) => {
-      koaWebpack({
-        compiler,
-        hotClient: {
-          port: 0,
-          logLevel: 'error',
-          hmr: true,
-          reload: true,
-        },
-        devMiddleware: {
-          index: 'index.html',
-          publicPath: webpackConfig.output.publicPath,
-          watchOptions: {
-            aggregateTimeout: 0,
-          },
-          writeToDisk: true,
-          stats: {
-            modules: false,
-            colors: true,
-            children: false,
-          },
-        },
-      })
-        .then(middleware => {
-          if (!HMRInitialized) {
-            HMRInitialized = true;
-            app.use(convert(historyApiFallback()));
-            app.use(middleware);
-            middleware.devMiddleware.waitUntilValid(resolve);
-          }
-        })
-        .catch(err => {
-          logger.error('[koa-webpack]:', err);
-          reject();
-        });
-    });
-  }
+      .catch(err => {
+        logger.error('[koa-webpack]:', err);
+        reject();
+      });
+  });
 }
 
-function initProxy() {
+function initProxy(app) {
   //api proxy
   if (config.isNodeProxyEnabled() && !isEmpty(API_ENDPOINTS)) {
     for (const prefix in API_ENDPOINTS) {
@@ -160,3 +158,20 @@ function initProxy() {
     }
   }
 }
+
+module.exports = {
+  listen,
+  /**
+   *
+   * @return {Promise<Koa>}
+   */
+  create: async function() {
+    const app = initAppCommon();
+    initProxy(app);
+    await initSSR();
+    await initHMR(app);
+    initApp(app);
+    return Promise.resolve(app);
+    // logger.info(`${isHMREnabled ? 'HMR & ' : ''}Koa App initialized!`);
+  },
+};

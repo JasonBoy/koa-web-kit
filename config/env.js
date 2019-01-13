@@ -9,61 +9,70 @@ const chalk = require('chalk');
 const devConfig = require('./config.default.dev');
 const prodConfig = require('./config.default.prod');
 
+/**
+ * app configs
+ * @type {{}}
+ */
+let config = {};
+
 //get custom config path from env
 const customConfigPath = process.env.NODE_CONFIG_PATH;
 const nodeBuildEnv = process.env.NODE_BUILD_ENV;
 
 const DEFAULT_PREFIX_KEY = 'defaultPrefix';
 
-let defaultConfigJS = '../app-config.js';
-const defaultConfigJSAlt = './app-config.js';
+function initConfig(customConfig) {
+  let defaultConfigJS = '../app-config.js';
+  const defaultConfigJSAlt = './app-config.js';
 
-try {
-  fs.statSync(path.join(__dirname, defaultConfigJS));
-} catch (e) {
-  defaultConfigJS = defaultConfigJSAlt;
-}
+  try {
+    fs.statSync(path.join(__dirname, defaultConfigJS));
+  } catch (e) {
+    defaultConfigJS = defaultConfigJSAlt;
+  }
 
-const configPath = customConfigPath
-  ? path.resolve(customConfigPath)
-  : path.join(__dirname, defaultConfigJS);
-// console.log(configPath);
-let configInfo = {};
-let hasCustomConfig = true;
-let checkMsg = '';
+  const configPath = customConfigPath
+    ? path.resolve(customConfigPath)
+    : path.join(__dirname, defaultConfigJS);
+  // console.log(configPath);
+  let configInfo = {};
+  let hasCustomConfig = true;
+  let checkMsg = '';
 
-try {
-  fs.statSync(configPath);
-} catch (e) {
-  hasCustomConfig = false;
-}
+  try {
+    fs.statSync(configPath);
+  } catch (e) {
+    hasCustomConfig = false;
+  }
 
-// console.log('process.env.STATIC_PREFIX: ', process.env.STATIC_PREFIX);
-// console.log('process.env.APP_PREFIX: ', process.env.APP_PREFIX);
+  // console.log('process.env.STATIC_PREFIX: ', process.env.STATIC_PREFIX);
+  // console.log('process.env.APP_PREFIX: ', process.env.APP_PREFIX);
 
-if (hasCustomConfig) {
-  configInfo = require(configPath);
-  checkMsg += `Using [${chalk.green(configPath)}] as app configuration`;
-} else {
-  configInfo = !nodeBuildEnv ? prodConfig : devConfig;
-  checkMsg += `Using [${chalk.green(
-    !nodeBuildEnv ? 'config.default.prod' : 'config.default.dev'
-  )}] as app configuration`;
-}
+  if (hasCustomConfig) {
+    configInfo = require(configPath);
+    checkMsg += `Using [${chalk.green(configPath)}] as basic app configuration`;
+  } else {
+    configInfo = !nodeBuildEnv ? prodConfig : devConfig;
+    checkMsg += `Using [${chalk.green(
+      !nodeBuildEnv ? 'config.default.prod' : 'config.default.dev'
+    )}] as app configuration`;
+  }
+  console.log(checkMsg);
 
-console.log(checkMsg);
+  if (customConfig) {
+    console.log('merging custom config into basic config from config file...');
+    Object.assign(configInfo, customConfig);
+  }
 
-const config = {};
-//cache non-empty config from env at init time instead of accessing from process.env at runtime to improve performance
-for (let key in configInfo) {
-  if (configInfo.hasOwnProperty(key)) {
-    config[key] = process.env.hasOwnProperty(key)
-      ? process.env[key]
-      : configInfo[key];
+  //cache non-empty config from env at init time instead of accessing from process.env at runtime to improve performance
+  for (let key in configInfo) {
+    if (configInfo.hasOwnProperty(key)) {
+      config[key] = process.env.hasOwnProperty(key)
+        ? process.env[key]
+        : configInfo[key];
+    }
   }
 }
-
-// console.log(config);
 
 function getConfigProperty(key) {
   let value = undefined;
@@ -78,6 +87,8 @@ function getConfigProperty(key) {
 }
 
 // console.log('config: ', config);
+
+initConfig();
 
 module.exports = {
   getListeningPort: () => {
