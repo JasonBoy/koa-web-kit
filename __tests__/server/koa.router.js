@@ -13,7 +13,7 @@ const testConfig = {
   NODE_ENV: 'development',
   NODE_PROXY: true,
   HTTP_PROXY: '',
-  PROXY_DEBUG_LEVEL: 2,
+  PROXY_DEBUG_LEVEL: 0,
   STATIC_ENDPOINT: '',
   LOG_PATH: '',
   STATIC_PREFIX: '/static',
