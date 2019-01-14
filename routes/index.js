@@ -74,6 +74,17 @@ router.get('/github', async function(ctx) {
   renderer.render(ctx, data);
 });
 
+router.get('/400', async ctx => {
+  ctx.status = 400;
+  ctx.body = {
+    msg: '400',
+  };
+});
+
+router.get('/500', async ctx => {
+  ctx.throw(500);
+});
+
 /**
  * Other default handler
  */

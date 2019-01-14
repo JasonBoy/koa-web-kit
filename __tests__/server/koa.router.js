@@ -250,4 +250,15 @@ describe('request proxying', () => {
         .pipe(writeStream);
     });
   });
+
+  test('proxying 400 response', async () => {
+    const response = await server.get('/api-proxy2/400');
+    expect(response.status).toEqual(400);
+    expect(response.body).toHaveProperty('msg', '400');
+  });
+
+  test('proxying 500 response', async () => {
+    const response = await server.get('/api-proxy2/500');
+    expect(response.status).toEqual(500);
+  });
 });
