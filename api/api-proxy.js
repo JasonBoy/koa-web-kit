@@ -6,7 +6,6 @@ const got = require('got');
 const tunnel = require('tunnel');
 const { URL } = require('url');
 const util = require('util');
-
 const { logger } = require('../services/logger');
 const appConfig = require('../config/env');
 const { HTTP_METHOD } = require('./http-config');
@@ -113,7 +112,9 @@ class Proxy {
   handleProxyEvents(requestStream) {
     let chunks = [];
     let gotOptions = {};
+    let gotResponse;
     requestStream.on('response', response => {
+      gotResponse = response;
       const request = response.request;
       if (request) {
         gotOptions = request.gotOptions;
@@ -136,11 +137,20 @@ class Proxy {
       });
       requestStream.on('end', () => {
         const ret = Buffer.concat(chunks);
-        this._log(
-          `[${gotOptions.method}][${
-            gotOptions.href
-          }] response body: ${ret.toString()}`
-        );
+        const type = gotResponse.headers['content-type'];
+        if (this._isPlainTextBody(type)) {
+          this._log(
+            `[${gotOptions.method}][${
+              gotOptions.href
+            }] response body: ${ret.toString()}`
+          );
+        } else {
+          this._log(
+            `[${gotOptions.method}][${
+              gotOptions.href
+            }] response body[${type}] length: ${ret.length}`
+          );
+        }
       });
     }
   }
@@ -241,6 +251,14 @@ class Proxy {
       options.url = options.url.replace(new RegExp(`^${optionPrefix}`), '');
     }
     return options;
+  }
+
+  _isPlainTextBody(contentType) {
+    if (!contentType) return true;
+    return !!(
+      contentType.startsWith('text/') ||
+      contentType.startsWith('application/json')
+    );
   }
 }
 
