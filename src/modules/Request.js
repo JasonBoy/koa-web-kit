@@ -10,7 +10,7 @@ import {
   BODY_TYPE,
   isJSONResponse,
   HTTP_METHOD,
-} from '../../api/http-config';
+} from '../../services/http-config';
 import env from './env';
 
 const CONTENT_TYPE_JSON = BODY_TYPE.JSON;

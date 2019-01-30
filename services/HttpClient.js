@@ -6,7 +6,7 @@ const got = require('got');
 const tunnel = require('tunnel');
 const { URL } = require('url');
 const util = require('util');
-const { logger } = require('../services/logger');
+const { logger } = require('./logger');
 const appConfig = require('../config/env');
 const { HTTP_METHOD } = require('./http-config');
 const isCustomAPIPrefix = appConfig.isCustomAPIPrefix();
@@ -48,7 +48,7 @@ if (httpProxy) {
 /**
  * Proxy for apis or other http requests
  */
-class Proxy {
+class HttpClient {
   /**
    *
    * @param {object=} options - Proxy instance options
@@ -60,7 +60,9 @@ class Proxy {
    * @param {object=} requestOptions - default options for "got" module
    */
   constructor(options = {}, requestOptions = {}) {
-    this.endPoint = options.endPoint || defaultEndpoint;
+    this.endPoint = options.hasOwnProperty('endPoint')
+      ? options.endPoint
+      : defaultEndpoint;
     this.options = options;
     this.got = got.extend(
       Object.assign(
@@ -262,4 +264,4 @@ class Proxy {
   }
 }
 
-exports.Proxy = Proxy;
+exports.HttpClient = HttpClient;
