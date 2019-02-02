@@ -139,7 +139,7 @@
     "supertest": "3.4.2",
     "terser-webpack-plugin": "1.2.1",
     "url-loader": "1.1.2",
-    "webpack": "4.29.0",
+    "webpack": "4.28.0",
     "webpack-bundle-analyzer": "3.0.3",
     "webpack-cli": "3.2.1",
     "webpack-manifest-plugin": "2.0.4",
