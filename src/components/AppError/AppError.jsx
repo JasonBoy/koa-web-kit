@@ -14,15 +14,21 @@ class AppError extends React.Component {
 
   componentDidCatch(error, info) {
     this.setState({ hasError: true });
-    // console.error(error);
-    // console.error(info);
   }
+
+  reload = e => {
+    e.preventDefault();
+    location.reload();
+  };
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="alert alert-danger" role="alert">
+        <div className="alert alert-danger text-center" role="alert">
           Something went wrong!!!
+          <a className="ml-2" href="#" onClick={this.reload}>
+            Reload
+          </a>
         </div>
       );
     }

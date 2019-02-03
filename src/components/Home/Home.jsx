@@ -9,10 +9,17 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      error: { msg: 'Errored' },
+    };
   }
 
   componentDidMount() {}
+
+  makeError = e => {
+    e.preventDefault();
+    this.setState({ error: null });
+  };
 
   render() {
     return (
@@ -41,6 +48,9 @@ class Home extends React.Component {
               Github
             </Link>
           </>
+          <a className={'list-group-item'} href="#" onClick={this.makeError}>
+            {this.state.error.msg}
+          </a>
         </div>
       </div>
     );
