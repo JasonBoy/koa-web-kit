@@ -41,7 +41,7 @@ render(App);
 // Webpack Hot Module Replacement API
 if (module.hot) {
   module.hot.accept('./App', () => {
-    // render(require('./App').default);
+    render(require('./App').default);
   });
   // module.hot.check().then(modules => {
   //   console.log('modules: ', modules);
