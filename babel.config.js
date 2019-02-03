@@ -16,6 +16,15 @@ module.exports = function(api) {
       ],
       '@babel/preset-react',
     ],
+    env: {
+      development: {
+        plugins: ['@babel/plugin-transform-react-jsx-source'],
+      },
+      test: {
+        presets: [['@babel/preset-env'], '@babel/preset-react'],
+        plugins: ['@babel/plugin-transform-react-jsx-source'],
+      },
+    },
     plugins: [
       '@babel/plugin-transform-runtime',
       '@babel/plugin-proposal-object-rest-spread',
