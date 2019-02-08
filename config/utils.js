@@ -149,7 +149,7 @@ exports.getCSSLoader = function getCSSLoader(
   if (!modules) {
     return LOADER.CSS_LOADER;
   }
-  return {
+  const temp = {
     loader: LOADER.CSS_LOADER,
     options: {
       modules,
@@ -157,6 +157,10 @@ exports.getCSSLoader = function getCSSLoader(
       localIdentName,
     },
   };
+  if (modules) {
+    temp.options.camelCase = 'dashes';
+  }
+  return temp;
 };
 
 exports.getAllStyleRelatedLoaders = function(
