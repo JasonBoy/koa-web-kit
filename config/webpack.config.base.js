@@ -60,7 +60,7 @@ const webpackConfig = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(['./build/app'], { root: process.cwd() }),
+    new CleanWebpackPlugin(['../build/app'], { verbose: false }),
     new webpack.DefinePlugin({
       __isBrowser__: true,
       __HMR__: isHMREnabled,
