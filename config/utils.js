@@ -49,7 +49,6 @@ exports.getStyleLoaders = function getStyleLoaders(devMode, ...loaders) {
     let tempLoader = {
       loader,
       options: {
-        convertToAbsoluteUrls: true,
         sourceMap: devMode,
         ...loaderOptions,
       },

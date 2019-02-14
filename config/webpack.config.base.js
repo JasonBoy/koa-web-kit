@@ -40,7 +40,7 @@ if (isHMREnabled) {
   entry = [appIndex];
 } else {
   entry = {
-    [ENTRY_NAME.APP]: appIndex,
+    [ENTRY_NAME.APP]: [appIndex],
   };
 }
 
