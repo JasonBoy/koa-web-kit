@@ -112,6 +112,7 @@
     "copy-webpack-plugin": "4.6.0",
     "cross-env": "5.2.0",
     "css-loader": "1.0.1",
+    "error-overlay-webpack-plugin": "0.1.6",
     "file-loader": "2.0.0",
     "get-port": "4.1.0",
     "html-loader": "0.5.5",

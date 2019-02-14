@@ -2,6 +2,7 @@
 
 const webpackMerge = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
 const utils = require('./utils');
@@ -29,7 +30,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
   mode: 'development',
   devtool: 'cheap-module-source-map',
   stats: { children: false },
-  plugins: [],
+  plugins: [new ErrorOverlayPlugin()],
 });
 
 // optimization new in webpack4
