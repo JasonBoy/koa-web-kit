@@ -76,6 +76,9 @@ function initApp(app) {
 function listen(app, port = PORT) {
   const server = app.listen(port, '0.0.0.0');
   logger.info(`Koa listening on port ${port}`);
+  if (DEV_MODE) {
+    logger.info(`visit: http://localhost:${port}`);
+  }
   return server;
 }
 
