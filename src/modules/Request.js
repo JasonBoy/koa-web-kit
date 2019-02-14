@@ -1,5 +1,4 @@
 import isEmpty from 'lodash.isempty';
-import 'whatwg-fetch';
 import {
   api,
   formatRestfulUrl,
@@ -70,6 +69,14 @@ class Request {
     return 'string' === typeof url;
   }
 
+  checkIfFetchAvailable() {
+    return typeof fetch !== 'undefined';
+  }
+
+  async fetchPolyfill() {
+    await import(/* webpackChunkName: "whatwg-fetch" */ 'whatwg-fetch');
+  }
+
   /**
    * Send request now
    * @param {string|object} pathname if object, @see demo in "api-config.js"
@@ -84,7 +91,10 @@ class Request {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch
    * @return {Promise<Response | Object>}
    */
-  sendRequest(pathname, options = {}) {
+  async sendRequest(pathname, options = {}) {
+    if (!this.checkIfFetchAvailable()) {
+      await this.fetchPolyfill();
+    }
     let url = pathname;
     url = Request.isPlainUrl(url) ? url : url.path;
     const originalUrl = url;
