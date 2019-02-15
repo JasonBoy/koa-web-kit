@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const intoStream = require('into-stream');
+// const intoStream = require('into-stream');
 const { Transform } = require('stream');
 
 const config = require('../config/env');
@@ -31,7 +31,7 @@ if (isSSREnabled) {
       'When SSR is enabled, [CSS_MODULES] should be disabled for now, you can manually add plugin like "isomorphic-style-loader" to enable both SSR and CSS Modules'
     );
   }
-  const SSR = require('../build/node/ssr');
+  const SSR = require('../build/node/main');
   groupedManifest = SSR.groupedManifest;
   manifest = groupedManifest.manifest;
   // console.log('manifest: ', manifest);
@@ -80,7 +80,7 @@ if (isSSREnabled) {
       }
     );
   } catch (e) {
-    logger.error('failed to read build/app/index.html...');
+    logger.warn('failed to read build/app/index.html...');
     // console.error(e);
   }
 }
@@ -165,9 +165,7 @@ class ServerRenderer {
     //use streaming api
     const rendered = s.renderWithStream(ctx.url, data);
     rendered.initialData = data;
-    ctx.status = 200;
-    ctx.respond = false;
-    this.genHtmlStream(rendered.html, rendered, ctx);
+    this.genHtmlStream(rendered.htmlStream, rendered, ctx);
   }
 
   /**
@@ -182,8 +180,8 @@ class ServerRenderer {
       return indexHtml;
     }
 
-    const loadableComponents = extra.scripts || [];
-    const renderedComponentsScripts = loadableComponents.join('');
+    // const loadableComponents = extra.scripts || [];
+    // const renderedComponentsScripts = loadableComponents.join('');
 
     let ret = `
     <!DOCTYPE html>
@@ -192,18 +190,15 @@ class ServerRenderer {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
         <title>${extra.title || 'React App'}</title>
-        ${styleLinks}
+        ${extra.linkTags}
+        ${extra.styleTags}
       </head>
       <body>
         <div id="app">${html}</div>
         <script type="text/javascript">window.__INITIAL_DATA__ = ${JSON.stringify(
           extra.initialData || {}
         )}</script>
-        ${manifestInlineScript}
-        ${vendorsScript}
-        ${renderedComponentsScripts}
-        <script type="text/javascript" src="${publicPath +
-          manifest[ENTRY_NAME.APP_JS]}"></script>
+        ${extra.scriptTags}
       </body>
     </html>
   `;
@@ -211,7 +206,6 @@ class ServerRenderer {
     this.cache && this.cache.set(ctx.path, ret);
     return ret;
   }
-
   /**
    * Generate html in stream
    * @param nodeStreamFromReact
@@ -220,24 +214,30 @@ class ServerRenderer {
    */
   genHtmlStream(nodeStreamFromReact, extra = {}, ctx) {
     const res = ctx.res;
-    let cacheStream = this.createCacheStream(ctx.path);
+    ctx.status = 200;
+    ctx.respond = false;
 
-    cacheStream.pipe(res);
+    let cacheStream = this.createCacheStream(ctx.path);
+    cacheStream.pipe(
+      res,
+      { end: false }
+    );
 
     const before = `
-    <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-        <title>${extra.title || 'React App'}</title>
-        ${styleLinks}
-      </head>
-      <body><div id="app">`;
-
+      <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+          <title>${extra.title || 'React App'}</title>
+          ${extra.styleTags}
+        </head>
+        <body><div id="app">`;
     cacheStream.write(before);
+    // res.write(before);
 
     nodeStreamFromReact.pipe(
+      // res,
       cacheStream,
       { end: false }
     );
@@ -245,26 +245,26 @@ class ServerRenderer {
     nodeStreamFromReact.on('end', () => {
       logger.info('nodeStreamFromReact end');
       logger.info('start streaming rest html content...');
-      let renderedComponentsScripts = [];
+      // let renderedComponentsScripts = [];
       //get rendered components for react-loadable after reactNodeStream done
-      if (extra.modules) {
-        // console.log('extra.modules:', extra.modules);
+      /*if (extra.modules) {
         renderedComponentsScripts = s.getRenderedBundleScripts(extra.modules);
-      }
+      }*/
       const after = `</div>
-      <script type="text/javascript">window.__INITIAL_DATA__ = ${JSON.stringify(
-        extra.initialData || {}
-      )}</script>
-        ${manifestInlineScript}
-        ${vendorsScript}
-        ${renderedComponentsScripts}
-        <script type="text/javascript" src="${publicPath +
-          manifest[ENTRY_NAME.APP_JS]}"></script>
-      </body>
-    </html>
-  `;
+          <script type="text/javascript">window.__INITIAL_DATA__ = ${JSON.stringify(
+            extra.initialData || {}
+          )}</script>
+            ${extra.extractor.getScriptTags()}
+          </body>
+        </html>`;
+      // res.end(after);
+
+      cacheStream.write(after);
+      logger.info('streaming rest html content done!');
+      res.end();
+      cacheStream.end();
       //in case the initial data and the runtime code is big, also use stream here
-      const afterStream = intoStream(after);
+      /*const afterStream = intoStream(after);
       afterStream.pipe(
         cacheStream,
         { end: false }
@@ -272,7 +272,7 @@ class ServerRenderer {
       afterStream.on('end', () => {
         logger.info('streaming rest html content done!');
         cacheStream.end();
-      });
+      });*/
     });
   }
 
@@ -323,7 +323,7 @@ class ServerRenderer {
    */
   setHtmlContentType(ctx) {
     ctx.set({
-      'Content-Type': 'text/html',
+      'Content-Type': 'text/html; charset=UTF-8',
     });
   }
 }

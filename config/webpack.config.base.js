@@ -97,7 +97,12 @@ const webpackConfig = {
     /*new ReactLoadablePlugin({
       filename: utils.resolve('build/react-loadable.json'),
     }),*/
-    new LoadablePlugin(),
+    new LoadablePlugin({
+      filename: 'loadable-stats.json',
+      writeToDisk: {
+        filename: utils.resolve('build/'),
+      },
+    }),
     new ManifestPlugin({
       publicPath: '',
     }),

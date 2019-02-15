@@ -15,10 +15,10 @@ const LOADER = {
 };
 
 const ENTRY_NAME = {
-  APP: 'app',
+  APP: 'main',
   VENDORS: 'vendors',
   RUNTIME: 'runtime',
-  APP_JS: 'app.js',
+  APP_JS: 'main.js',
   VENDORS_JS: 'vendors.js',
   RUNTIME_JS: 'runtime.js',
 };

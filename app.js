@@ -84,9 +84,9 @@ function listen(app, port = PORT) {
 
 //React SSR
 async function initSSR() {
-  if (!isSSREnabled) return;
-  let SSR = require('./build/node/ssr');
-  await SSR.preloadAll();
+  // if (!isSSREnabled) return;
+  // let SSR = require('./build/node/main');
+  // await SSR.preloadAll();
 }
 
 async function initHMR(app) {
