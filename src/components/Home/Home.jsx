@@ -34,20 +34,21 @@ class Home extends React.Component {
           <Link className={classnames('list-group-item', 'active')} to="/">
             Home
           </Link>
-          <Link className={'list-group-item'} to="/hello/sub-hello">
-            Hello
-          </Link>
-          <Link className={'list-group-item'} to="/hello">
-            Hello Webpack 4
+
+          <Link className={'list-group-item'} to="/hello-context">
+            Hello React Context
           </Link>
           <>
-            <Link className="list-group-item" to="/hello-2">
-              Hello 2
+            <Link className={'list-group-item'} to="/hello/sync">
+              Hello Sync
             </Link>
-            <Link className={'list-group-item'} to="/github">
-              Github
+            <Link className="list-group-item" to="/hello/async">
+              Hello Async
             </Link>
           </>
+          <Link className={'list-group-item'} to="/github">
+            Github
+          </Link>
           <a className={'list-group-item'} href="#" onClick={this.makeError}>
             {this.state.error.msg}
           </a>

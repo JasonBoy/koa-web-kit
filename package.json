@@ -59,6 +59,8 @@
   "homepage": "https://github.com/JasonBoy/koa-web-kit#readme",
   "readme": "README.md",
   "dependencies": {
+    "@loadable/component": "5.6.0",
+    "@loadable/server": "5.6.0",
     "bootstrap": "4.3.1",
     "chalk": "2.4.2",
     "classnames": "2.2.6",
@@ -104,6 +106,8 @@
     "@babel/preset-env": "7.3.1",
     "@babel/preset-react": "7.0.0",
     "@babel/runtime": "7.3.1",
+    "@loadable/babel-plugin": "5.6.0",
+    "@loadable/webpack-plugin": "5.5.0",
     "autoprefixer": "9.4.7",
     "babel-loader": "8.0.5",
     "babel-minify-webpack-plugin": "0.3.1",

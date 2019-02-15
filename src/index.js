@@ -9,14 +9,30 @@ import 'modules/env';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Loadable from 'react-loadable';
+// import Loadable from 'react-loadable';
 import App from './App';
 import AppError from 'components/AppError';
 
 const elRoot = document.getElementById('app');
 
 const render = Component => {
-  Loadable.preloadReady().then(() => {
+  if (__SSR__) {
+    console.log('in SSR mode');
+    ReactDOM.hydrate(
+      <AppError>
+        <Component />
+      </AppError>,
+      elRoot
+    );
+  } else {
+    ReactDOM.render(
+      <AppError>
+        <Component />
+      </AppError>,
+      elRoot
+    );
+  }
+  /*Loadable.preloadReady().then(() => {
     if (__SSR__) {
       console.log('in SSR mode');
       ReactDOM.hydrate(
@@ -33,7 +49,7 @@ const render = Component => {
         elRoot
       );
     }
-  });
+  });*/
 };
 
 render(App);
