@@ -21,8 +21,19 @@ module.exports = function(api) {
         plugins: ['@babel/plugin-transform-react-jsx-source'],
       },
       test: {
-        presets: [['@babel/preset-env'], '@babel/preset-react'],
-        plugins: ['@babel/plugin-transform-react-jsx-source'],
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              modules: false,
+            },
+          ],
+          '@babel/preset-react',
+        ],
+        plugins: [
+          '@babel/plugin-transform-react-jsx-source',
+          'dynamic-import-node',
+        ],
       },
     },
     plugins: [

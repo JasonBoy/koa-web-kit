@@ -59,7 +59,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
         vendors: {
           test: /[\\/]node_modules[\\/]/i,
           name: utils.ENTRY_NAME.VENDORS,
-          chunks: 'all',
+          chunks: 'initial',
         },
       },
     },
