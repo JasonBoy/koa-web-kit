@@ -54,21 +54,6 @@ function checkSourceType(sourceKey) {
   return type;
 }
 
-// import Hello2 from 'components/Hello2';
-// import Hello from 'components/Hello';
-// import Home from 'components/Home';
-//
-// const RouterApp = (
-//   <StaticRouter location={}
-//                 context={context}>
-//
-//   </StaticRouter>
-// );
-
-// function SSRDemo(props) {
-//   return <div>ssr demo</div>;
-// }
-
 const defaultContext = {
   userName: 'ssr-jason',
 };
@@ -76,20 +61,7 @@ const defaultContext = {
 class SSR {
   constructor() {
     this.statsFile = path.resolve('build/loadable-stats.json');
-    console.log('this.statsFile: ', this.statsFile);
-    // this.extractor = new ChunkExtractor({ statsFile: this.statsFile });
   }
-
-  renderHome(url) {
-    console.log('url: %s', url);
-    return this.render(url, {});
-  }
-
-  renderGithub(url, data) {
-    console.log(data);
-    return this.render(url, data);
-  }
-
   render(url, data, routerContext = {}) {
     // let modules = [];
     const extractor = new ChunkExtractor({ statsFile: this.statsFile });
@@ -140,24 +112,6 @@ class SSR {
       linkTags: renderedLinkTags,
       styleTags: renderedStyleTags,
     };
-  }
-  generateBundleScripts(bundles) {
-    return bundles
-      .filter(bundle => bundle && bundle.file.endsWith('.js'))
-      .map(bundle => {
-        return `<script type="text/javascript" src="${__pathPrefix__}${
-          bundle.file
-        }"></script>\n`;
-      });
-  }
-
-  static get groupedManifest() {
-    return groupedManifest;
-  }
-
-  static preloadAll() {
-    return Promise.resolve();
-    // return Loadable.preloadAll();
   }
 }
 

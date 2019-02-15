@@ -5,26 +5,17 @@ const { Transform } = require('stream');
 const { minify } = require('html-minifier');
 
 const config = require('../config/env');
-const utils = require('../config/utils');
 const { logger } = require('./logger');
 
 const Cache = require('./Cache');
 
 const isSSREnabled = config.isSSREnabled();
 const isHMREnabled = config.isHMREnabled();
-const ENTRY_NAME = utils.ENTRY_NAME;
-const publicPath = utils.getPublicPath();
 const DEV_MODE = config.isDevMode();
-const isInlineStyles = config.isInlineStyles();
 const isCSSModules = config.isCSSModules();
 
 let indexHtml = '';
 let s;
-let manifest;
-let groupedManifest;
-let styleLinks = '';
-let manifestInlineScript = '';
-let vendorsScript = '';
 
 if (isSSREnabled) {
   if (isCSSModules) {
@@ -33,44 +24,6 @@ if (isSSREnabled) {
     );
   }
   const SSR = require('../build/node/main');
-  groupedManifest = SSR.groupedManifest;
-  manifest = groupedManifest.manifest;
-  // console.log('manifest: ', manifest);
-  const appCss = groupedManifest.manifest[`${utils.ENTRY_NAME.APP}.css`];
-  // console.log('appCss: ', appCss);
-  // console.log('groupedManifest.styles: ', groupedManifest.styles);
-
-  styleLinks = groupedManifest.styles
-    ? groupedManifest.styles
-        .map(style => {
-          //inline app css
-          if (isInlineStyles && !DEV_MODE && appCss === style) {
-            return `<style>${fs.readFileSync(
-              path.join(__dirname, '../build/app/' + style)
-            )}</style>`;
-          }
-          return `<link href="${publicPath}${style}" rel="stylesheet">`;
-        })
-        .join('\n')
-    : '';
-  // console.log('styleLinks: ', styleLinks);
-  if (manifest[ENTRY_NAME.RUNTIME_JS]) {
-    manifestInlineScript = `<script type="text/javascript" src="${publicPath +
-      manifest[ENTRY_NAME.RUNTIME_JS]}"></script>`;
-  }
-  if (manifest[ENTRY_NAME.VENDORS_JS]) {
-    vendorsScript = `<script type="text/javascript" src="${publicPath +
-      manifest[ENTRY_NAME.VENDORS_JS]}"></script>`;
-  }
-
-  // if (!DEV_MODE) {
-  //   const temp = fs.readFileSync(
-  //     path.join(__dirname, `../build/app/${manifest[ENTRY_NAME.RUNTIME_JS]}`),
-  //     { encoding: 'utf-8' }
-  //   );
-  //   manifestInlineScript = `<script type="text/javascript">${temp}</script>`;
-  // }
-
   s = new SSR();
 } else if (!isHMREnabled) {
   indexHtml = readIndexHtml();

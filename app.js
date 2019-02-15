@@ -17,7 +17,7 @@ const { logger, Logger } = require('./services/logger');
 const index = require('./routes/index');
 const { handleApiRequests } = require('./routes/proxy');
 const sysUtils = require('./config/utils');
-const isSSREnabled = config.isSSREnabled();
+// const isSSREnabled = config.isSSREnabled();
 
 const PORT = config.getListeningPort();
 const DEV_MODE = config.isDevMode();
@@ -83,11 +83,7 @@ function listen(app, port = PORT) {
 }
 
 //React SSR
-async function initSSR() {
-  // if (!isSSREnabled) return;
-  // let SSR = require('./build/node/main');
-  // await SSR.preloadAll();
-}
+async function initSSR() {}
 
 async function initHMR(app) {
   if (!isHMREnabled) return;
