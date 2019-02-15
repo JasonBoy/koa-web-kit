@@ -9,7 +9,6 @@ import 'modules/env';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import Loadable from 'react-loadable';
 import { loadableReady } from '@loadable/component';
 import App from './App';
 import AppError from 'components/AppError';

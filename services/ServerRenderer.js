@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 // const intoStream = require('into-stream');
 const { Transform } = require('stream');
+const { minify } = require('html-minifier');
 
 const config = require('../config/env');
 const utils = require('../config/utils');
@@ -27,7 +28,7 @@ let vendorsScript = '';
 
 if (isSSREnabled) {
   if (isCSSModules) {
-    logger.error(
+    logger.warn(
       'When SSR is enabled, [CSS_MODULES] should be disabled for now, you can manually add plugin like "isomorphic-style-loader" to enable both SSR and CSS Modules'
     );
   }
@@ -72,17 +73,19 @@ if (isSSREnabled) {
 
   s = new SSR();
 } else if (!isHMREnabled) {
+  indexHtml = readIndexHtml();
+}
+
+function readIndexHtml() {
+  let ret = '';
   try {
-    indexHtml = fs.readFileSync(
-      path.join(__dirname, `../build/app/index.html`),
-      {
-        encoding: 'utf-8',
-      }
-    );
+    ret = fs.readFileSync(path.join(__dirname, `../build/app/index.html`), {
+      encoding: 'utf-8',
+    });
   } catch (e) {
     logger.warn('failed to read build/app/index.html...');
-    // console.error(e);
   }
+  return ret;
 }
 
 /**
@@ -102,8 +105,15 @@ class ServerRenderer {
     this.ssrEnabled = options.hasOwnProperty('ssr')
       ? !!options.ssr
       : isSSREnabled;
-    this.cache = options.cache || (this.ssrEnabled ? new Cache(options) : null);
-    this.streaming = !!options.streaming;
+
+    this.cache = null;
+    if (options.cache && options.cache instanceof Cache) {
+      this.cache = options.cache;
+    } else if (this.ssrEnabled && options.cache === true) {
+      this.cache = new Cache(options);
+    }
+    this.cacheDisabled = !this.cache;
+    this.streaming = !!options.stream || !!options.streaming;
   }
 
   /**
@@ -149,7 +159,7 @@ class ServerRenderer {
   renderSSR(ctx, data = {}, streaming = this.streaming) {
     this.setHtmlContentType(ctx);
 
-    if (this.isCacheMatched(ctx.path)) {
+    if (!this.cacheDisabled && this.isCacheMatched(ctx.path)) {
       this.renderFromCache(ctx.path, ctx);
       return;
     }
@@ -176,12 +186,16 @@ class ServerRenderer {
    * @return {string} final html content
    */
   genHtml(html, extra = {}, ctx) {
-    if (indexHtml) {
+    if (!this.ssrEnabled) {
+      if (!indexHtml) {
+        indexHtml = readIndexHtml();
+      }
+      if (!DEV_MODE) {
+        return indexHtml;
+      }
+      indexHtml = readIndexHtml();
       return indexHtml;
     }
-
-    // const loadableComponents = extra.scripts || [];
-    // const renderedComponentsScripts = loadableComponents.join('');
 
     let ret = `
     <!DOCTYPE html>
@@ -202,7 +216,7 @@ class ServerRenderer {
       </body>
     </html>
   `;
-
+    ret = this.minifyHtml(ret);
     this.cache && this.cache.set(ctx.path, ret);
     return ret;
   }
@@ -245,11 +259,6 @@ class ServerRenderer {
     nodeStreamFromReact.on('end', () => {
       logger.info('nodeStreamFromReact end');
       logger.info('start streaming rest html content...');
-      // let renderedComponentsScripts = [];
-      //get rendered components for react-loadable after reactNodeStream done
-      /*if (extra.modules) {
-        renderedComponentsScripts = s.getRenderedBundleScripts(extra.modules);
-      }*/
       const after = `</div>
           <script type="text/javascript">window.__INITIAL_DATA__ = ${JSON.stringify(
             extra.initialData || {}
@@ -297,8 +306,13 @@ class ServerRenderer {
       flush(cb) {
         // We concatenate all the buffered chunks of HTML to get the full HTML
         // then cache it at "key"
-        self.cache.set(key, Buffer.concat(bufferedChunks));
-        logger.info(`Cache stream for ${key} finished!`);
+        if (!self.cacheDisabled && self.cache) {
+          self.cache.set(
+            key,
+            self.minifyHtml(Buffer.concat(bufferedChunks).toString())
+          );
+          logger.info(`Cache stream for [${key}] finished!`);
+        }
         cb();
       },
     });
@@ -325,6 +339,10 @@ class ServerRenderer {
     ctx.set({
       'Content-Type': 'text/html; charset=UTF-8',
     });
+  }
+
+  minifyHtml(html) {
+    return minify(html, { collapseWhitespace: true });
   }
 }
 

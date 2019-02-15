@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-// import Loadable from 'react-loadable';
 import loadable from '@loadable/component';
 import PropTypes from 'prop-types';
 import Home from 'components/Home';

@@ -3,9 +3,6 @@ import React from 'react';
 import { StaticRouter } from 'react-router-dom';
 import ReactDOMServer from 'react-dom/server';
 import { ChunkExtractor } from '@loadable/server';
-// import Loadable from 'react-loadable';
-// import { getBundles } from 'react-loadable/webpack';
-// import stats from '../../build/react-loadable.json';
 import manifest from '../../build/app/manifest.json';
 
 import AppRoutes from 'src/AppRoutes';
