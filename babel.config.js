@@ -6,10 +6,7 @@ module.exports = function(api) {
       [
         '@babel/preset-env',
         {
-          targets: {
-            browsers: ['> 1%', 'not ie 11', 'not op_mini all'],
-          },
-          loose: true,
+          targets: {},
           useBuiltIns: 'usage',
           modules: false,
         },
@@ -42,7 +39,7 @@ module.exports = function(api) {
       '@babel/plugin-proposal-class-properties',
       '@babel/plugin-syntax-dynamic-import',
       '@babel/plugin-transform-modules-commonjs',
-      'react-loadable/babel',
+      '@loadable/babel-plugin',
     ],
   };
 };

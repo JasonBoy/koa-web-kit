@@ -1,9 +1,8 @@
+import path from 'path';
 import React from 'react';
 import { StaticRouter } from 'react-router-dom';
 import ReactDOMServer from 'react-dom/server';
-import Loadable from 'react-loadable';
-import { getBundles } from 'react-loadable/webpack';
-import stats from '../../build/react-loadable.json';
+import { ChunkExtractor } from '@loadable/server';
 import manifest from '../../build/app/manifest.json';
 
 import AppRoutes from 'src/AppRoutes';
@@ -55,102 +54,64 @@ function checkSourceType(sourceKey) {
   return type;
 }
 
-// import Hello2 from 'components/Hello2';
-// import Hello from 'components/Hello';
-// import Home from 'components/Home';
-//
-// const RouterApp = (
-//   <StaticRouter location={}
-//                 context={context}>
-//
-//   </StaticRouter>
-// );
-
-// function SSRDemo(props) {
-//   return <div>ssr demo</div>;
-// }
-
 const defaultContext = {
   userName: 'ssr-jason',
 };
 
 class SSR {
-  constructor() {}
-
-  renderHome(url) {
-    console.log('url: %s', url);
-    return this.render(url, {});
+  constructor() {
+    this.statsFile = path.resolve('build/loadable-stats.json');
   }
-
-  renderGithub(url, data) {
-    console.log(data);
-    return this.render(url, data);
-  }
-
   render(url, data, routerContext = {}) {
-    let modules = [];
-    const html = ReactDOMServer.renderToString(
-      <Loadable.Capture report={moduleName => modules.push(moduleName)}>
-        <StaticRouter location={url} context={routerContext}>
-          <AppRoutes context={defaultContext} initialData={data} />
-        </StaticRouter>
-      </Loadable.Capture>
+    // let modules = [];
+    const extractor = new ChunkExtractor({ statsFile: this.statsFile });
+    const jsx = extractor.collectChunks(
+      <StaticRouter location={url} context={routerContext}>
+        <AppRoutes context={defaultContext} initialData={data} />
+      </StaticRouter>
     );
+    const html = ReactDOMServer.renderToString(jsx);
+    // You can now collect your script tags
+    const renderedScriptTags = extractor.getScriptTags(); // or extractor.getScriptElements();
+    // You can also collect your "preload/prefetch" links
+    const renderedLinkTags = extractor.getLinkTags(); // or extractor.getLinkElements();
+    // And you can even collect your style tags (if you use "mini-css-extract-plugin")
+    const renderedStyleTags = extractor.getStyleTags(); // or extractor.getStyleElements();
+    /*console.log('html: ', html);
+    console.log('renderedScriptTags: \n', renderedScriptTags);
+    console.log('renderedLinkTags: \n', renderedLinkTags);
+    console.log('renderedStyleTags: \n', renderedStyleTags);*/
     return {
       html,
-      scripts: this.getRenderedBundleScripts(modules),
+      extractor,
+      scriptTags: renderedScriptTags,
+      linkTags: renderedLinkTags,
+      styleTags: renderedStyleTags,
     };
   }
 
   renderWithStream(url, data = {}, routerContext = {}) {
-    let modules = [];
-    const htmlStream = ReactDOMServer.renderToNodeStream(
-      <Loadable.Capture report={moduleName => modules.push(moduleName)}>
-        <StaticRouter location={url} context={routerContext}>
-          <AppRoutes context={defaultContext} initialData={data} />
-        </StaticRouter>
-      </Loadable.Capture>
+    // let modules = [];
+    const extractor = new ChunkExtractor({ statsFile: this.statsFile });
+    const jsx = extractor.collectChunks(
+      <StaticRouter location={url} context={routerContext}>
+        <AppRoutes context={defaultContext} initialData={data} />
+      </StaticRouter>
     );
-    /*htmlStream.on('end', (err) => {
-      if (err) {
-        console.error(err);
-      }
-      console.log('htmlStream end...');
-    });*/
-    // let bundles = this.getRenderedBundles(modules);
-    // console.log('modules:', modules);
-    // console.log('bundles:', bundles);
-    // console.log('html:', html);
+    const htmlStream = ReactDOMServer.renderToNodeStream(jsx);
+    const renderedScriptTags = extractor.getScriptTags();
+    const renderedLinkTags = extractor.getLinkTags();
+    const renderedStyleTags = extractor.getStyleTags();
+    /*console.log('renderedScriptTags: \n', renderedScriptTags);
+    console.log('renderedLinkTags: \n', renderedLinkTags);
+    console.log('renderedStyleTags: \n', renderedStyleTags);*/
     return {
-      html: htmlStream,
-      modules,
-      scripts: [],
+      htmlStream,
+      extractor,
+      scriptTags: renderedScriptTags,
+      linkTags: renderedLinkTags,
+      styleTags: renderedStyleTags,
     };
-  }
-
-  getRenderedBundleScripts(modules = []) {
-    let bundles = getBundles(stats, modules);
-    // console.log('modules:', modules);
-    // console.log('bundles:', bundles);
-    return this.generateBundleScripts(bundles);
-  }
-
-  generateBundleScripts(bundles) {
-    return bundles
-      .filter(bundle => bundle && bundle.file.endsWith('.js'))
-      .map(bundle => {
-        return `<script type="text/javascript" src="${__pathPrefix__}${
-          bundle.file
-        }"></script>\n`;
-      });
-  }
-
-  static get groupedManifest() {
-    return groupedManifest;
-  }
-
-  static preloadAll() {
-    return Loadable.preloadAll();
   }
 }
 

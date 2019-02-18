@@ -6,8 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ReactLoadablePlugin = require('react-loadable/webpack')
-  .ReactLoadablePlugin;
+const LoadablePlugin = require('@loadable/webpack-plugin');
 
 const config = require('./env');
 const utils = require('./utils');
@@ -93,8 +92,11 @@ const webpackConfig = {
         to: utils.resolve('build/app/assets/static'),
       },
     ]),
-    new ReactLoadablePlugin({
-      filename: utils.resolve('build/react-loadable.json'),
+    new LoadablePlugin({
+      filename: 'loadable-stats.json',
+      writeToDisk: {
+        filename: utils.resolve('build/'),
+      },
     }),
     new ManifestPlugin({
       publicPath: '',

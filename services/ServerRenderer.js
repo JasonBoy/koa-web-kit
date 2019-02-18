@@ -1,88 +1,44 @@
 const fs = require('fs');
 const path = require('path');
-const intoStream = require('into-stream');
+// const intoStream = require('into-stream');
 const { Transform } = require('stream');
+const { minify } = require('html-minifier');
 
 const config = require('../config/env');
-const utils = require('../config/utils');
 const { logger } = require('./logger');
 
 const Cache = require('./Cache');
 
 const isSSREnabled = config.isSSREnabled();
 const isHMREnabled = config.isHMREnabled();
-const ENTRY_NAME = utils.ENTRY_NAME;
-const publicPath = utils.getPublicPath();
 const DEV_MODE = config.isDevMode();
-const isInlineStyles = config.isInlineStyles();
 const isCSSModules = config.isCSSModules();
 
 let indexHtml = '';
 let s;
-let manifest;
-let groupedManifest;
-let styleLinks = '';
-let manifestInlineScript = '';
-let vendorsScript = '';
 
 if (isSSREnabled) {
   if (isCSSModules) {
-    logger.error(
+    logger.warn(
       'When SSR is enabled, [CSS_MODULES] should be disabled for now, you can manually add plugin like "isomorphic-style-loader" to enable both SSR and CSS Modules'
     );
   }
-  const SSR = require('../build/node/ssr');
-  groupedManifest = SSR.groupedManifest;
-  manifest = groupedManifest.manifest;
-  // console.log('manifest: ', manifest);
-  const appCss = groupedManifest.manifest[`${utils.ENTRY_NAME.APP}.css`];
-  // console.log('appCss: ', appCss);
-  // console.log('groupedManifest.styles: ', groupedManifest.styles);
-
-  styleLinks = groupedManifest.styles
-    ? groupedManifest.styles
-        .map(style => {
-          //inline app css
-          if (isInlineStyles && !DEV_MODE && appCss === style) {
-            return `<style>${fs.readFileSync(
-              path.join(__dirname, '../build/app/' + style)
-            )}</style>`;
-          }
-          return `<link href="${publicPath}${style}" rel="stylesheet">`;
-        })
-        .join('\n')
-    : '';
-  // console.log('styleLinks: ', styleLinks);
-  if (manifest[ENTRY_NAME.RUNTIME_JS]) {
-    manifestInlineScript = `<script type="text/javascript" src="${publicPath +
-      manifest[ENTRY_NAME.RUNTIME_JS]}"></script>`;
-  }
-  if (manifest[ENTRY_NAME.VENDORS_JS]) {
-    vendorsScript = `<script type="text/javascript" src="${publicPath +
-      manifest[ENTRY_NAME.VENDORS_JS]}"></script>`;
-  }
-
-  // if (!DEV_MODE) {
-  //   const temp = fs.readFileSync(
-  //     path.join(__dirname, `../build/app/${manifest[ENTRY_NAME.RUNTIME_JS]}`),
-  //     { encoding: 'utf-8' }
-  //   );
-  //   manifestInlineScript = `<script type="text/javascript">${temp}</script>`;
-  // }
-
+  const SSR = require('../build/node/main');
   s = new SSR();
 } else if (!isHMREnabled) {
+  indexHtml = readIndexHtml();
+}
+
+function readIndexHtml() {
+  let ret = '';
   try {
-    indexHtml = fs.readFileSync(
-      path.join(__dirname, `../build/app/index.html`),
-      {
-        encoding: 'utf-8',
-      }
-    );
+    ret = fs.readFileSync(path.join(__dirname, `../build/app/index.html`), {
+      encoding: 'utf-8',
+    });
   } catch (e) {
-    logger.error('failed to read build/app/index.html...');
-    // console.error(e);
+    logger.warn('failed to read build/app/index.html...');
   }
+  return ret;
 }
 
 /**
@@ -102,8 +58,15 @@ class ServerRenderer {
     this.ssrEnabled = options.hasOwnProperty('ssr')
       ? !!options.ssr
       : isSSREnabled;
-    this.cache = options.cache || (this.ssrEnabled ? new Cache(options) : null);
-    this.streaming = !!options.streaming;
+
+    this.cache = null;
+    if (options.cache && options.cache instanceof Cache) {
+      this.cache = options.cache;
+    } else if (this.ssrEnabled && options.cache === true) {
+      this.cache = new Cache(options);
+    }
+    this.cacheDisabled = !this.cache;
+    this.streaming = !!options.stream || !!options.streaming;
   }
 
   /**
@@ -149,7 +112,7 @@ class ServerRenderer {
   renderSSR(ctx, data = {}, streaming = this.streaming) {
     this.setHtmlContentType(ctx);
 
-    if (this.isCacheMatched(ctx.path)) {
+    if (!this.cacheDisabled && this.isCacheMatched(ctx.path)) {
       this.renderFromCache(ctx.path, ctx);
       return;
     }
@@ -165,9 +128,7 @@ class ServerRenderer {
     //use streaming api
     const rendered = s.renderWithStream(ctx.url, data);
     rendered.initialData = data;
-    ctx.status = 200;
-    ctx.respond = false;
-    this.genHtmlStream(rendered.html, rendered, ctx);
+    this.genHtmlStream(rendered.htmlStream, rendered, ctx);
   }
 
   /**
@@ -178,12 +139,16 @@ class ServerRenderer {
    * @return {string} final html content
    */
   genHtml(html, extra = {}, ctx) {
-    if (indexHtml) {
+    if (!this.ssrEnabled) {
+      if (!indexHtml) {
+        indexHtml = readIndexHtml();
+      }
+      if (!DEV_MODE) {
+        return indexHtml;
+      }
+      indexHtml = readIndexHtml();
       return indexHtml;
     }
-
-    const loadableComponents = extra.scripts || [];
-    const renderedComponentsScripts = loadableComponents.join('');
 
     let ret = `
     <!DOCTYPE html>
@@ -192,26 +157,22 @@ class ServerRenderer {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
         <title>${extra.title || 'React App'}</title>
-        ${styleLinks}
+        ${extra.linkTags}
+        ${extra.styleTags}
       </head>
       <body>
         <div id="app">${html}</div>
         <script type="text/javascript">window.__INITIAL_DATA__ = ${JSON.stringify(
           extra.initialData || {}
         )}</script>
-        ${manifestInlineScript}
-        ${vendorsScript}
-        ${renderedComponentsScripts}
-        <script type="text/javascript" src="${publicPath +
-          manifest[ENTRY_NAME.APP_JS]}"></script>
+        ${extra.scriptTags}
       </body>
     </html>
   `;
-
+    ret = this.minifyHtml(ret);
     this.cache && this.cache.set(ctx.path, ret);
     return ret;
   }
-
   /**
    * Generate html in stream
    * @param nodeStreamFromReact
@@ -220,24 +181,30 @@ class ServerRenderer {
    */
   genHtmlStream(nodeStreamFromReact, extra = {}, ctx) {
     const res = ctx.res;
-    let cacheStream = this.createCacheStream(ctx.path);
+    ctx.status = 200;
+    ctx.respond = false;
 
-    cacheStream.pipe(res);
+    let cacheStream = this.createCacheStream(ctx.path);
+    cacheStream.pipe(
+      res,
+      { end: false }
+    );
 
     const before = `
-    <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-        <title>${extra.title || 'React App'}</title>
-        ${styleLinks}
-      </head>
-      <body><div id="app">`;
-
+      <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+          <title>${extra.title || 'React App'}</title>
+          ${extra.styleTags}
+        </head>
+        <body><div id="app">`;
     cacheStream.write(before);
+    // res.write(before);
 
     nodeStreamFromReact.pipe(
+      // res,
       cacheStream,
       { end: false }
     );
@@ -245,26 +212,21 @@ class ServerRenderer {
     nodeStreamFromReact.on('end', () => {
       logger.info('nodeStreamFromReact end');
       logger.info('start streaming rest html content...');
-      let renderedComponentsScripts = [];
-      //get rendered components for react-loadable after reactNodeStream done
-      if (extra.modules) {
-        // console.log('extra.modules:', extra.modules);
-        renderedComponentsScripts = s.getRenderedBundleScripts(extra.modules);
-      }
       const after = `</div>
-      <script type="text/javascript">window.__INITIAL_DATA__ = ${JSON.stringify(
-        extra.initialData || {}
-      )}</script>
-        ${manifestInlineScript}
-        ${vendorsScript}
-        ${renderedComponentsScripts}
-        <script type="text/javascript" src="${publicPath +
-          manifest[ENTRY_NAME.APP_JS]}"></script>
-      </body>
-    </html>
-  `;
+          <script type="text/javascript">window.__INITIAL_DATA__ = ${JSON.stringify(
+            extra.initialData || {}
+          )}</script>
+            ${extra.extractor.getScriptTags()}
+          </body>
+        </html>`;
+      // res.end(after);
+
+      cacheStream.write(after);
+      logger.info('streaming rest html content done!');
+      res.end();
+      cacheStream.end();
       //in case the initial data and the runtime code is big, also use stream here
-      const afterStream = intoStream(after);
+      /*const afterStream = intoStream(after);
       afterStream.pipe(
         cacheStream,
         { end: false }
@@ -272,7 +234,7 @@ class ServerRenderer {
       afterStream.on('end', () => {
         logger.info('streaming rest html content done!');
         cacheStream.end();
-      });
+      });*/
     });
   }
 
@@ -297,8 +259,13 @@ class ServerRenderer {
       flush(cb) {
         // We concatenate all the buffered chunks of HTML to get the full HTML
         // then cache it at "key"
-        self.cache.set(key, Buffer.concat(bufferedChunks));
-        logger.info(`Cache stream for ${key} finished!`);
+        if (!self.cacheDisabled && self.cache) {
+          self.cache.set(
+            key,
+            self.minifyHtml(Buffer.concat(bufferedChunks).toString())
+          );
+          logger.info(`Cache stream for [${key}] finished!`);
+        }
         cb();
       },
     });
@@ -323,8 +290,12 @@ class ServerRenderer {
    */
   setHtmlContentType(ctx) {
     ctx.set({
-      'Content-Type': 'text/html',
+      'Content-Type': 'text/html; charset=UTF-8',
     });
+  }
+
+  minifyHtml(html) {
+    return minify(html, { collapseWhitespace: true });
   }
 }
 
