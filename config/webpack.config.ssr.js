@@ -31,7 +31,11 @@ const webpackConfig = webpackMerge(
       libraryExport: 'default',
       libraryTarget: 'commonjs2',
     },
-    externals: [nodeExternals()],
+    externals: [
+      nodeExternals({
+        whitelist: [/\.(?!(?:jsx?|json)$).{1,5}$/i],
+      }),
+    ],
     resolve: {
       ...utils.getWebpackResolveConfig(),
     },
