@@ -257,6 +257,15 @@ describe('request proxying', () => {
     expect(response.body).toHaveProperty('msg', '400');
   });
 
+  test('proxying 400 response with post', async () => {
+    const response = await server
+      .post('/api-proxy2/400')
+      .send({ name: 'jason' });
+    expect(response.status).toEqual(400);
+    expect(response.body).toHaveProperty('msg', '400');
+    expect(response.body.data).toEqual({ name: 'jason' });
+  });
+
   test('proxying 500 response', async () => {
     const response = await server.get('/api-proxy2/500');
     expect(response.status).toEqual(500);

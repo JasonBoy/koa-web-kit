@@ -81,6 +81,15 @@ router.get('/400', async ctx => {
   };
 });
 
+router.post('/400', koaBody(), async ctx => {
+  ctx.status = 400;
+  ctx.set('cache-control', 'no-store');
+  ctx.body = {
+    msg: '400',
+    data: ctx.request.body,
+  };
+});
+
 router.get('/500', async ctx => {
   ctx.throw(500);
 });
