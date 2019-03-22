@@ -42,7 +42,7 @@ function initApp(app) {
     app.use(compress());
   }
 
-  app.use(favicon(__dirname + '/src/assets/static/favicon.ico'));
+  app.use(favicon(__dirname + 'build/app/favicon.ico'));
 
   let staticPrefix = path.join(
     config.getAppPrefix(),
@@ -54,7 +54,7 @@ function initApp(app) {
   app.use(
     mount(
       staticPrefix,
-      serveStatic(path.join(process.cwd(), 'build/app'), {
+      serveStatic(path.join(__dirname, 'build/app'), {
         // one month cache for prod
         maxage: DEV_MODE ? 0 : 2592000000,
         gzip: false,

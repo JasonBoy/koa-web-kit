@@ -6,7 +6,7 @@ module.exports = {
   apps: [
     // First application
     {
-      name: 'koa-web-kit',
+      name: process.env.APP_NAME || 'koa-web-kit',
       script: './server.js',
       instances: 0,
       exec_mode: 'cluster_mode',

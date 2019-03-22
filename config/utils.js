@@ -1,8 +1,6 @@
 'use strict';
 
 const path = require('path');
-const autoprefixer = require('autoprefixer');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const config = require('./env');
 const SLASH_REGEX = /[\\]+/g;
 
@@ -162,6 +160,8 @@ exports.getCSSLoader = function getCSSLoader(
   return temp;
 };
 
+let MiniCssExtractPlugin;
+
 exports.getAllStyleRelatedLoaders = function(
   DEV_MODE,
   isHMREnabled,
@@ -172,6 +172,9 @@ exports.getAllStyleRelatedLoaders = function(
 ) {
   let styleLoader = LOADER.STYLE_LOADER;
   if (!DEV_MODE || isSSREnabled) {
+    if (!MiniCssExtractPlugin) {
+      MiniCssExtractPlugin = require('mini-css-extract-plugin');
+    }
     styleLoader = MiniCssExtractPlugin.loader;
   } else {
     if (isHMREnabled) {
@@ -301,11 +304,12 @@ exports.getWebpackResolveConfig = function(customAlias = {}) {
     },
   };
 };
-exports.getPostCSSLoader = function() {
+exports.getPostCSSLoader = function(plugins = []) {
+  if (plugins.length <= 0) {
+    plugins = [require('autoprefixer')];
+  }
   return {
     loader: LOADER.POSTCSS_LOADER,
-    options: {
-      plugins: [autoprefixer],
-    },
+    options: { plugins },
   };
 };

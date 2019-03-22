@@ -166,7 +166,27 @@
       "utils/",
       "services/",
       "app-config.js",
-      "server.js"
+      "server.js",
+      "app.js"
     ]
-  }
+  },
+  "files": [
+    "__tests__",
+    "api",
+    "config",
+    "mocks",
+    "routes",
+    "services",
+    "utils",
+    "views",
+    "app.js",
+    "deploy.sh",
+    "package.json",
+    "pm2.config.js",
+    "server.js",
+    ".npmrc",
+    "Dockerfile",
+    ".dockerignore",
+    "jest.config.*.js"
+  ]
 }
