@@ -179,6 +179,7 @@
     "services",
     "utils",
     "views",
+    "src",
     "app.js",
     "deploy.sh",
     "package.json",
@@ -187,6 +188,12 @@
     ".npmrc",
     "Dockerfile",
     ".dockerignore",
-    "jest.config.*.js"
+    "jest.config.*.js",
+    "babel.config.js",
+    ".gitignore",
+    ".prettierignore",
+    ".prettierrc",
+    "LICENSE",
+    "postcss.config.js"
   ]
 }
