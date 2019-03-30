@@ -59,7 +59,7 @@ const webpackConfig = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(['../build/app'], { verbose: false }),
+    new CleanWebpackPlugin({ verbose: false }),
     new webpack.DefinePlugin({
       __isBrowser__: true,
       __HMR__: isHMREnabled,
