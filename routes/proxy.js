@@ -15,13 +15,24 @@ exports.handleApiRequests = function(prefix, endPoint) {
   router.all('*', async ctx => {
     const requestStream = apiProxy.proxyRequest(ctx);
     const pt = requestStream.pipe(PassThrough());
-    await new Promise(resolve => {
-      requestStream.on('response', response => {
-        ctx.status = response.statusCode;
-        ctx.set(response.headers);
-        resolve();
+    try {
+      await new Promise(resolve => {
+        requestStream.on('response', response => {
+          ctx.status = response.statusCode;
+          ctx.set(response.headers);
+          resolve();
+        });
+        requestStream.on('error', error => {
+          reject(error);
+        });
       });
-    });
+    } catch (err) {
+      ctx.status = 500;
+      ctx.body = {
+        code: err.code,
+      };
+      return;
+    }
     ctx.body = pt;
   });
   return router.routes();
