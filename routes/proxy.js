@@ -16,7 +16,7 @@ exports.handleApiRequests = function(prefix, endPoint) {
     const requestStream = apiProxy.proxyRequest(ctx);
     const pt = requestStream.pipe(PassThrough());
     try {
-      await new Promise(resolve => {
+      await new Promise((resolve, reject) => {
         requestStream.on('response', response => {
           ctx.status = response.statusCode;
           ctx.set(response.headers);
