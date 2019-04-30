@@ -148,6 +148,9 @@ module.exports = {
   getHttpProxy: () => {
     return getConfigProperty('HTTP_PROXY');
   },
+  getSocksProxy: () => {
+    return getConfigProperty('SOCKS_PROXY');
+  },
   getDefaultApiEndPoint: () => {
     const obj = getConfigProperty('API_ENDPOINTS');
     return obj[obj[DEFAULT_PREFIX_KEY]];

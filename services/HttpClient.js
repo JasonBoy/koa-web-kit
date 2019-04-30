@@ -4,6 +4,7 @@
 
 const got = require('got');
 const tunnel = require('tunnel');
+const SocksProxyAgent = require('socks-proxy-agent');
 const { URL } = require('url');
 const util = require('util');
 const { logger } = require('./logger');
@@ -12,6 +13,7 @@ const { HTTP_METHOD } = require('./http-config');
 const isCustomAPIPrefix = appConfig.isCustomAPIPrefix();
 const defaultEndpoint = appConfig.getDefaultApiEndPoint();
 const httpProxy = appConfig.getHttpProxy();
+const socksProxy = appConfig.getSocksProxy();
 const debugLevel = appConfig.getProxyDebugLevel();
 
 const DEBUG_LEVEL = {
@@ -28,14 +30,20 @@ const LOG_LEVEL = {
 
 /**
  * proxy global default got options
- * @type {{throwHttpErrors: boolean}}
  */
 const defaultRequestOptions = {
   throwHttpErrors: false,
 };
 
 //Simple proxy tunnel for easier debug
-if (httpProxy) {
+if (socksProxy) {
+  const socksProtocol = 'socks:';
+  defaultRequestOptions.agent = new SocksProxyAgent(
+    String(socksProxy).startsWith(socksProtocol)
+      ? socksProxy
+      : `${socksProtocol}//${socksProxy}`
+  );
+} else if (httpProxy) {
   const parsedUrl = new URL(httpProxy);
   defaultRequestOptions.agent = tunnel.httpOverHttp({
     proxy: {

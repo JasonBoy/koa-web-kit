@@ -8,6 +8,7 @@ module.exports = {
   NODE_PROXY: true,
   //request module http proxy
   HTTP_PROXY: '',
+  SOCKS_PROXY: '',
   PROXY_DEBUG_LEVEL: 0,
   LOG_PATH: '',
   STATIC_ENDPOINT: '',
