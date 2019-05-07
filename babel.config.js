@@ -9,6 +9,7 @@ module.exports = function(api) {
           targets: {},
           useBuiltIns: 'usage',
           modules: false,
+          corejs: 3,
         },
       ],
       '@babel/preset-react',
