@@ -71,6 +71,8 @@ class HttpClient {
     this.endPoint = options.hasOwnProperty('endPoint')
       ? options.endPoint
       : defaultEndpoint;
+    const parsedUrl = new URL(this.endPoint);
+    this.endPointHost = parsedUrl.host;
     this.options = options;
     this.got = got.extend(
       Object.assign(
@@ -254,12 +256,13 @@ class HttpClient {
    * @param options - custom options
    * @return {object} final request options
    */
-  _finalizeRequestOptions(options = {}) {
+  _finalizeRequestOptions(options = { headers: {} }) {
     let optionPrefix = options.prefix || this.options.prefix;
     // TODO: a path rewrite could be better
     if (isCustomAPIPrefix && optionPrefix) {
       options.url = options.url.replace(new RegExp(`^${optionPrefix}`), '');
     }
+    options.headers.host = this.endPointHost;
     return options;
   }
 
