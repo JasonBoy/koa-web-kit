@@ -69,8 +69,11 @@ class HttpClient {
    */
   constructor(options = {}, requestOptions = {}) {
     this.endPoint = options.endPoint || defaultEndpoint;
-    const parsedUrl = new URL(this.endPoint);
-    this.endPointHost = parsedUrl.host;
+    this.endPointHost = '';
+    if (this.endPoint) {
+      const parsedUrl = new URL(this.endPoint);
+      this.endPointHost = parsedUrl.host;
+    }
     this.options = options;
     this.got = got.extend(
       Object.assign(
@@ -263,7 +266,9 @@ class HttpClient {
     if (!options.headers) {
       options.headers = {};
     }
-    options.headers.host = this.endPointHost;
+    if (this.endPointHost) {
+      options.headers.host = this.endPointHost;
+    }
     return options;
   }
 
