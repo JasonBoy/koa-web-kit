@@ -171,15 +171,15 @@ class Request {
    *   prefix: '/proxy-1', //prefix for the url
    * }
    * ```
-   * @param {object=} params query strings in object
+   * @param {object=} querystring query strings in object
    * @param options
    * @return {*}
    */
-  get(url, params = {}, options = {}) {
+  get(url, querystring = {}, options = {}) {
     const getOptions = Object.assign(
       {
         method: HTTP_METHOD.GET,
-        qs: params,
+        qs: querystring,
       },
       options
     );
@@ -198,15 +198,15 @@ class Request {
     this.sendRequestWithBody(url, data, HTTP_METHOD.PATCH, options);
   }
 
-  delete(url, data = {}, options = {}) {
-    const deleteOptions = Object.assign(
+  delete(url, querystring = {}, options = {}) {
+    const getOptions = Object.assign(
       {
         method: HTTP_METHOD.DELETE,
-        body: this.normalizeBodyData(data),
+        qs: querystring,
       },
       options
     );
-    return this.sendRequest(url, deleteOptions);
+    return this.sendRequest(url, getOptions);
   }
 
   sendRequestWithBody(url, body, method, options) {
