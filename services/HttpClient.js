@@ -68,9 +68,7 @@ class HttpClient {
    * @param {object=} requestOptions - default options for "got" module
    */
   constructor(options = {}, requestOptions = {}) {
-    this.endPoint = options.hasOwnProperty('endPoint')
-      ? options.endPoint
-      : defaultEndpoint;
+    this.endPoint = options.endPoint || defaultEndpoint;
     const parsedUrl = new URL(this.endPoint);
     this.endPointHost = parsedUrl.host;
     this.options = options;
@@ -256,11 +254,14 @@ class HttpClient {
    * @param options - custom options
    * @return {object} final request options
    */
-  _finalizeRequestOptions(options = { headers: {} }) {
+  _finalizeRequestOptions(options = {}) {
     let optionPrefix = options.prefix || this.options.prefix;
     // TODO: a path rewrite could be better
     if (isCustomAPIPrefix && optionPrefix) {
       options.url = options.url.replace(new RegExp(`^${optionPrefix}`), '');
+    }
+    if (!options.headers) {
+      options.headers = {};
     }
     options.headers.host = this.endPointHost;
     return options;
