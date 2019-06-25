@@ -27,7 +27,7 @@ exports.LOADER = LOADER;
 exports.getName = function getName(chunkName, ext, hashName, DEV_MODE) {
   return (
     chunkName +
-    (DEV_MODE ? '.' : '-[' + (hashName ? hashName : 'chunkhash') + ':9].') +
+    (DEV_MODE ? '.' : '-[' + (hashName ? hashName : 'contenthash') + ':9].') +
     ext
   );
 };
