@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-// const intoStream = require('into-stream');
 const { Transform } = require('stream');
 const { minify } = require('html-minifier');
 
@@ -225,16 +224,6 @@ class ServerRenderer {
       logger.info('streaming rest html content done!');
       res.end();
       cacheStream.end();
-      //in case the initial data and the runtime code is big, also use stream here
-      /*const afterStream = intoStream(after);
-      afterStream.pipe(
-        cacheStream,
-        { end: false }
-      );
-      afterStream.on('end', () => {
-        logger.info('streaming rest html content done!');
-        cacheStream.end();
-      });*/
     });
   }
 
