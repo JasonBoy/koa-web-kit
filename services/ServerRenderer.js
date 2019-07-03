@@ -161,7 +161,7 @@ class ServerRenderer {
       </head>
       <body>
         <div id="app">${html}</div>
-        <script type="text/javascript">window.__INITIAL_DATA__ = ${JSON.stringify(
+        <script id="__INITIAL_DATA__" type="application/json">${JSON.stringify(
           extra.initialData || {}
         )}</script>
         ${extra.scriptTags}
@@ -212,10 +212,10 @@ class ServerRenderer {
       logger.info('nodeStreamFromReact end');
       logger.info('start streaming rest html content...');
       const after = `</div>
-          <script type="text/javascript">window.__INITIAL_DATA__ = ${JSON.stringify(
+          <script id="__INITIAL_DATA__" type="application/json">${JSON.stringify(
             extra.initialData || {}
           )}</script>
-            ${extra.extractor.getScriptTags()}
+          ${extra.extractor.getScriptTags()}
           </body>
         </html>`;
       // res.end(after);

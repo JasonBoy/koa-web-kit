@@ -13,8 +13,17 @@ class App extends Component {
         userName: 'jason-in-app',
       },
     };
+    this.initialData = {};
 
-    this.initialData = window.__INITIAL_DATA__ || {};
+    const initDataScript = document.getElementById('__INITIAL_DATA__');
+    if (initDataScript) {
+      try {
+        this.initialData = JSON.parse(initDataScript.innerText);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    console.log('this.initialData: ', this.initialData);
   }
   render() {
     return (
