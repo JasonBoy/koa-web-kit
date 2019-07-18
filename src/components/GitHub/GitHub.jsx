@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './GitHub.scss';
 import isEmpty from 'lodash.isempty';
 import { Request } from 'modules/Request';
 

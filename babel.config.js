@@ -1,6 +1,6 @@
 module.exports = function(api) {
+  const DEV_MODE = api.env('development');
   api.cache(true);
-
   return {
     presets: [
       [
@@ -16,7 +16,15 @@ module.exports = function(api) {
     ],
     env: {
       development: {
-        plugins: ['@babel/plugin-transform-react-jsx-source'],
+        plugins: [
+          [
+            'babel-plugin-styled-components',
+            {
+              displayName: DEV_MODE,
+            },
+          ],
+          '@babel/plugin-transform-react-jsx-source',
+        ],
       },
       test: {
         presets: [
@@ -29,12 +37,24 @@ module.exports = function(api) {
           '@babel/preset-react',
         ],
         plugins: [
+          [
+            'babel-plugin-styled-components',
+            {
+              displayName: DEV_MODE,
+            },
+          ],
           '@babel/plugin-transform-react-jsx-source',
           'dynamic-import-node',
         ],
       },
     },
     plugins: [
+      [
+        'babel-plugin-styled-components',
+        {
+          displayName: DEV_MODE,
+        },
+      ],
       '@babel/plugin-transform-runtime',
       '@babel/plugin-proposal-object-rest-spread',
       '@babel/plugin-proposal-class-properties',

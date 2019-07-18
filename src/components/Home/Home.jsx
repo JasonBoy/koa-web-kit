@@ -1,9 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import classnames from 'classnames';
+import styled from 'styled-components';
+
+const StyledHome = styled.div`
+  font-size: 1.2rem;
+`;
 
 // import s from './Home.scss'; //CSS_MODULES
-import './Home.scss';
+// import './Home.scss';
 
 class Home extends React.Component {
   constructor(props) {
@@ -23,15 +27,10 @@ class Home extends React.Component {
 
   render() {
     return (
-      <div
-        className={classnames(
-          'container'
-          // s.home,
-        )}
-      >
+      <StyledHome className="container">
         <h3 className={'text-center'}>Home page</h3>
         <div className={'list-group'}>
-          <Link className={classnames('list-group-item', 'active')} to="/">
+          <Link className="list-group-item active" to="/">
             Home
           </Link>
 
@@ -53,7 +52,7 @@ class Home extends React.Component {
             {this.state.error.msg}
           </a>
         </div>
-      </div>
+      </StyledHome>
     );
   }
 }

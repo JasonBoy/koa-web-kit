@@ -3,8 +3,14 @@
  */
 
 import React from 'react';
-import './Hello.scss';
-import r, { api, Request } from 'modules/Request';
+// import r, { api, Request } from 'modules/Request';
+import styled from 'styled-components';
+
+const StyledHello = styled.div`
+  text-align: center;
+  font-size: 1.5rem;
+  color: pink;
+`;
 
 class Hello extends React.Component {
   constructor(props) {
@@ -36,11 +42,11 @@ class Hello extends React.Component {
 
   render() {
     return (
-      <div className="hello">
+      <StyledHello>
         <h3>Hello webpack 4</h3>
         Hello <code>Component: {this.state.name || 'xxx'}</code>
         {/*<p>{this.yyy()}</p>*/}
-      </div>
+      </StyledHello>
     );
   }
 }
