@@ -20,7 +20,9 @@
     "report": "cross-env NODE_ENV=production BUNDLE_ANALYZER=true webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
     "test": "npm run jest:node && npm run jest:client",
     "jest:node": "jest --config=jest.config.node.js --forceExit",
-    "jest:client": "jest --config=jest.config.client.js"
+    "jest:client": "jest --config=jest.config.client.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "engines": {
     "node": ">= 8.6"
@@ -92,7 +94,8 @@
     "socks-proxy-agent": "4.0.2",
     "styled-components": "4.3.2",
     "tunnel": "0.0.6",
-    "whatwg-fetch": "3.0.0"
+    "whatwg-fetch": "3.0.0",
+    "snyk": "^1.193.2"
   },
   "devDependencies": {
     "@babel/cli": "7.4.4",
@@ -198,5 +201,6 @@
     ".prettierrc",
     "LICENSE",
     "postcss.config.js"
-  ]
+  ],
+  "snyk": true
 }
