@@ -17,9 +17,9 @@
 - 📦Get all the Node.JS full stack development experience out of the box
 - 🔥Hot Module Replacement support, and bundle size analyzer report
 - 📉Async/Await support for writing neat async code
-- 💖CSS Modules, SASS preprocessor, PostCSS, autoprefixer
-- 🎉Simple API Proxy bundled, no complex extra nginx configuration
-- 🌈Available for generating static react site, also with SSR support
+- 💖Styled-Components, CSS Modules, SASS/SCSS preprocessor, PostCSS, autoprefixer
+- 🎉Simple API Proxy bundled, no complex extra reverse proxy configuration
+- 🌈Available for generating static site, also with SSR support
 - ⚡️Just one npm command to deploy your app to production
 - 👷Continuously Maintaining🍻
 
