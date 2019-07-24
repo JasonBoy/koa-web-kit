@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Create by Jason <jasonlikenfs@gmail.com>
+#Create by liy <yuankylee@163.com>
 #This is meant for production
 # > ./deploy.sh skipInstall skipBuild skipServer
 
@@ -33,8 +33,8 @@ if [[ $1 != "1" ]]; then
   #  echo changing npm registry to taobao registry: "$TaobaoRegistry"
   #  npm config set registry "$TaobaoRegistry"
   #fi
-  ##Change SASS binary site to taobao
-  #export SASS_BINARY_SITE=https://npm.taobao.org/mirrors/node-sass/
+  #Change SASS binary site to taobao
+  export SASS_BINARY_SITE=https://npm.taobao.org/mirrors/node-sass/
 
   echo installing npm modules...
   ##Don't install based on the package-lock.json by default, instead, only refer to package.json

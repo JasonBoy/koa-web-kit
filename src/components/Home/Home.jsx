@@ -1,13 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { Button } from 'antd';
 
 const StyledHome = styled.div`
   font-size: 1.2rem;
 `;
-
-// import s from './Home.scss'; //CSS_MODULES
-// import './Home.scss';
 
 class Home extends React.Component {
   constructor(props) {
@@ -19,38 +16,17 @@ class Home extends React.Component {
   }
 
   componentDidMount() {}
-
-  makeError = e => {
-    e.preventDefault();
-    this.setState({ error: null });
-  };
-
   render() {
     return (
       <StyledHome className="container">
         <h3 className={'text-center'}>Home page</h3>
-        <div className={'list-group'}>
-          <Link className="list-group-item active" to="/">
+        <div className="mb-2">
+          <Button type="primary" href="/">
             Home
-          </Link>
-
-          <Link className={'list-group-item'} to="/hello-context">
-            Hello React Context
-          </Link>
-          <>
-            <Link className={'list-group-item'} to="/hello/sync">
-              Hello Sync
-            </Link>
-            <Link className="list-group-item" to="/hello/async">
-              Hello Async
-            </Link>
-          </>
-          <Link className={'list-group-item'} to="/github">
-            Github
-          </Link>
-          <a className={'list-group-item'} href="#" onClick={this.makeError}>
-            {this.state.error.msg}
-          </a>
+          </Button>
+        </div>
+        <div>
+          <Button href="/hello/async">to hello/async</Button>
         </div>
       </StyledHome>
     );

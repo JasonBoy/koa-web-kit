@@ -61,6 +61,7 @@ module.exports = function(api) {
       '@babel/plugin-syntax-dynamic-import',
       '@babel/plugin-transform-modules-commonjs',
       '@loadable/babel-plugin',
+      ['import', { libraryName: 'antd', libraryDirectory: 'es', style: 'css' }],
     ],
   };
 };

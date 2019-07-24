@@ -55,7 +55,7 @@ function checkSourceType(sourceKey) {
 }
 
 const defaultContext = {
-  userName: 'ssr-jason',
+  userName: 'liy',
 };
 
 class SSR {

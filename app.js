@@ -28,7 +28,7 @@ const isHMREnabled = config.isHMREnabled();
 function initAppCommon() {
   const app = new Koa();
   app.env = config.getNodeEnv() || 'development';
-  app.keys = ['koa-web-kit'];
+  app.keys = ['web-app'];
   app.proxy = true;
 
   app.use(Logger.createMorganLogger());

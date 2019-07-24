@@ -10,7 +10,7 @@ class App extends Component {
     this.state = {
       appName: 'React-v16',
       context: {
-        userName: 'jason-in-app',
+        userName: 'app',
       },
     };
     this.initialData = {};

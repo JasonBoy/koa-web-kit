@@ -1,8 +1,9 @@
 {
-  "name": "koa-web-kit",
-  "version": "2.9.5",
-  "description": "A modern, production-ready, and full-stack node web framework",
+  "name": "web-app",
+  "version": "1.0.0",
+  "description": "web app framework",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "dev": "cross-env ENABLE_HMR=1 ENABLE_SSR=0 STATIC_PREFIX='' node server.js",
     "dev:ssr": "cross-env ENABLE_HMR=0 CSS_MODULES=0 ENABLE_SSR=1 npm-run-all -p watch watch:ssr start",
@@ -18,7 +19,7 @@
     "ssr": "webpack --progress --config config/webpack.config.ssr.js",
     "build": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
     "report": "cross-env NODE_ENV=production BUNDLE_ANALYZER=true webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
-    "test": "npm run jest:node && npm run jest:client",
+    "test": "npm run build:dev",
     "jest:node": "jest --config=jest.config.node.js --forceExit",
     "jest:client": "jest --config=jest.config.client.js"
   },
@@ -38,10 +39,6 @@
       ]
     }
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JasonBoy/koa-web-kit.git"
-  },
   "keywords": [
     "koa",
     "es6",
@@ -51,16 +48,13 @@
     "fullstack",
     "framework"
   ],
-  "author": "jasonlikenfs@gmail.com",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/JasonBoy/koa-web-kit/issues"
-  },
-  "homepage": "https://github.com/JasonBoy/koa-web-kit#readme",
+  "author": "yuankylee@163.com",
+  "license": "UNLICENSED",
   "readme": "README.md",
   "dependencies": {
     "@loadable/component": "5.9.0",
     "@loadable/server": "5.9.0",
+    "antd": "3.20.5",
     "bootstrap": "4.3.1",
     "chalk": "2.4.2",
     "core-js": "3.0.1",
@@ -113,6 +107,7 @@
     "babel-loader": "8.0.5",
     "babel-minify-webpack-plugin": "0.3.1",
     "babel-plugin-dynamic-import-node": "2.2.0",
+    "babel-plugin-import": "1.12.0",
     "babel-plugin-styled-components": "1.10.6",
     "cheerio": "1.0.0-rc.3",
     "clean-webpack-plugin": "2.0.2",
