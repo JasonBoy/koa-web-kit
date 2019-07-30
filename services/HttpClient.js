@@ -35,24 +35,6 @@ const defaultRequestOptions = {
   throwHttpErrors: false,
 };
 
-//Simple proxy tunnel for easier debug
-if (socksProxy) {
-  const socksProtocol = 'socks:';
-  defaultRequestOptions.agent = new SocksProxyAgent(
-    String(socksProxy).startsWith(socksProtocol)
-      ? socksProxy
-      : `${socksProtocol}//${socksProxy}`
-  );
-} else if (httpProxy) {
-  const parsedUrl = new URL(httpProxy);
-  defaultRequestOptions.agent = tunnel.httpOverHttp({
-    proxy: {
-      host: parsedUrl.hostname,
-      port: parsedUrl.port,
-    },
-  });
-}
-
 /**
  * Proxy for apis or other http requests
  */
@@ -70,21 +52,54 @@ class HttpClient {
   constructor(options = {}, requestOptions = {}) {
     this.endPoint = options.endPoint || defaultEndpoint;
     this.endPointHost = '';
+    this.endPointParsedUrl = {};
     if (this.endPoint) {
-      const parsedUrl = new URL(this.endPoint);
-      this.endPointHost = parsedUrl.host;
+      this.endPointParsedUrl = new URL(this.endPoint);
+      this.endPointHost = this.endPointParsedUrl.host;
+    }
+    const clientBaseOptions = {
+      baseUrl: this.endPoint,
+    };
+    const agent = this._getAgent();
+    if (agent) {
+      clientBaseOptions.agent = agent;
     }
     this.options = options;
     this.got = got.extend(
-      Object.assign(
-        {
-          baseUrl: this.endPoint,
-        },
-        defaultRequestOptions,
-        requestOptions
-      )
+      Object.assign(clientBaseOptions, defaultRequestOptions, requestOptions)
     );
     this.debugLevel = options.debugLevel || debugLevel;
+  }
+
+  /**
+   * Get the http agent for proxying or requesting
+   * @return {*}
+   * @private
+   */
+  _getAgent() {
+    let agent;
+    //Simple proxy tunnel
+    if (socksProxy) {
+      const socksProtocol = 'socks:';
+      agent = new SocksProxyAgent(
+        String(socksProxy).startsWith(socksProtocol)
+          ? socksProxy
+          : `${socksProtocol}//${socksProxy}`
+      );
+    } else if (httpProxy) {
+      const parsedUrl = new URL(httpProxy);
+      const tunnelOptions = {
+        proxy: {
+          host: parsedUrl.hostname,
+          port: parsedUrl.port,
+        },
+      };
+      agent =
+        this.endPointParsedUrl.protocol === 'https:'
+          ? tunnel.httpsOverHttp(tunnelOptions)
+          : tunnel.httpOverHttp(tunnelOptions);
+    }
+    return agent;
   }
 
   /**
@@ -159,9 +174,7 @@ class HttpClient {
           );
         } else {
           this._log(
-            `[${gotOptions.method}][${
-              gotOptions.href
-            }] response body[${type}] length: ${ret.length}`
+            `[${gotOptions.method}][${gotOptions.href}] response body[${type}] length: ${ret.length}`
           );
         }
       });
