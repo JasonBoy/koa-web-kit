@@ -72,7 +72,9 @@ class HttpClient {
   }
 
   /**
-   * Get the http agent for proxying or requesting
+   * Get the http agent for proxying or requesting,
+   * NOTE: when use https endpoint, you may need to set "NODE_TLS_REJECT_UNAUTHORIZED=0" node option
+   * with self signed certificate to bypass the TLS check
    * @return {*}
    * @private
    */
