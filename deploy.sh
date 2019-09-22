@@ -10,6 +10,9 @@
 echo $(which node)
 echo $(which pm2)
 
+basepath=$(cd `dirname $0`; pwd)
+cd ${basepath}
+
 #Simple script to run app quickly
 NodeVersion=$(node -v)
 if [[ $? != 0 ]]; then
