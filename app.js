@@ -8,7 +8,6 @@ const mount = require('koa-mount');
 const compress = require('koa-compress');
 const session = require('koa-session');
 const serveStatic = require('koa-static');
-const convert = require('koa-convert');
 const helmet = require('koa-helmet');
 const favicon = require('koa-favicon');
 const isEmpty = require('lodash.isempty');
@@ -42,7 +41,7 @@ function initApp(app) {
     app.use(compress());
   }
 
-  app.use(favicon(__dirname + 'build/app/favicon.ico'));
+  app.use(favicon(path.join(__dirname, 'build/app/favicon.ico')));
 
   let staticPrefix = path.join(
     config.getAppPrefix(),
