@@ -51,6 +51,9 @@ exports.getStyleLoaders = function getStyleLoaders(devMode, ...loaders) {
         ...loaderOptions,
       },
     };
+    if (loader == LOADER.STYLE_LOADER) {
+      delete tempLoader.options.sourceMap;
+    }
     if (typeof loader === 'string' && loader.startsWith('sass')) {
       tempLoader.options.outputStyle = 'compressed';
     }

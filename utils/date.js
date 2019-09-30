@@ -1,5 +1,5 @@
 const format = require('date-fns/format');
-const DEFAULT_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+const DEFAULT_FORMAT = 'yyyy-MM-dd HH:mm:ss';
 
 module.exports = {
   simpleDate() {

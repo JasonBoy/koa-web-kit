@@ -127,7 +127,7 @@ async function initHMR(app) {
       .then(middleware => {
         if (!HMRInitialized) {
           HMRInitialized = true;
-          app.use(convert(historyApiFallback()));
+          app.use(historyApiFallback());
           app.use(middleware);
           middleware.devMiddleware.waitUntilValid(resolve);
         }
