@@ -20,7 +20,9 @@ const Loading = <h3>Loading...</h3>;
 
 const HelloAsyncLoadable = loadable(
   () =>
-    import(/* webpackChunkName: "components_Hello_async" */ 'components/HelloAsync'),
+    import(
+      /* webpackChunkName: "components_Hello_async" */ 'components/HelloAsync'
+    ),
   {
     fallback: Loading,
   }
