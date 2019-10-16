@@ -5,6 +5,7 @@ const env = {
   apiPrefix: process.env.apiPrefix,
   NODE_ENV: process.env.NODE_ENV || 'development',
 };
+// eslint-disable-next-line no-undef
 if (typeof __isBrowser__ !== 'undefined' && __isBrowser__) {
   console.log(env);
 }

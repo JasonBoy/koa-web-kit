@@ -16,6 +16,7 @@ import AppError from 'components/AppError';
 const elRoot = document.getElementById('app');
 
 const render = Component => {
+  // eslint-disable-next-line no-undef
   if (__SSR__) {
     console.log('in SSR mode');
     loadableReady(() => {
