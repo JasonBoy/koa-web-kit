@@ -6,6 +6,7 @@ const ServerRenderer = require('../services/ServerRenderer');
 const Cache = require('../services/Cache');
 
 const renderer = new ServerRenderer({
+  stream: false,
   cache: new Cache({
     flush: true,
     // flushInterval: 1000 * 30, //flush every 30s

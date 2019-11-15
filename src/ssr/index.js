@@ -3,8 +3,8 @@ import React from 'react';
 import { StaticRouter } from 'react-router-dom';
 import ReactDOMServer from 'react-dom/server';
 import { ChunkExtractor } from '@loadable/server';
+import { ServerStyleSheet } from 'styled-components';
 import manifest from '../../build/app/manifest.json';
-
 import AppRoutes from 'src/AppRoutes';
 
 const SOURCE_TYPE = {
@@ -64,41 +64,71 @@ class SSR {
   }
   render(url, data, routerContext = {}) {
     // let modules = [];
+    const sheet = new ServerStyleSheet();
     const extractor = new ChunkExtractor({ statsFile: this.statsFile });
-    const jsx = extractor.collectChunks(
-      <StaticRouter location={url} context={routerContext}>
-        <AppRoutes context={defaultContext} initialData={data} />
-      </StaticRouter>
-    );
-    const html = ReactDOMServer.renderToString(jsx);
-    // You can now collect your script tags
-    const renderedScriptTags = extractor.getScriptTags(); // or extractor.getScriptElements();
-    // You can also collect your "preload/prefetch" links
-    const renderedLinkTags = extractor.getLinkTags(); // or extractor.getLinkElements();
-    // And you can even collect your style tags (if you use "mini-css-extract-plugin")
-    const renderedStyleTags = extractor.getStyleTags(); // or extractor.getStyleElements();
-    /*console.log('html: ', html);
-    console.log('renderedScriptTags: \n', renderedScriptTags);
-    console.log('renderedLinkTags: \n', renderedLinkTags);
-    console.log('renderedStyleTags: \n', renderedStyleTags);*/
+    let jsx,
+      html,
+      renderedScriptTags,
+      renderedLinkTags,
+      renderedStyleTags,
+      scStyleTags,
+      styleTags;
+    try {
+      jsx = extractor.collectChunks(
+        sheet.collectStyles(
+          <StaticRouter location={url} context={routerContext}>
+            <AppRoutes context={defaultContext} initialData={data} />
+          </StaticRouter>
+        )
+      );
+      html = ReactDOMServer.renderToString(jsx);
+
+      // You can now collect your script tags
+      renderedScriptTags = extractor.getScriptTags(); // or extractor.getScriptElements();
+      // You can also collect your "preload/prefetch" links
+      renderedLinkTags = extractor.getLinkTags(); // or extractor.getLinkElements();
+      // And you can even collect your style tags (if you use "mini-css-extract-plugin")
+      renderedStyleTags = extractor.getStyleTags(); // or extractor.getStyleElements();
+
+      scStyleTags = sheet.getStyleTags();
+
+      styleTags = `${renderedStyleTags || ''}${scStyleTags || ''}`;
+
+      // console.log('html: ', html);
+      // console.log('renderedScriptTags: \n', renderedScriptTags);
+      // console.log('renderedLinkTags: \n', renderedLinkTags);
+      // console.log('renderedStyleTags: \n', renderedStyleTags);
+      // console.log('scStyleTags: \n', scStyleTags);
+      // console.log('together StyledTags: \n', styleTags);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      sheet.seal();
+    }
+
     return {
       html,
       extractor,
-      scriptTags: renderedScriptTags,
-      linkTags: renderedLinkTags,
-      styleTags: renderedStyleTags,
+      scriptTags: renderedScriptTags || '',
+      linkTags: renderedLinkTags || '',
+      styleTags: styleTags || '',
     };
   }
 
   renderWithStream(url, data = {}, routerContext = {}) {
     // let modules = [];
+    const sheet = new ServerStyleSheet();
     const extractor = new ChunkExtractor({ statsFile: this.statsFile });
     const jsx = extractor.collectChunks(
-      <StaticRouter location={url} context={routerContext}>
-        <AppRoutes context={defaultContext} initialData={data} />
-      </StaticRouter>
+      sheet.collectStyles(
+        <StaticRouter location={url} context={routerContext}>
+          <AppRoutes context={defaultContext} initialData={data} />
+        </StaticRouter>
+      )
     );
-    const htmlStream = ReactDOMServer.renderToNodeStream(jsx);
+    const htmlStream = sheet.interleaveWithNodeStream(
+      ReactDOMServer.renderToNodeStream(jsx)
+    );
     const renderedScriptTags = extractor.getScriptTags();
     const renderedLinkTags = extractor.getLinkTags();
     const renderedStyleTags = extractor.getStyleTags();

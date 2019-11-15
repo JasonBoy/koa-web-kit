@@ -2,6 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash.isempty';
 import { Request } from 'modules/Request';
+import styled from 'styled-components';
+
+const StyledGithub = styled.div`
+  > ul {
+    list-style: decimal;
+  }
+`;
 
 class GitHub extends React.Component {
   constructor(props) {
@@ -30,13 +37,13 @@ class GitHub extends React.Component {
       return <p className="text-center">loading data...</p>;
     }
     return (
-      <div className="github-wrapper">
+      <StyledGithub>
         <ul>
           {this.state.github.map(b => {
             return <li key={b.name}>{b.name}</li>;
           })}
         </ul>
-      </div>
+      </StyledGithub>
     );
   }
 }
