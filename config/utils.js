@@ -259,7 +259,7 @@ exports.getImageLoader = function(devMode, context) {
         options: {
           context,
           name: exports.getResourceName(devMode),
-          limit: 1024,
+          limit: 4096,
         },
       },
       // {
@@ -303,6 +303,8 @@ exports.getWebpackResolveConfig = function(customAlias = {}) {
       src: appPath,
       modules: exports.resolve('src/modules'),
       components: exports.resolve('src/components'),
+      assets: exports.resolve('src/assets'),
+      scss: exports.resolve('src/scss'),
       ...customAlias,
     },
   };

@@ -1,9 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import logo from 'assets/static/logo.svg';
 
 const StyledHome = styled.div`
   font-size: 1.2rem;
+`;
+const StyledTitle = styled.h3`
+  img,
+  span {
+    vertical-align: middle;
+  }
 `;
 
 // import s from './Home.scss'; //CSS_MODULES
@@ -28,7 +35,10 @@ class Home extends React.Component {
   render() {
     return (
       <StyledHome className="container">
-        <h3 className={'text-center'}>Home page</h3>
+        <StyledTitle className="text-center">
+          <img className="mr-2" width={24} height={24} src={logo} alt="logo" />
+          <span>Home</span>
+        </StyledTitle>
         <div className={'list-group'}>
           <Link className="list-group-item active" to="/">
             Home
