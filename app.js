@@ -11,6 +11,8 @@ const serveStatic = require('koa-static');
 const helmet = require('koa-helmet');
 const favicon = require('koa-favicon');
 const isEmpty = require('lodash.isempty');
+const conditional = require('koa-conditional-get');
+const etag = require('koa-etag');
 
 const { logger, Logger } = require('./services/logger');
 const index = require('./routes/index');
@@ -37,19 +39,25 @@ function initAppCommon() {
 }
 
 function initApp(app) {
+  app.use(conditional());
+  app.use(etag());
   if (!DEV_MODE) {
     app.use(compress());
   }
 
   app.use(favicon(path.join(__dirname, 'build/app/favicon.ico')));
 
+  // =====serve static=====
   let staticPrefix = path.join(
     config.getAppPrefix(),
     config.getStaticPrefix() || '/'
   );
+
   if (sysUtils.isWindows()) {
     staticPrefix = sysUtils.replaceBackwardSlash(staticPrefix);
   }
+  // app.use(mount(staticPrefix, conditional()));
+  // app.use(mount(staticPrefix, etag()));
   app.use(
     mount(
       staticPrefix,
@@ -60,6 +68,16 @@ function initApp(app) {
       })
     )
   );
+  // handle static not found, do not pass further down
+  if (staticPrefix && staticPrefix != '/') {
+    app.use(
+      mount(staticPrefix, ctx => {
+        ctx.status = 404;
+        ctx.body = 'Not Found';
+      })
+    );
+  }
+  // =====serve static end=====
 
   app.use(session(app));
 
