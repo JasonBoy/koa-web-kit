@@ -8,7 +8,7 @@ const Cache = require('../services/Cache');
 const renderer = new ServerRenderer({
   cache: new Cache({
     flush: true,
-    flushInterval: 1000 * 30, //flush every 30s
+    // flushInterval: 1000 * 30, //flush every 30s
   }),
 });
 

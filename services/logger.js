@@ -20,6 +20,8 @@ try {
 const prettyOptions = {
   prettyPrint: {
     levelFirst: true,
+    translateTime: 'SYS:standard',
+    ignore: 'pid,hostname',
   },
   prettifier,
 };
