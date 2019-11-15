@@ -3,10 +3,13 @@ const Router = require('koa-router');
 const koaBody = require('koa-body');
 const got = require('got');
 const ServerRenderer = require('../services/ServerRenderer');
+const Cache = require('../services/Cache');
 
 const renderer = new ServerRenderer({
-  stream: false,
-  // flushInterval: 1000 * 30, //flush every 30s
+  cache: new Cache({
+    flush: true,
+    flushInterval: 1000 * 30, //flush every 30s
+  }),
 });
 
 const config = require('../config/env');

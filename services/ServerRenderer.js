@@ -42,17 +42,17 @@ function readIndexHtml() {
 
 /**
  * Renderer to render React SSR contents or just static html in koa app's routes
+ * @param {Object<{
+ *  ssr: boolean,
+ *  stream: boolean,
+ *  cache: ./Cache,
+ * }>} options
+ * @param {boolean} options.ssr - enable/disable SSR manually, if provided, will use the app config
+ * @param {boolean} options.stream - instance of custom Cache
+ * @param {boolean|Cache} options.cache - enable/disable SSR cache manually, if provided with true, will use a default Cache, or you can provide your own Cache instance
+ * @see ./Cache
  */
 class ServerRenderer {
-  /**
-   * ServerRenderer class
-   * @param options like below:
-   * {
-   *   ssr: true, //enable/disable SSR manually, if provided, will use the app config
-   *   cache: {Cache}, instance of custom Cache,
-   *   streaming: true, if default to use streaming api
-   * }
-   */
   constructor(options = {}) {
     this.ssrEnabled = options.hasOwnProperty('ssr')
       ? !!options.ssr
@@ -286,6 +286,9 @@ class ServerRenderer {
   }
 
   minifyHtml(html) {
+    if (DEV_MODE) {
+      return html;
+    }
     return minify(html, { collapseWhitespace: true });
   }
 }
