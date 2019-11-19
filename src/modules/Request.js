@@ -23,18 +23,19 @@ function jsonResponseHandler(data) {
   return Promise.resolve(data);
 }
 
+/**
+ * Send api requests
+ * @param {object<{
+ *   noPrefix: boolean,
+ *   apiPrefix: string,
+ *   form: boolean
+ * }>} options - you can provide other options, which will be passed to fetch api
+ * @param {boolean} options.noPrefix - if there is prefix for the instance
+ * @param {string} options.apiPrefix - prefix for the instance if "noPrefix" is false
+ * @param {boolean} options.form - if true, body is "x-www-form-urlencoded", otherwise "json"
+ * @return {Request}
+ */
 class Request {
-  /**
-   *
-   * @param options
-   * {
-   *   noPrefix: boolean, //if there is prefix for the instance
-   *   apiPrefix: string, //prefix for the instance if "noPrefix" is false
-   *   form: boolean, //true, body is "x-www-form-urlencoded", otherwise "json"
-   *   ...fetch_api_related_options,
-   * }
-   * @return {Request}
-   */
   constructor(options = {}) {
     if (!(this instanceof Request)) {
       return new Request(options);
@@ -79,7 +80,7 @@ class Request {
 
   /**
    * Send request now
-   * @param {string|object} pathname if object, @see demo in "api-config.js"
+   * @param {string|object} pathname - if provided object, see demo in "api-config.js"
    * @param {object} options
    * {
    *   noPrefix: true, //if there is prefix for this single request, default based on the instance's "noPrefix"
@@ -118,27 +119,26 @@ class Request {
     if (apiOptions.multipart) {
       delete apiOptions.headers[HEADER.CONTENT_TYPE];
     }
-    return fetch(url, apiOptions).then(response => {
-      if (!response.ok) {
-        console.error(
-          `[koa-web-kit]:[API-ERROR]-[${response.status}]-[${originalUrl}]`
-        );
-        return Promise.reject(response);
-      }
-      if (response.status === 204) {
-        return Promise.resolve();
-      }
-      if (isJSONResponse(response)) {
-        return response
-          .json()
-          .catch(err => {
-            console.error(err);
-            return {};
-          })
-          .then(data => this.jsonResponseHandler(data, apiOptions));
-      }
-      return Promise.resolve(response);
-    });
+    const response = await fetch(url, apiOptions);
+    if (!response.ok) {
+      console.error(
+        `[koa-web-kit]:[API-ERROR]-[${response.status}]-[${originalUrl}]`
+      );
+      return Promise.reject(response);
+    }
+    if (response.status === 204) {
+      return Promise.resolve();
+    }
+    if (isJSONResponse(response)) {
+      return response
+        .json()
+        .catch(err => {
+          console.error(err);
+          return {};
+        })
+        .then(data => this.jsonResponseHandler(data, apiOptions));
+    }
+    return Promise.resolve(response);
   }
 
   /**
@@ -171,9 +171,9 @@ class Request {
    *   prefix: '/proxy-1', //prefix for the url
    * }
    * ```
-   * @param {object=} querystring query strings in object
-   * @param options
-   * @return {*}
+   * @param {object=} querystring - query strings in object
+   * @param {object=} options
+   * @return {Promise}
    */
   get(url, querystring = {}, options = {}) {
     const getOptions = Object.assign(
@@ -187,15 +187,15 @@ class Request {
   }
 
   post(url, data = {}, options = {}) {
-    this.sendRequestWithBody(url, data, HTTP_METHOD.POST, options);
+    return this.sendRequestWithBody(url, data, HTTP_METHOD.POST, options);
   }
 
   put(url, data = {}, options = {}) {
-    this.sendRequestWithBody(url, data, HTTP_METHOD.PUT, options);
+    return this.sendRequestWithBody(url, data, HTTP_METHOD.PUT, options);
   }
 
   patch(url, data = {}, options = {}) {
-    this.sendRequestWithBody(url, data, HTTP_METHOD.PATCH, options);
+    return this.sendRequestWithBody(url, data, HTTP_METHOD.PATCH, options);
   }
 
   delete(url, querystring = {}, options = {}) {
@@ -209,6 +209,14 @@ class Request {
     return this.sendRequest(url, getOptions);
   }
 
+  /**
+   * Send request with http body, will normalize body before sending
+   * @param url
+   * @param body
+   * @param method
+   * @param options
+   * @returns {Promise<Response|Object>}
+   */
   sendRequestWithBody(url, body, method, options) {
     const sendOptions = Object.assign(
       {
