@@ -21,9 +21,11 @@ const nodeBuildEnv = process.env.NODE_BUILD_ENV;
 
 const DEFAULT_PREFIX_KEY = 'defaultPrefix';
 
+const DEFAULT_CONFIG_FILE_NAME = 'app-config.js';
+
 function initConfig(customConfig) {
-  let defaultConfigJS = '../app-config.js';
-  const defaultConfigJSAlt = './app-config.js';
+  let defaultConfigJS = `../${DEFAULT_CONFIG_FILE_NAME}`;
+  const defaultConfigJSAlt = `./${DEFAULT_CONFIG_FILE_NAME}`;
 
   try {
     fs.statSync(path.join(__dirname, defaultConfigJS));
@@ -31,18 +33,22 @@ function initConfig(customConfig) {
     defaultConfigJS = defaultConfigJSAlt;
   }
 
-  const configPath = customConfigPath
+  let configPath = customConfigPath
     ? path.resolve(customConfigPath)
     : path.join(__dirname, defaultConfigJS);
   // console.log(configPath);
-  let configInfo = {};
+  let configInfo;
   let hasCustomConfig = true;
   let checkMsg = '';
 
   try {
     fs.statSync(configPath);
   } catch (e) {
-    hasCustomConfig = false;
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+      configPath = autoCreateConfigFile();
+    } else {
+      hasCustomConfig = false;
+    }
   }
 
   // console.log('process.env.STATIC_PREFIX: ', process.env.STATIC_PREFIX);
@@ -50,9 +56,10 @@ function initConfig(customConfig) {
 
   if (hasCustomConfig) {
     configInfo = require(configPath);
-    checkMsg += `Using [${chalk.green(configPath)}] as basic app configuration`;
+    checkMsg += `Using [${chalk.green(configPath)}] as app configuration`;
   } else {
-    configInfo = !nodeBuildEnv ? prodConfig : devConfig;
+    configInfo =
+      !nodeBuildEnv || nodeBuildEnv !== 'development' ? prodConfig : devConfig;
     checkMsg += `Using [${chalk.green(
       !nodeBuildEnv ? 'config.default.prod' : 'config.default.dev'
     )}] as app configuration`;
@@ -74,8 +81,15 @@ function initConfig(customConfig) {
   }
 }
 
+function autoCreateConfigFile() {
+  const targetFile = path.join(__dirname, `../${DEFAULT_CONFIG_FILE_NAME}`);
+  fs.copyFileSync(path.join(__dirname, 'app-config.js.sample'), targetFile);
+  console.log(`Create ${DEFAULT_CONFIG_FILE_NAME} in project root`);
+  return targetFile;
+}
+
 function getConfigProperty(key) {
-  let value = undefined;
+  let value;
   if (config.hasOwnProperty(key)) {
     // console.log(`config[${key}] from cache`);
     value = config[key];
