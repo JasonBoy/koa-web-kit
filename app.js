@@ -133,7 +133,7 @@ async function initHMR(app) {
         watchOptions: {
           aggregateTimeout: 0,
         },
-        writeToDisk: true,
+        writeToDisk: false,
         stats: {
           modules: false,
           colors: true,
