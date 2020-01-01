@@ -20,7 +20,7 @@ const DEFAULT_CACHE_DIR = path.join(__dirname, '../build/cache');
  */
 class Cache {
   constructor(options = {}) {
-    logger.info('Initializing SSR Cache Storage...');
+    // logger.info('Initializing SSR Cache Storage...');
     //make cache dir before hand
     this.flushDir = options.flushDir || DEFAULT_CACHE_DIR;
     makeDir.sync(this.flushDir);
@@ -31,7 +31,7 @@ class Cache {
     if (options.flush) {
       this._initFlushTimer();
     }
-    logger.info('Initialize SSR Cache Storage Done!');
+    // logger.info('Initialize SSR Cache Storage Done!');
   }
 
   get(key) {
