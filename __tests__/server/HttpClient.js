@@ -22,10 +22,10 @@ describe('HttpClient verbs', () => {
     client = new HttpClient(
       {
         endPoint: '',
+        jsonResponse: true,
       },
       {
         throwHttpErrors: true,
-        json: true,
       }
     );
   });

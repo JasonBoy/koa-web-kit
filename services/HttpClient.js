@@ -47,18 +47,20 @@ class HttpClient {
    *   prefix: string, //extra prefix for url path
    *   debugLevel: number, //default based on the global app config
    * }
-   * @param {object=} requestOptions - default options for "got" module
+   * @param {object=} gotOptions - default options for "got" module
    */
-  constructor(options = {}, requestOptions = {}) {
-    this.endPoint = options.endPoint || defaultEndpoint;
+  constructor(options = {}, gotOptions = {}) {
+    this.endPoint = options.endPoint || '';
     this.endPointHost = '';
     this.endPointParsedUrl = {};
     if (this.endPoint) {
       this.endPointParsedUrl = new URL(this.endPoint);
       this.endPointHost = this.endPointParsedUrl.host;
     }
+    this.useFormData = options.useForm === true;
+    this.useJsonResponse = options.jsonResponse !== false;
     const clientBaseOptions = {
-      baseUrl: this.endPoint,
+      prefixUrl: this.endPoint,
     };
     const agent = this._getAgent();
     if (agent) {
@@ -66,7 +68,7 @@ class HttpClient {
     }
     this.options = options;
     this.got = got.extend(
-      Object.assign(clientBaseOptions, defaultRequestOptions, requestOptions)
+      Object.assign(clientBaseOptions, defaultRequestOptions, gotOptions)
     );
     this.debugLevel = options.debugLevel || debugLevel;
   }
@@ -127,8 +129,9 @@ class HttpClient {
     let requestStream;
     const opts = this._prepareRequestOptions(ctx, options);
     // console.log('opts: ', opts);
-
-    requestStream = ctx.req.pipe(this.got.stream(opts.url, opts));
+    const finalUrl = opts.url;
+    delete opts.url;
+    requestStream = ctx.req.pipe(this.got.stream(finalUrl, opts));
     if (this.debugLevel) {
       this.handleProxyEvents(requestStream);
     }
@@ -147,10 +150,10 @@ class HttpClient {
       gotResponse = response;
       const request = response.request;
       if (request) {
-        gotOptions = request.gotOptions;
+        gotOptions = request.options;
         this._log(
           `[${response.url}] request options: \n${util.inspect(
-            request.gotOptions
+            request.options
           )}`
         );
       }
@@ -171,12 +174,12 @@ class HttpClient {
         if (this._isPlainTextBody(type)) {
           this._log(
             `[${gotOptions.method}][${
-              gotOptions.href
+              gotResponse.url
             }] response body: ${ret.toString()}`
           );
         } else {
           this._log(
-            `[${gotOptions.method}][${gotOptions.href}] response body[${type}] length: ${ret.length}`
+            `[${gotOptions.method}][${gotResponse.url}] response body[${type}] length: ${ret.length}`
           );
         }
       });
@@ -195,10 +198,16 @@ class HttpClient {
     }
     const opts = this._finalizeRequestOptions(options);
     // console.log('opts: ', opts);
+    const finalUrl = opts.url;
+    delete opts.url;
     let ret = {};
     try {
-      const response = await this.got(opts.url, opts);
-      ret = response.body;
+      if (this.useJsonResponse) {
+        ret = await this.got(finalUrl, opts).json();
+      } else {
+        const response = await this.got(finalUrl, opts);
+        ret = response.body;
+      }
     } catch (err) {
       this._log(null, err, LOG_LEVEL.ERROR);
       return Promise.reject(err);
@@ -228,7 +237,7 @@ class HttpClient {
   get(url, query, options = {}) {
     options.method = HTTP_METHOD.GET;
     if (query) {
-      options.query = query;
+      options.searchParams = query;
     }
     return this.sendRequest(url, options);
   }
@@ -263,7 +272,14 @@ class HttpClient {
    * @return {object}
    */
   _normalizeBodyContentType(data, options = {}) {
-    options.body = data;
+    if (this.useFormData) {
+      options.form = data;
+      options.json = undefined;
+    } else {
+      options.json = data;
+      options.form = undefined;
+    }
+    // options.body = data;
     return options;
   }
 
@@ -276,7 +292,7 @@ class HttpClient {
     let optionPrefix = options.prefix || this.options.prefix;
     // TODO: a path rewrite could be better
     if (isCustomAPIPrefix && optionPrefix) {
-      options.url = options.url.replace(new RegExp(`^${optionPrefix}`), '');
+      options.url = options.url.replace(new RegExp(`^${optionPrefix}/?`), '');
     }
     if (!options.headers) {
       options.headers = {};
