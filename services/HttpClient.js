@@ -11,7 +11,6 @@ const { logger } = require('./logger');
 const appConfig = require('../config/env');
 const { HTTP_METHOD } = require('./http-config');
 const isCustomAPIPrefix = appConfig.isCustomAPIPrefix();
-const defaultEndpoint = appConfig.getDefaultApiEndPoint();
 const httpProxy = appConfig.getHttpProxy();
 const socksProxy = appConfig.getSocksProxy();
 const debugLevel = appConfig.getProxyDebugLevel();
@@ -113,25 +112,22 @@ class HttpClient {
    * @return {object}
    */
   _prepareRequestOptions(ctx, options = { headers: {} }) {
-    options.url = ctx.url;
     options.method = ctx.method;
     options.headers = Object.assign({}, ctx.headers, options.headers);
-    return this._finalizeRequestOptions(options);
+    return this._finalizeRequestOptions(ctx.url, options);
   }
 
   /**
    * Proxy koa http request to another endpoint
    * @param ctx - koa ctx
-   * @param options - custom request options
+   * @param opts - request options
    * @return {Stream}
    */
-  proxyRequest(ctx, options = {}) {
+  proxyRequest(ctx, opts = {}) {
     let requestStream;
-    const opts = this._prepareRequestOptions(ctx, options);
+    const { url, options } = this._prepareRequestOptions(ctx, opts);
     // console.log('opts: ', opts);
-    const finalUrl = opts.url;
-    delete opts.url;
-    requestStream = ctx.req.pipe(this.got.stream(finalUrl, opts));
+    requestStream = ctx.req.pipe(this.got.stream(url, options));
     if (this.debugLevel) {
       this.handleProxyEvents(requestStream);
     }
@@ -188,22 +184,17 @@ class HttpClient {
 
   /**
    * Send http requests
-   * @param {string|object} url - request url in string or object which has a "url" property
-   * @param {object=} options - custom request options
+   * @param requestUrl
+   * @param opts
    * @return {Promise<any>}
    */
-  async sendRequest(url, options = {}) {
-    if ('string' === typeof url) {
-      options.url = url;
-    }
-    const opts = this._finalizeRequestOptions(options);
+  async sendRequest(requestUrl, opts = {}) {
+    const { url, options } = this._finalizeRequestOptions(requestUrl, opts);
     // console.log('opts: ', opts);
-    const finalUrl = opts.url;
-    delete opts.url;
     let ret = {};
     try {
       if (this.useJsonResponse) {
-        ret = await this.got(finalUrl, opts).json();
+        ret = await this.got(url, options).json();
       } else {
         const response = await this.got(finalUrl, opts);
         ret = response.body;
@@ -285,14 +276,14 @@ class HttpClient {
 
   /**
    * Get final request options
+   * @param url
    * @param options - custom options
-   * @return {object} final request options
+   * @return {object<{url, options}>} final request options
    */
-  _finalizeRequestOptions(options = {}) {
+  _finalizeRequestOptions(url, options = {}) {
     let optionPrefix = options.prefix || this.options.prefix;
-    // TODO: a path rewrite could be better
-    if (isCustomAPIPrefix && optionPrefix) {
-      options.url = options.url.replace(new RegExp(`^${optionPrefix}/?`), '');
+    if (typeof url === 'string' && isCustomAPIPrefix && optionPrefix) {
+      url = url.replace(new RegExp(`^${optionPrefix}/?`), '');
     }
     if (!options.headers) {
       options.headers = {};
@@ -300,7 +291,10 @@ class HttpClient {
     if (this.endPointHost) {
       options.headers.host = this.endPointHost;
     }
-    return options;
+    return {
+      url,
+      options,
+    };
   }
 
   _isPlainTextBody(contentType) {
