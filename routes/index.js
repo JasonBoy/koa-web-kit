@@ -2,6 +2,7 @@
 const Router = require('koa-router');
 const koaBody = require('koa-body');
 const got = require('got');
+const { HttpClient } = require('../services/HttpClient');
 const ServerRenderer = require('../services/ServerRenderer');
 const Cache = require('../services/Cache');
 
@@ -62,19 +63,21 @@ router.get('/github', async function(ctx) {
     return;
   }
 
+  const client = new HttpClient({ jsonResponse: true });
+
   //you can use isomorphic-fetch to share the fetch logic
   logger.info('requesting github data...');
-  const res = await got(
+  const res = await client.get(
     'https://api.github.com/repos/jasonboy/wechat-jssdk/branches',
+    {},
     {
       headers: {
         'User-Agent':
           'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
       },
-      json: true,
     }
   );
-  const data = { github: res.body };
+  const data = { github: res };
   renderer.render(ctx, data);
 });
 

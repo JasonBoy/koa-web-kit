@@ -11,7 +11,6 @@ const { logger } = require('./logger');
 const appConfig = require('../config/env');
 const { HTTP_METHOD } = require('./http-config');
 const isCustomAPIPrefix = appConfig.isCustomAPIPrefix();
-const defaultEndpoint = appConfig.getDefaultApiEndPoint();
 const httpProxy = appConfig.getHttpProxy();
 const socksProxy = appConfig.getSocksProxy();
 const debugLevel = appConfig.getProxyDebugLevel();
@@ -47,18 +46,20 @@ class HttpClient {
    *   prefix: string, //extra prefix for url path
    *   debugLevel: number, //default based on the global app config
    * }
-   * @param {object=} requestOptions - default options for "got" module
+   * @param {object=} gotOptions - default options for "got" module
    */
-  constructor(options = {}, requestOptions = {}) {
-    this.endPoint = options.endPoint || defaultEndpoint;
+  constructor(options = {}, gotOptions = {}) {
+    this.endPoint = options.endPoint || '';
     this.endPointHost = '';
     this.endPointParsedUrl = {};
     if (this.endPoint) {
       this.endPointParsedUrl = new URL(this.endPoint);
       this.endPointHost = this.endPointParsedUrl.host;
     }
+    this.useFormData = options.useForm === true;
+    this.useJsonResponse = options.jsonResponse !== false;
     const clientBaseOptions = {
-      baseUrl: this.endPoint,
+      prefixUrl: this.endPoint,
     };
     const agent = this._getAgent();
     if (agent) {
@@ -66,7 +67,7 @@ class HttpClient {
     }
     this.options = options;
     this.got = got.extend(
-      Object.assign(clientBaseOptions, defaultRequestOptions, requestOptions)
+      Object.assign(clientBaseOptions, defaultRequestOptions, gotOptions)
     );
     this.debugLevel = options.debugLevel || debugLevel;
   }
@@ -111,24 +112,22 @@ class HttpClient {
    * @return {object}
    */
   _prepareRequestOptions(ctx, options = { headers: {} }) {
-    options.url = ctx.url;
     options.method = ctx.method;
     options.headers = Object.assign({}, ctx.headers, options.headers);
-    return this._finalizeRequestOptions(options);
+    return this._finalizeRequestOptions(ctx.url, options);
   }
 
   /**
    * Proxy koa http request to another endpoint
    * @param ctx - koa ctx
-   * @param options - custom request options
+   * @param opts - request options
    * @return {Stream}
    */
-  proxyRequest(ctx, options = {}) {
+  proxyRequest(ctx, opts = {}) {
     let requestStream;
-    const opts = this._prepareRequestOptions(ctx, options);
+    const { url, options } = this._prepareRequestOptions(ctx, opts);
     // console.log('opts: ', opts);
-
-    requestStream = ctx.req.pipe(this.got.stream(opts.url, opts));
+    requestStream = ctx.req.pipe(this.got.stream(url, options));
     if (this.debugLevel) {
       this.handleProxyEvents(requestStream);
     }
@@ -147,10 +146,10 @@ class HttpClient {
       gotResponse = response;
       const request = response.request;
       if (request) {
-        gotOptions = request.gotOptions;
+        gotOptions = request.options;
         this._log(
           `[${response.url}] request options: \n${util.inspect(
-            request.gotOptions
+            request.options
           )}`
         );
       }
@@ -171,12 +170,12 @@ class HttpClient {
         if (this._isPlainTextBody(type)) {
           this._log(
             `[${gotOptions.method}][${
-              gotOptions.href
+              gotResponse.url
             }] response body: ${ret.toString()}`
           );
         } else {
           this._log(
-            `[${gotOptions.method}][${gotOptions.href}] response body[${type}] length: ${ret.length}`
+            `[${gotOptions.method}][${gotResponse.url}] response body[${type}] length: ${ret.length}`
           );
         }
       });
@@ -185,20 +184,21 @@ class HttpClient {
 
   /**
    * Send http requests
-   * @param {string|object} url - request url in string or object which has a "url" property
-   * @param {object=} options - custom request options
+   * @param requestUrl
+   * @param opts
    * @return {Promise<any>}
    */
-  async sendRequest(url, options = {}) {
-    if ('string' === typeof url) {
-      options.url = url;
-    }
-    const opts = this._finalizeRequestOptions(options);
+  async sendRequest(requestUrl, opts = {}) {
+    const { url, options } = this._finalizeRequestOptions(requestUrl, opts);
     // console.log('opts: ', opts);
     let ret = {};
     try {
-      const response = await this.got(opts.url, opts);
-      ret = response.body;
+      if (this.useJsonResponse) {
+        ret = await this.got(url, options).json();
+      } else {
+        const response = await this.got(finalUrl, opts);
+        ret = response.body;
+      }
     } catch (err) {
       this._log(null, err, LOG_LEVEL.ERROR);
       return Promise.reject(err);
@@ -228,7 +228,7 @@ class HttpClient {
   get(url, query, options = {}) {
     options.method = HTTP_METHOD.GET;
     if (query) {
-      options.query = query;
+      options.searchParams = query;
     }
     return this.sendRequest(url, options);
   }
@@ -263,20 +263,27 @@ class HttpClient {
    * @return {object}
    */
   _normalizeBodyContentType(data, options = {}) {
-    options.body = data;
+    if (this.useFormData) {
+      options.form = data;
+      options.json = undefined;
+    } else {
+      options.json = data;
+      options.form = undefined;
+    }
+    // options.body = data;
     return options;
   }
 
   /**
    * Get final request options
+   * @param url
    * @param options - custom options
-   * @return {object} final request options
+   * @return {object<{url, options}>} final request options
    */
-  _finalizeRequestOptions(options = {}) {
+  _finalizeRequestOptions(url, options = {}) {
     let optionPrefix = options.prefix || this.options.prefix;
-    // TODO: a path rewrite could be better
-    if (isCustomAPIPrefix && optionPrefix) {
-      options.url = options.url.replace(new RegExp(`^${optionPrefix}`), '');
+    if (typeof url === 'string' && isCustomAPIPrefix && optionPrefix) {
+      url = url.replace(new RegExp(`^${optionPrefix}/?`), '');
     }
     if (!options.headers) {
       options.headers = {};
@@ -284,7 +291,10 @@ class HttpClient {
     if (this.endPointHost) {
       options.headers.host = this.endPointHost;
     }
-    return options;
+    return {
+      url,
+      options,
+    };
   }
 
   _isPlainTextBody(contentType) {
