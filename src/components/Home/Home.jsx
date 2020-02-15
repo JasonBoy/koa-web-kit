@@ -13,9 +13,6 @@ const StyledTitle = styled.h3`
   }
 `;
 
-// import s from './Home.scss'; //CSS_MODULES
-// import './Home.scss';
-
 class Home extends React.Component {
   constructor(props) {
     super(props);
