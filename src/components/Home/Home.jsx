@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import logo from 'assets/static/logo.svg';
+import './Home.css';
 
 const rotate = keyframes`
   from {
@@ -49,7 +50,7 @@ class Home extends React.Component {
 
   render() {
     return (
-      <StyledHome className="container mx-auto">
+      <StyledHome className="home-page container mx-auto">
         <StyledTitle className="text-center mt-3">
           <img
             className="logo-img mr-2 inline-block object-contain object-center"

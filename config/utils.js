@@ -293,12 +293,8 @@ exports.getWebpackResolveConfig = function(customAlias = {}) {
     },
   };
 };
-exports.getPostCSSLoader = function(plugins = []) {
-  // if (plugins.length <= 0) {
-  //   plugins = [require('autoprefixer')];
-  // }
+exports.getPostCSSLoader = function() {
   return {
     loader: LOADER.POSTCSS_LOADER,
-    // options: { plugins },
   };
 };
