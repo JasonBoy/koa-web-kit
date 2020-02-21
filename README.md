@@ -8,16 +8,16 @@
 
 🚀A Modern, Production-Ready, and Full-Stack Node Web Framework
 
-[Release Notes](https://github.com/JasonBoy/koa-web-kit/releases)
+[Release Notes](https://github.com/JasonBoy/koa-web-kit/releases), 
 [An Introduction for koa-web-kit](https://blog.lovemily.me/koa-web-kit-a-modern-production-ready-and-full-stack-node-web-framework/)
 
 ## Features
 
-- ✨Built with all modern frameworks and libs, including Koa2, React(like [Vue?](https://github.com/JasonBoy/vue-web-kit)), Bootstrap-v4(css only)...
+- ✨Built with all modern frameworks and libs, including Koa, React(like [Vue?](https://github.com/JasonBoy/vue-web-kit))...
 - 📦Get all the Node.JS full stack development experience out of the box
 - 🔥Hot Module Replacement support, and bundle size analyzer report
 - 📉Async/Await support for writing neat async code
-- 💖Styled-Components, CSS Modules, SASS/SCSS preprocessor, PostCSS, autoprefixer
+- 💖Great style solutions: [Styled-Components](https://www.styled-components.com), [TailwindCSS](https://tailwindcss.com/), CSS Modules, PostCSS
 - 🎉Simple API Proxy bundled, no complex extra reverse proxy configuration
 - 🌈Available for generating static site, also with SSR support
 - ⚡️Just one npm command to deploy your app to production
