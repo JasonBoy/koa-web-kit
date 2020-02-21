@@ -181,6 +181,9 @@ module.exports = {
   getHMRPort: () => {
     return getConfigProperty('HMR_PORT');
   },
+  getOutputDir: () => {
+    return getConfigProperty('OUTPUT_DIR') || 'build/app/';
+  },
   getEnv: key => {
     return getConfigProperty(key);
   },

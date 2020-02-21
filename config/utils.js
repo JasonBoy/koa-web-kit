@@ -62,13 +62,13 @@ exports.getStyleLoaders = function(devMode, ...loaders) {
   return temp;
 };
 
-exports.resolve = function resolve(dir) {
+exports.resolve = function(dir) {
   return path.join(__dirname, '..', dir);
 };
 
 exports.CONTENT_PATH = exports.APP_PATH = exports.resolve('src');
 
-exports.APP_BUILD_PATH = exports.resolve('build/app');
+exports.APP_BUILD_PATH = path.resolve(config.getOutputDir());
 
 exports.normalizePublicPath = function(publicPath) {
   return publicPath === '.' ? '' : publicPath;
