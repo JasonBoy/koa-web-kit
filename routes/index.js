@@ -1,17 +1,16 @@
 'use strict';
 const Router = require('koa-router');
 const koaBody = require('koa-body');
-const got = require('got');
 const { HttpClient } = require('../services/HttpClient');
 const ServerRenderer = require('../services/ServerRenderer');
-const Cache = require('../services/Cache');
+// const Cache = require('../services/Cache');
 
 const renderer = new ServerRenderer({
   stream: false,
-  cache: new Cache({
+  /*cache: new Cache({
     flush: true,
     // flushInterval: 1000 * 30, //flush every 30s
-  }),
+  }),*/
 });
 
 const config = require('../config/env');

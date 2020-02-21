@@ -1,12 +1,5 @@
-//bootstrap and custom
-import 'scss/vendors.scss';
-//import all bootstrap dist css
-// import 'bootstrap/dist/css/bootstrap.css';
-//app scss entry
-import 'scss/index.scss';
-
+import 'src/style/index.css';
 import 'modules/env';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { loadableReady } from '@loadable/component';

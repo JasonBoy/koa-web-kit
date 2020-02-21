@@ -1,8 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import logo from 'assets/static/logo.svg';
+import './Home.css';
 
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+`;
 const StyledHome = styled.div`
   font-size: 1.2rem;
 `;
@@ -11,10 +21,16 @@ const StyledTitle = styled.h3`
   span {
     vertical-align: middle;
   }
+  .logo-img {
+    animation: ${rotate} 3s linear infinite;
+  }
 `;
-
-// import s from './Home.scss'; //CSS_MODULES
-// import './Home.scss';
+const StyledList = styled.div`
+  width: 300px;
+  a {
+    display: block;
+  }
+`;
 
 class Home extends React.Component {
   constructor(props) {
@@ -34,34 +50,44 @@ class Home extends React.Component {
 
   render() {
     return (
-      <StyledHome className="container">
-        <StyledTitle className="text-center">
-          <img className="mr-2" width={24} height={24} src={logo} alt="logo" />
+      <StyledHome className="home-page container mx-auto">
+        <StyledTitle className="text-center mt-3">
+          <img
+            className="logo-img mr-2 inline-block object-contain object-center"
+            width={30}
+            height={30}
+            src={logo}
+            alt="logo"
+          />
           <span>Home</span>
         </StyledTitle>
-        <div className={'list-group'}>
-          <Link className="list-group-item active" to="/">
+        <StyledList className="mx-auto">
+          <Link className="text-blue-500 hover:text-blue-700" to="/">
             Home
           </Link>
-
-          <Link className={'list-group-item'} to="/hello-context">
+          <Link
+            className="text-blue-500 hover:text-blue-700"
+            to="/hello-context"
+          >
             Hello React Context
           </Link>
-          <>
-            <Link className={'list-group-item'} to="/hello/sync">
-              Hello Sync
-            </Link>
-            <Link className="list-group-item" to="/hello/async">
-              Hello Async
-            </Link>
-          </>
-          <Link className={'list-group-item'} to="/github">
+          <Link className="text-blue-500 hover:text-blue-700" to="/hello/sync">
+            Hello Sync
+          </Link>
+          <Link className="text-blue-500 hover:text-blue-700" to="/hello/async">
+            Hello Async
+          </Link>
+          <Link className="text-blue-500 hover:text-blue-700" to="/github">
             Github
           </Link>
-          <a className={'list-group-item'} href="#" onClick={this.makeError}>
+          <a
+            className="text-blue-500 hover:text-blue-700"
+            href="#"
+            onClick={this.makeError}
+          >
             {this.state.error.msg}
           </a>
-        </div>
+        </StyledList>
       </StyledHome>
     );
   }

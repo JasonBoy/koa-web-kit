@@ -196,7 +196,7 @@ class HttpClient {
       if (this.useJsonResponse) {
         ret = await this.got(url, options).json();
       } else {
-        const response = await this.got(finalUrl, opts);
+        const response = await this.got(url, opts);
         ret = response.body;
       }
     } catch (err) {

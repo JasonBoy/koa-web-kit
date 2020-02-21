@@ -194,18 +194,12 @@ exports.getAllStyleRelatedLoaders = function(
       //just import css, without doing CSS MODULES stuff when it's from 3rd libs
       test: /\.css$/,
       include: /node_modules/,
-      // use: [styleLoader, LOADER.CSS_LOADER],
       use: exports.getStyleLoaders(DEV_MODE, styleLoader, LOADER.CSS_LOADER),
     },
     {
       //app css code should check the CSS MODULES config
       test: /\.css$/,
       include: exports.resolve('src'),
-      /*use: [
-        styleLoader,
-        exports.getCSSLoader(isCSSModules, 1, cssModulesIndent),
-        LOADER.POSTCSS_LOADER,
-      ],*/
       use: exports.getStyleLoaders(
         DEV_MODE,
         styleLoader,
@@ -213,16 +207,10 @@ exports.getAllStyleRelatedLoaders = function(
         exports.getPostCSSLoader()
       ),
     },
-    {
+    /*{
       //app scss/sass code should check the CSS MODULES config
       test: /\.(sa|sc)ss$/,
       include: /node_modules|vendors/,
-      /*use: [
-        styleLoader,
-        exports.getCSSLoader(false),
-        LOADER.POSTCSS_LOADER,
-        LOADER.SASS_LOADER,
-      ],*/
       use: exports.getStyleLoaders(
         DEV_MODE,
         styleLoader,
@@ -235,12 +223,6 @@ exports.getAllStyleRelatedLoaders = function(
       //app scss/sass code should check the CSS MODULES config
       test: /\.(sa|sc)ss$/,
       exclude: /node_modules|vendors/,
-      /*use: [
-        styleLoader,
-        exports.getCSSLoader(isCSSModules, 2, cssModulesIndent),
-        LOADER.POSTCSS_LOADER,
-        LOADER.SASS_LOADER,
-      ],*/
       use: exports.getStyleLoaders(
         DEV_MODE,
         styleLoader,
@@ -248,7 +230,7 @@ exports.getAllStyleRelatedLoaders = function(
         exports.getPostCSSLoader(),
         LOADER.SASS_LOADER
       ),
-    },
+    },*/
   ];
 };
 
@@ -311,12 +293,8 @@ exports.getWebpackResolveConfig = function(customAlias = {}) {
     },
   };
 };
-exports.getPostCSSLoader = function(plugins = []) {
-  if (plugins.length <= 0) {
-    plugins = [require('autoprefixer')];
-  }
+exports.getPostCSSLoader = function() {
   return {
     loader: LOADER.POSTCSS_LOADER,
-    options: { plugins },
   };
 };
