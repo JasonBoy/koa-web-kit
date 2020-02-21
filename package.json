@@ -8,21 +8,21 @@
     "dev:ssr": "cross-env ENABLE_HMR=0 CSS_MODULES=0 ENABLE_SSR=1 npm-run-all -p watch watch:ssr start",
     "dev:watch": "cross-env ENABLE_HMR=0 ENABLE_SSR=0 npm-run-all -p watch start",
     "start": "nodemon --trace-warnings server.js",
+    "build": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
+    "build:dev": "webpack --progress --hide-modules --config config/webpack.config.dev.js",
+    "build:tailwindcss": "tailwindcss build ./src/style/index.css -o ./build/built-tailwindcss/style.css",
     "deploy": "./deploy.sh",
     "deploy:noinstall": "npm run deploy -- 1",
-    "build:dev": "webpack --progress --hide-modules --config config/webpack.config.dev.js",
     "ssg": "cross-env STATIC_PREFIX='' APP_PREFIX='' PREFIX_TRAILING_SLASH='' npm run build",
-    "watch": "webpack --watch --progress --hide-modules --config config/webpack.config.dev.js",
-    "node": "webpack --progress --config config/webpack.config.node.js",
-    "watch:ssr": "npm run ssr -- --watch",
     "ssr": "webpack --progress --config config/webpack.config.ssr.js",
-    "build": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
+    "watch": "webpack --watch --progress --hide-modules --config config/webpack.config.dev.js",
+    "watch:ssr": "npm run ssr -- --watch",
+    "node": "webpack --progress --config config/webpack.config.node.js",
     "report": "cross-env NODE_ENV=production BUNDLE_ANALYZER=true webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
     "test": "npm run jest:node && npm run jest:client",
     "jest:node": "jest --config=jest.config.node.js --forceExit",
     "jest:client": "jest --config=jest.config.client.js",
-    "lint": "eslint --ignore-path .gitignore --ext .jsx,.js ./",
-    "build:tailwindcss": "tailwindcss build ./src/style/index.css -o ./build/built-tailwindcss/style.css"
+    "lint": "eslint --ignore-path .gitignore --ext .jsx,.js ./"
   },
   "engines": {
     "node": ">= 10.13"

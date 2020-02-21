@@ -7,9 +7,11 @@ const SLASH_REGEX = /[\\]+/g;
 const LOADER = {
   STYLE_LOADER: 'style-loader',
   CSS_LOADER: 'css-loader',
-  SASS_LOADER: 'sass-loader',
   POSTCSS_LOADER: 'postcss-loader',
   IGNORE_LOADER: 'ignore-loader',
+  URL_LOADER: 'url-loader',
+  FILE_LOADER: 'file-loader',
+  BABEL_LOADER: 'babel-loader',
 };
 
 const ENTRY_NAME = {
@@ -24,7 +26,7 @@ const ENTRY_NAME = {
 exports.ENTRY_NAME = ENTRY_NAME;
 exports.LOADER = LOADER;
 
-exports.getName = function getName(chunkName, ext, hashName, DEV_MODE) {
+exports.getName = function(chunkName, ext, hashName, DEV_MODE) {
   return (
     chunkName +
     (DEV_MODE ? '.' : '-[' + (hashName ? hashName : 'contenthash') + ':9].') +
@@ -32,11 +34,11 @@ exports.getName = function getName(chunkName, ext, hashName, DEV_MODE) {
   );
 };
 
-exports.getResourceName = function getResourceName(DEV_MODE) {
+exports.getResourceName = function(DEV_MODE) {
   return exports.getName('[path][name]', '[ext]', 'hash', DEV_MODE);
 };
 
-exports.getStyleLoaders = function getStyleLoaders(devMode, ...loaders) {
+exports.getStyleLoaders = function(devMode, ...loaders) {
   const temp = [];
   for (let i = 0, length = loaders.length; i < length; i++) {
     let loader = loaders[i];
@@ -54,11 +56,6 @@ exports.getStyleLoaders = function getStyleLoaders(devMode, ...loaders) {
     if (loader === LOADER.STYLE_LOADER) {
       delete tempLoader.options.sourceMap;
     }
-    if (typeof loader === 'string' && loader.startsWith('sass')) {
-      tempLoader.options.sassOptions = {
-        outputStyle: 'compressed',
-      };
-    }
     temp.push(tempLoader);
   }
   // console.log(temp);
@@ -73,13 +70,10 @@ exports.CONTENT_PATH = exports.APP_PATH = exports.resolve('src');
 
 exports.APP_BUILD_PATH = exports.resolve('build/app');
 
-exports.normalizePublicPath = function normalizePublicPath(publicPath) {
+exports.normalizePublicPath = function(publicPath) {
   return publicPath === '.' ? '' : publicPath;
 };
-exports.normalizeTailSlash = function normalizeTailSlash(
-  publicPath,
-  withSlash
-) {
+exports.normalizeTailSlash = function(publicPath, withSlash) {
   if (publicPath.endsWith('/')) {
     publicPath = withSlash
       ? publicPath
@@ -92,7 +86,7 @@ exports.normalizeTailSlash = function normalizeTailSlash(
   }
   return publicPath;
 };
-exports.normalizePath = function normalizePath(publicPath, withSlash) {
+exports.normalizePath = function(publicPath, withSlash) {
   return exports.normalizeTailSlash(
     exports.normalizePublicPath(publicPath),
     withSlash
@@ -106,33 +100,13 @@ exports.getPublicPath = function() {
     config.isPrefixTailSlashEnabled()
   );
 };
-exports.isWindows = function isWindows() {
+exports.isWindows = function() {
   return process.platform === 'win32';
 };
-exports.replaceBackwardSlash = function replaceBackwardSlash(str) {
+exports.replaceBackwardSlash = function(str) {
   return str.replace(SLASH_REGEX, '/');
 };
-exports.getLoaders = function getLoaders(
-  devMode = false,
-  withStyleLoader = false,
-  withSassLoader = true
-) {
-  const loaders = [LOADER.CSS_LOADER, LOADER.POSTCSS_LOADER];
-  if (withStyleLoader) {
-    loaders.unshift(LOADER.STYLE_LOADER);
-  }
-  if (withSassLoader) {
-    loaders.push(LOADER.SASS_LOADER);
-  }
-  return exports.getStyleLoaders.apply(undefined, [devMode, ...loaders]);
-};
-exports.getSCSSLoaderExtract = function getSCSSLoaderExtract(devMode = false) {
-  return {
-    use: exports.getLoaders(devMode, false, true),
-    fallback: LOADER.STYLE_LOADER,
-  };
-};
-exports.getCSSLoaderExtract = function getCSSLoaderExtract(devMode = false) {
+exports.getCSSLoaderExtract = function(devMode = false) {
   return {
     use: exports.getStyleLoaders(
       devMode,
@@ -143,7 +117,7 @@ exports.getCSSLoaderExtract = function getCSSLoaderExtract(devMode = false) {
   };
 };
 
-exports.getCSSLoader = function getCSSLoader(
+exports.getCSSLoader = function(
   modules,
   importLoaders = 1,
   localIdentName = '[name]_[local]-[hash:base64:5]'
@@ -163,6 +137,12 @@ exports.getCSSLoader = function getCSSLoader(
     temp.options.camelCase = 'dashes';
   }
   return temp;
+};
+
+exports.getPostCSSLoader = function() {
+  return {
+    loader: LOADER.POSTCSS_LOADER,
+  };
 };
 
 let MiniCssExtractPlugin;
@@ -207,30 +187,6 @@ exports.getAllStyleRelatedLoaders = function(
         exports.getPostCSSLoader()
       ),
     },
-    /*{
-      //app scss/sass code should check the CSS MODULES config
-      test: /\.(sa|sc)ss$/,
-      include: /node_modules|vendors/,
-      use: exports.getStyleLoaders(
-        DEV_MODE,
-        styleLoader,
-        exports.getCSSLoader(false),
-        exports.getPostCSSLoader(),
-        LOADER.SASS_LOADER
-      ),
-    },
-    {
-      //app scss/sass code should check the CSS MODULES config
-      test: /\.(sa|sc)ss$/,
-      exclude: /node_modules|vendors/,
-      use: exports.getStyleLoaders(
-        DEV_MODE,
-        styleLoader,
-        exports.getCSSLoader(isCSSModules, 2, cssModulesIndent),
-        exports.getPostCSSLoader(),
-        LOADER.SASS_LOADER
-      ),
-    },*/
   ];
 };
 
@@ -239,7 +195,7 @@ exports.getImageLoader = function(devMode, context) {
     test: /\.(png|jpe?g|gif|svg)$/,
     use: [
       {
-        loader: 'url-loader',
+        loader: LOADER.URL_LOADER,
         options: {
           context,
           name: exports.getResourceName(devMode),
@@ -258,7 +214,7 @@ exports.getImageLoader = function(devMode, context) {
 exports.getMediaLoader = function(devMode, context) {
   return {
     test: /\.(woff|woff2|eot|ttf|wav|mp3)$/,
-    loader: 'file-loader',
+    loader: LOADER.FILE_LOADER,
     options: {
       context,
       name: exports.getResourceName(devMode),
@@ -271,7 +227,7 @@ exports.getBabelLoader = function(cache) {
     test: /\.jsx?$/,
     exclude: /node_modules/,
     use: {
-      loader: 'babel-loader',
+      loader: LOADER.BABEL_LOADER,
       options: {
         cacheDirectory: cache,
       },
@@ -288,13 +244,8 @@ exports.getWebpackResolveConfig = function(customAlias = {}) {
       modules: exports.resolve('src/modules'),
       components: exports.resolve('src/components'),
       assets: exports.resolve('src/assets'),
-      scss: exports.resolve('src/scss'),
+      style: exports.resolve('src/style'),
       ...customAlias,
     },
-  };
-};
-exports.getPostCSSLoader = function() {
-  return {
-    loader: LOADER.POSTCSS_LOADER,
   };
 };

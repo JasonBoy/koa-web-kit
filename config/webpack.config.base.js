@@ -59,7 +59,8 @@ const webpackConfig = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin({ verbose: false }),
+    //in HMR, do not clean built files
+    ...(isHMREnabled ? [] : [new CleanWebpackPlugin({ verbose: false })]),
     new webpack.DefinePlugin({
       __isBrowser__: true,
       __HMR__: isHMREnabled,
