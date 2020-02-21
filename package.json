@@ -21,7 +21,8 @@
     "test": "npm run jest:node && npm run jest:client",
     "jest:node": "jest --config=jest.config.node.js --forceExit",
     "jest:client": "jest --config=jest.config.client.js",
-    "lint": "eslint --ignore-path .gitignore --ext .jsx,.js ./"
+    "lint": "eslint --ignore-path .gitignore --ext .jsx,.js ./",
+    "build:tailwindcss": "tailwindcss build ./src/style/index.css -o ./build/built-tailwindcss/style.css"
   },
   "engines": {
     "node": ">= 10.13"

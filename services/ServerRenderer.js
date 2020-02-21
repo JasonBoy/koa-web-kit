@@ -185,10 +185,7 @@ class ServerRenderer {
     ctx.respond = false;
 
     let cacheStream = this.createCacheStream(ctx.path);
-    cacheStream.pipe(
-      res,
-      { end: false }
-    );
+    cacheStream.pipe(res, { end: false });
 
     const before = `
       <!DOCTYPE html>
