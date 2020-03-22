@@ -6,13 +6,17 @@ module.exports = function (api) {
       [
         '@babel/preset-env',
         {
-          targets: {},
           useBuiltIns: 'usage',
           modules: false,
           corejs: 3,
         },
       ],
-      '@babel/preset-react',
+      [
+        '@babel/preset-react',
+        {
+          development: DEV_MODE,
+        },
+      ],
     ],
     env: {
       development: {
