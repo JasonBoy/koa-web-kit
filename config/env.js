@@ -61,7 +61,7 @@ function initConfig(customConfig) {
     configInfo =
       !nodeBuildEnv || nodeBuildEnv !== 'development' ? prodConfig : devConfig;
     checkMsg += `Using [${chalk.green(
-      !nodeBuildEnv ? 'config.default.prod' : 'config.default.dev'
+      !nodeBuildEnv ? 'config.default.prod' : 'config.default.dev',
     )}] as app configuration`;
   }
   console.log(checkMsg);
@@ -184,7 +184,7 @@ module.exports = {
   getOutputDir: () => {
     return getConfigProperty('OUTPUT_DIR') || 'build/app/';
   },
-  getEnv: key => {
+  getEnv: (key) => {
     return getConfigProperty(key);
   },
 };

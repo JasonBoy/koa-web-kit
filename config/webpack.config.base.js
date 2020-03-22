@@ -23,13 +23,13 @@ const defaultPrefix = config.getApiEndPoints().defaultPrefix;
 
 const appPrefix = utils.normalizeTailSlash(
   config.getAppPrefix(),
-  config.isPrefixTailSlashEnabled()
+  config.isPrefixTailSlashEnabled(),
 );
 const prefix = utils.normalizeTailSlash(
   utils.normalizePublicPath(
-    path.join(config.getAppPrefix(), config.getStaticPrefix())
+    path.join(config.getAppPrefix(), config.getStaticPrefix()),
   ),
-  config.isPrefixTailSlashEnabled()
+  config.isPrefixTailSlashEnabled(),
 );
 
 const appIndex = path.join(APP_PATH, 'index.js');
@@ -70,7 +70,7 @@ const webpackConfig = {
       'process.env.appPrefix': JSON.stringify(appPrefix),
       'process.env.NODE_ENV': JSON.stringify(config.getNodeEnv()),
       'process.env.apiPrefix': JSON.stringify(
-        config.isCustomAPIPrefix() ? defaultPrefix : ''
+        config.isCustomAPIPrefix() ? defaultPrefix : '',
       ),
     }),
     new webpack.LoaderOptionsPlugin({
@@ -110,10 +110,10 @@ function HtmlWebpackCustomPlugin(options) {
   // Configure your plugin with options...
 }
 
-HtmlWebpackCustomPlugin.prototype.apply = function(compiler) {
+HtmlWebpackCustomPlugin.prototype.apply = function (compiler) {
   compiler.hooks.compilation.tap(
     'InsertSSRBundleScriptsPlugin',
-    compilation => {
+    (compilation) => {
       console.log('The compiler is starting a new compilation...');
 
       compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync(
@@ -127,13 +127,13 @@ HtmlWebpackCustomPlugin.prototype.apply = function(compiler) {
           console.log(
             'compilation.chunks: ',
             compilation.chunks.length,
-            compilation.chunks
+            compilation.chunks,
           );
           // console.log('compilation.assets: ', compilation.assets);
           cb(null, data);
-        }
+        },
       );
-    }
+    },
   );
 };
 

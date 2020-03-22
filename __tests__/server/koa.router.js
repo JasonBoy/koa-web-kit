@@ -142,7 +142,7 @@ describe('request proxying', () => {
     // console.log('response.header: ', response.header);
     expect(response.header).toHaveProperty(
       `${XAccessToken}-back`,
-      'some_token'
+      'some_token',
     );
     expect(response.header).toHaveProperty('x-powered-by', 'Express');
   });
@@ -231,7 +231,7 @@ describe('request proxying', () => {
   });
   test('download proxying', async () => {
     const fileBuffer = fs.readFileSync(
-      path.join(__dirname, '../../build/app/assets/static/favicon.ico')
+      path.join(__dirname, '../../build/app/assets/static/favicon.ico'),
     );
     const originalFileHash = genMD5(fileBuffer);
     return new Promise((resolve, reject) => {
@@ -242,7 +242,7 @@ describe('request proxying', () => {
         expect(downloadHash).toBe(originalFileHash);
         resolve();
       });
-      writeStream.on('error', err => {
+      writeStream.on('error', (err) => {
         reject(err);
       });
       server

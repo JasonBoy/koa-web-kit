@@ -122,7 +122,7 @@ class Request {
     const response = await fetch(url, apiOptions);
     if (!response.ok) {
       console.error(
-        `[koa-web-kit]:[API-ERROR]-[${response.status}]-[${originalUrl}]`
+        `[koa-web-kit]:[API-ERROR]-[${response.status}]-[${originalUrl}]`,
       );
       return Promise.reject(response);
     }
@@ -132,11 +132,11 @@ class Request {
     if (isJSONResponse(response)) {
       return response
         .json()
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
           return {};
         })
-        .then(data => this.jsonResponseHandler(data, apiOptions));
+        .then((data) => this.jsonResponseHandler(data, apiOptions));
     }
     return Promise.resolve(response);
   }
@@ -181,7 +181,7 @@ class Request {
         method: HTTP_METHOD.GET,
         qs: querystring,
       },
-      options
+      options,
     );
     return this.sendRequest(url, getOptions);
   }
@@ -204,7 +204,7 @@ class Request {
         method: HTTP_METHOD.DELETE,
         qs: querystring,
       },
-      options
+      options,
     );
     return this.sendRequest(url, getOptions);
   }
@@ -223,7 +223,7 @@ class Request {
         method,
         body: this.normalizeBodyData(body),
       },
-      options
+      options,
     );
     return this.sendRequest(url, sendOptions);
   }
@@ -255,7 +255,7 @@ class Request {
         if (!Array.isArray(value)) {
           value = [value];
         }
-        value.forEach(v => formData.append(key, v));
+        value.forEach((v) => formData.append(key, v));
       }
     }
 
@@ -266,7 +266,7 @@ class Request {
         multipart: true,
       },
       defaultOptions,
-      options
+      options,
     );
     return this.sendRequest(url, apiOptions);
   }

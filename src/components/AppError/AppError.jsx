@@ -16,7 +16,7 @@ class AppError extends React.Component {
     this.setState({ hasError: true });
   }
 
-  reload = e => {
+  reload = (e) => {
     e.preventDefault();
     location.reload();
   };

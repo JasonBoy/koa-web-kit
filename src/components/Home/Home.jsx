@@ -43,7 +43,7 @@ class Home extends React.Component {
 
   componentDidMount() {}
 
-  makeError = e => {
+  makeError = (e) => {
     e.preventDefault();
     this.setState({ error: null });
   };

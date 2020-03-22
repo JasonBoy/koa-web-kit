@@ -38,7 +38,7 @@ class Logger {
       {
         name: 'app',
       },
-      pinoOptions
+      pinoOptions,
     );
 
     this._logger = this.createLogger(null, this.options.destination);
@@ -82,7 +82,7 @@ class Logger {
   createLogger(options = {}, destination) {
     return pino(
       Object.assign(this.pinoOptions, options),
-      destination || pino.destination(path.join(logPath, 'app.log'))
+      destination || pino.destination(path.join(logPath, 'app.log')),
     );
   }
 
@@ -106,15 +106,15 @@ class Logger {
         {
           logger: this.createLogger(
             options,
-            destination || pino.destination(path.join(logPath, 'requests.log'))
+            destination || pino.destination(path.join(logPath, 'requests.log')),
           ),
           serializers: {
             req: pino.stdSerializers.req,
             res: pino.stdSerializers.res,
           },
         },
-        options
-      )
+        options,
+      ),
     );
   }
 

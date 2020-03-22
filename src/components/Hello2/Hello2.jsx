@@ -7,7 +7,7 @@ import { AppContext } from 'modules/context';
 function ShowUserName(props) {
   return (
     <AppContext.Consumer>
-      {appContext => (
+      {(appContext) => (
         <div className="text-center">
           <a className="btn btn-primary">{appContext.userName}</a>
         </div>
@@ -19,7 +19,7 @@ function ShowUserName(props) {
 function HeaderPortal(props) {
   return ReactDOM.createPortal(
     props.children,
-    document.getElementById('portal')
+    document.getElementById('portal'),
   );
 }
 
@@ -38,12 +38,14 @@ class Hello2 extends React.Component {
 
   createPortal = () => {
     // console.log(this.portalContainer);
-    this.setState(s => ({ portalCount: s.portalCount + 1 }));
+    this.setState((s) => ({ portalCount: s.portalCount + 1 }));
 
-    import(/* webpackChunkName: "modules_misc" */ 'modules/misc').then(misc => {
-      console.log(misc);
-      misc.test();
-    });
+    import(/* webpackChunkName: "modules_misc" */ 'modules/misc').then(
+      (misc) => {
+        console.log(misc);
+        misc.test();
+      },
+    );
   };
 
   render() {

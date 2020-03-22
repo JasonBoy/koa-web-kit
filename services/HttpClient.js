@@ -67,7 +67,7 @@ class HttpClient {
     }
     this.options = options;
     this.got = got.extend(
-      Object.assign(clientBaseOptions, defaultRequestOptions, gotOptions)
+      Object.assign(clientBaseOptions, defaultRequestOptions, gotOptions),
     );
     this.debugLevel = options.debugLevel || debugLevel;
   }
@@ -87,7 +87,7 @@ class HttpClient {
       agent = new SocksProxyAgent(
         String(socksProxy).startsWith(socksProtocol)
           ? socksProxy
-          : `${socksProtocol}//${socksProxy}`
+          : `${socksProtocol}//${socksProxy}`,
       );
     } else if (httpProxy) {
       const parsedUrl = new URL(httpProxy);
@@ -142,26 +142,26 @@ class HttpClient {
     let chunks = [];
     let gotOptions = {};
     let gotResponse;
-    requestStream.on('response', response => {
+    requestStream.on('response', (response) => {
       gotResponse = response;
       const request = response.request;
       if (request) {
         gotOptions = request.options;
         this._log(
           `[${response.url}] request options: \n${util.inspect(
-            request.options
-          )}`
+            request.options,
+          )}`,
         );
       }
       this._log(
         `[${response.url}] response headers: \n${util.inspect(
-          response.headers
-        )}`
+          response.headers,
+        )}`,
       );
     });
 
     if (this.debugLevel > DEBUG_LEVEL.PLAIN) {
-      requestStream.on('data', chunk => {
+      requestStream.on('data', (chunk) => {
         chunks.push(chunk);
       });
       requestStream.on('end', () => {
@@ -171,11 +171,11 @@ class HttpClient {
           this._log(
             `[${gotOptions.method}][${
               gotResponse.url
-            }] response body: ${ret.toString()}`
+            }] response body: ${ret.toString()}`,
           );
         } else {
           this._log(
-            `[${gotOptions.method}][${gotResponse.url}] response body[${type}] length: ${ret.length}`
+            `[${gotOptions.method}][${gotResponse.url}] response body[${type}] length: ${ret.length}`,
           );
         }
       });

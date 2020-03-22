@@ -50,7 +50,7 @@ function initApp(app) {
   // =====serve static=====
   let staticPrefix = path.join(
     config.getAppPrefix(),
-    config.getStaticPrefix() || '/'
+    config.getStaticPrefix() || '/',
   );
 
   if (sysUtils.isWindows()) {
@@ -65,16 +65,16 @@ function initApp(app) {
         // one month cache for prod
         maxage: DEV_MODE ? 0 : 2592000000,
         gzip: false,
-      })
-    )
+      }),
+    ),
   );
   // handle static not found, do not pass further down
   if (staticPrefix && staticPrefix != '/') {
     app.use(
-      mount(staticPrefix, ctx => {
+      mount(staticPrefix, (ctx) => {
         ctx.status = 404;
         ctx.body = 'Not Found';
-      })
+      }),
     );
   }
   // =====serve static end=====
@@ -83,7 +83,7 @@ function initApp(app) {
 
   app.use(index.routes());
 
-  app.on('error', err => {
+  app.on('error', (err) => {
     logger.error(err.stack);
   });
 
@@ -116,7 +116,7 @@ async function initHMR(app) {
         modules: false,
         colors: true,
       },
-    })
+    }),
   );
   return new Promise((resolve, reject) => {
     koaWebpack({
@@ -141,7 +141,7 @@ async function initHMR(app) {
         },
       },
     })
-      .then(middleware => {
+      .then((middleware) => {
         if (!HMRInitialized) {
           HMRInitialized = true;
           app.use(historyApiFallback());
@@ -149,7 +149,7 @@ async function initHMR(app) {
           middleware.devMiddleware.waitUntilValid(resolve);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         logger.error('[koa-webpack]:', err);
         reject();
       });
@@ -181,7 +181,7 @@ module.exports = {
    *
    * @return {Promise<Koa>}
    */
-  create: async function() {
+  create: async function () {
     const app = initAppCommon();
     initProxy(app);
     await initSSR();
