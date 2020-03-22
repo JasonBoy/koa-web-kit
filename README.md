@@ -85,6 +85,8 @@ module.exports = {
   //global prefix for your routes, e.g http://a.com/prefix/...your app routes,
   //like a github project site
   "APP_PREFIX": "",
+  //customize build output dir, default ./build/app
+  "OUTPUT_DIR": "",
   //if true, the "/prefix" below will be stripped, otherwise, the full pathname will be used for proxy
   "CUSTOM_API_PREFIX": true,
   //if enable HMR in dev mode, `npm run dev` will automatically enable this

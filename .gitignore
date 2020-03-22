@@ -39,6 +39,7 @@ node_modules
 .idea
 results
 build
+dist
 npm-debug.log
 *.map
 --no-cache
