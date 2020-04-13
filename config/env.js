@@ -181,6 +181,9 @@ module.exports = {
   getHMRPort: () => {
     return getConfigProperty('HMR_PORT');
   },
+  isServingStaticIndex: () => {
+    return isTrue(getConfigProperty('SERVE_STATIC_INDEX'));
+  },
   getEnv: key => {
     return getConfigProperty(key);
   },

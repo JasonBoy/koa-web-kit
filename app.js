@@ -25,6 +25,7 @@ const DEV_MODE = config.isDevMode();
 const DEFAULT_PREFIX_KEY = 'defaultPrefix';
 const API_ENDPOINTS = config.getApiEndPoints();
 const isHMREnabled = config.isHMREnabled();
+const servingStaticIndex = config.isServingStaticIndex();
 
 function initAppCommon() {
   const app = new Koa();
@@ -48,28 +49,42 @@ function initApp(app) {
   app.use(favicon(path.join(__dirname, 'build/app/favicon.ico')));
 
   // =====serve static=====
-  let staticPrefix = path.join(
-    config.getAppPrefix(),
-    config.getStaticPrefix() || '/'
-  );
+  const ROOT_PATH = '/';
+  let staticPrefixConfig = config.getStaticPrefix();
+  let staticPrefix = path.join(config.getAppPrefix(), staticPrefixConfig);
+  if (!staticPrefix.startsWith(ROOT_PATH)) {
+    staticPrefix = ROOT_PATH;
+  }
 
   if (sysUtils.isWindows()) {
     staticPrefix = sysUtils.replaceBackwardSlash(staticPrefix);
   }
-  // app.use(mount(staticPrefix, conditional()));
-  // app.use(mount(staticPrefix, etag()));
+
+  const staticOptions = {
+    // one month cache for prod
+    maxage: DEV_MODE ? 0 : 2592000000,
+    gzip: false,
+    setHeaders(res, path) {
+      if (path.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    },
+  };
+  const isStaticAssetsInRoot =
+    !staticPrefixConfig || staticPrefixConfig == ROOT_PATH;
+  if (isStaticAssetsInRoot && !servingStaticIndex) {
+    //workaround: use a random index to pass through the static middleware
+    staticOptions.index = `${Math.random().toString()}.html`;
+  }
+
   app.use(
     mount(
       staticPrefix,
-      serveStatic(path.join(__dirname, 'build/app'), {
-        // one month cache for prod
-        maxage: DEV_MODE ? 0 : 2592000000,
-        gzip: false,
-      })
+      serveStatic(path.join(__dirname, 'build/app'), staticOptions)
     )
   );
   // handle static not found, do not pass further down
-  if (staticPrefix && staticPrefix != '/') {
+  if (!isStaticAssetsInRoot) {
     app.use(
       mount(staticPrefix, ctx => {
         ctx.status = 404;
