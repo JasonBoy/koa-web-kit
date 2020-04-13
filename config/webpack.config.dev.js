@@ -23,7 +23,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
         isCSSModules,
         undefined,
         false,
-        !isHMREnabled
+        !isHMREnabled,
       ),
     ],
   },
@@ -41,7 +41,7 @@ if (!isHMREnabled) {
       // both options are optional
       filename: '[name].css',
       chunkFilename: '[id].css',
-    })
+    }),
   );
   webpackConfig.optimization = {
     namedModules: true,

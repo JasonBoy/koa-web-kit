@@ -32,7 +32,7 @@ const groupedManifest = {
 };
 
 const manifestKeys = Object.keys(manifest);
-manifestKeys.forEach(key => {
+manifestKeys.forEach((key) => {
   const type = checkSourceType(key) || {};
   if (!groupedManifest.hasOwnProperty(type.name)) {
     groupedManifest[type.name] = [];
@@ -44,7 +44,7 @@ manifestKeys.forEach(key => {
 
 function checkSourceType(sourceKey) {
   let type;
-  const matchedKey = typeKeys.find(t => {
+  const matchedKey = typeKeys.find((t) => {
     const temp = SOURCE_TYPE[t];
     return temp.test.test(sourceKey);
   });
@@ -78,8 +78,8 @@ class SSR {
         sheet.collectStyles(
           <StaticRouter location={url} context={routerContext}>
             <AppRoutes context={defaultContext} initialData={data} />
-          </StaticRouter>
-        )
+          </StaticRouter>,
+        ),
       );
       html = ReactDOMServer.renderToString(jsx);
 
@@ -123,11 +123,11 @@ class SSR {
       sheet.collectStyles(
         <StaticRouter location={url} context={routerContext}>
           <AppRoutes context={defaultContext} initialData={data} />
-        </StaticRouter>
-      )
+        </StaticRouter>,
+      ),
     );
     const htmlStream = sheet.interleaveWithNodeStream(
-      ReactDOMServer.renderToNodeStream(jsx)
+      ReactDOMServer.renderToNodeStream(jsx),
     );
     const renderedScriptTags = extractor.getScriptTags();
     const renderedLinkTags = extractor.getLinkTags();

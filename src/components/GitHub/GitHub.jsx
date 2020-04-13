@@ -26,7 +26,7 @@ class GitHub extends React.Component {
     if (isEmpty(this.state.github)) {
       this.githubRequest
         .get('https://api.github.com/repos/jasonboy/wechat-jssdk/branches')
-        .then(data => {
+        .then((data) => {
           this.setState({ github: data });
         });
     }
@@ -39,7 +39,7 @@ class GitHub extends React.Component {
     return (
       <StyledGithub>
         <ul>
-          {this.state.github.map(b => {
+          {this.state.github.map((b) => {
             return <li key={b.name}>{b.name}</li>;
           })}
         </ul>

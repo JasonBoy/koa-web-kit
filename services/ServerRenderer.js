@@ -19,7 +19,7 @@ let s;
 if (isSSREnabled) {
   if (isCSSModules) {
     logger.warn(
-      'When SSR is enabled, [CSS_MODULES] should be disabled for now, you can manually add plugin like "isomorphic-style-loader" to enable both SSR and CSS Modules'
+      'When SSR is enabled, [CSS_MODULES] should be disabled for now, you can manually add plugin like "isomorphic-style-loader" to enable both SSR and CSS Modules',
     );
   }
   const SSR = require('../build/node/main');
@@ -163,7 +163,7 @@ class ServerRenderer {
       <body>
         <div id="app">${html}</div>
         <script id="__INITIAL_DATA__" type="application/json">${JSON.stringify(
-          extra.initialData || {}
+          extra.initialData || {},
         )}</script>
         ${extra.scriptTags}
       </body>
@@ -204,7 +204,7 @@ class ServerRenderer {
     nodeStreamFromReact.pipe(
       // res,
       cacheStream,
-      { end: false }
+      { end: false },
     );
 
     nodeStreamFromReact.on('end', () => {
@@ -212,7 +212,7 @@ class ServerRenderer {
       logger.info('start streaming rest html content...');
       const after = `</div>
           <script id="__INITIAL_DATA__" type="application/json">${JSON.stringify(
-            extra.initialData || {}
+            extra.initialData || {},
           )}</script>
           ${extra.extractor.getScriptTags()}
           </body>
@@ -250,7 +250,7 @@ class ServerRenderer {
         if (!self.cacheDisabled && self.cache) {
           self.cache.set(
             key,
-            self.minifyHtml(Buffer.concat(bufferedChunks).toString())
+            self.minifyHtml(Buffer.concat(bufferedChunks).toString()),
           );
           logger.info(`Cache stream for [${key}] finished!`);
         }

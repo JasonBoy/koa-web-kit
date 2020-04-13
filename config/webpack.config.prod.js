@@ -25,7 +25,7 @@ const webpackConfig = webpackMerge(baseWebpackConfig, {
         false,
         false,
         isCSSModules,
-        '[local]-[hash:base64:5]'
+        '[local]-[hash:base64:5]',
       ),
     ],
   },

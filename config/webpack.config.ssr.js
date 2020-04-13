@@ -12,9 +12,9 @@ const APP_PATH = utils.APP_PATH;
 
 const prefix = utils.normalizeTailSlash(
   utils.normalizePublicPath(
-    path.join(config.getAppPrefix(), config.getStaticPrefix())
+    path.join(config.getAppPrefix(), config.getStaticPrefix()),
   ),
-  config.isPrefixTailSlashEnabled()
+  config.isPrefixTailSlashEnabled(),
 );
 
 const webpackConfig = webpackMerge(
@@ -47,7 +47,7 @@ const webpackConfig = webpackMerge(
           false,
           false,
           undefined,
-          true
+          true,
         ),
         utils.getImageLoader(DEV_MODE, APP_PATH),
         utils.getMediaLoader(DEV_MODE, APP_PATH),
@@ -70,7 +70,7 @@ const webpackConfig = webpackMerge(
       //   chunkFilename: "[id].css"
       // }),
     ],
-  }
+  },
 );
 
 module.exports = webpackConfig;
