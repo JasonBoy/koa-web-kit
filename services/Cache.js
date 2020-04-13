@@ -71,7 +71,7 @@ class Cache {
     //persist to file
     const fileName = `${slugify(key)}.html`;
     return new Promise((resolve, reject) => {
-      fs.writeFile(path.join(this.flushDir, fileName), this.get(key), (err) => {
+      fs.writeFile(path.join(this.flushDir, fileName), this.get(key), err => {
         if (err) {
           logger.error(err);
           return reject(err);
@@ -98,7 +98,7 @@ class Cache {
         .then(() => {
           logger.info('Flush SSR Cache Done!');
         })
-        .catch((err) => {
+        .catch(err => {
           logger.error(`Flush SSR Cache Failed: ${err.message}`);
           logger.error(err.stack);
         });

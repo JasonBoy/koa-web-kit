@@ -35,12 +35,12 @@ exports.isMobile = function isMobile(ua) {
   return this.isIOS(ua) || this.isAndroid(ua);
 };
 
-exports.slugify = function (input) {
+exports.slugify = function(input) {
   return slugify(input);
 };
 
-exports.wait = function (ms = 0) {
-  return new Promise((resolve) => {
+exports.wait = function(ms = 0) {
+  return new Promise(resolve => {
     setTimeout(resolve, ms);
   });
 };

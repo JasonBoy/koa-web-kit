@@ -42,7 +42,7 @@ function AppRoutes({ context, initialData }) {
       <Route
         exact
         path="/hello-context"
-        render={(props) => (
+        render={props => (
           <React.Fragment>
             <Provider value={context}>
               <Hello2 {...props} />
@@ -58,13 +58,13 @@ function AppRoutes({ context, initialData }) {
       <Route
         exact
         path="/github"
-        render={(props) => <Github branches={initialData.github} {...props} />}
+        render={props => <Github branches={initialData.github} {...props} />}
       />
       <Route exact path="/hello/sync" component={Hello} />
       <Route
         exact
         path="/hello/async"
-        render={(props) => <HelloAsyncLoadable {...props} />}
+        render={props => <HelloAsyncLoadable {...props} />}
       />
       <Route path="/" component={Home} />
     </Switch>

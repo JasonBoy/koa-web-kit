@@ -33,12 +33,12 @@ exports.api = {
  * @param {Array|Object} params rest parameters
  * @return {*}
  */
-exports.formatRestfulUrl = function (url, params) {
+exports.formatRestfulUrl = function(url, params) {
   if (!params || url.indexOf(':') < 0) return url;
   let parts = url.split('/');
   let partIndex = 0;
   const isArray = Array.isArray(params);
-  parts.forEach(function (ele, index) {
+  parts.forEach(function(ele, index) {
     if (ele.indexOf(':') === 0) {
       parts[index] = isArray ? params[partIndex] : params[ele.substring(1)];
       partIndex++;
@@ -52,7 +52,7 @@ exports.formatRestfulUrl = function (url, params) {
  * @param url
  * @return {number}
  */
-exports.numberOfRestParams = function (url) {
+exports.numberOfRestParams = function(url) {
   const matched = url.match(/\/:/g);
   return matched ? matched.length : 0;
 };

@@ -242,7 +242,7 @@ describe('request proxying', () => {
         expect(downloadHash).toBe(originalFileHash);
         resolve();
       });
-      writeStream.on('error', (err) => {
+      writeStream.on('error', err => {
         reject(err);
       });
       server

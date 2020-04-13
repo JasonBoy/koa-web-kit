@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function () {
+export default function() {
   return (
     <div className="hello">
       <h3>Hello Async Component</h3>
