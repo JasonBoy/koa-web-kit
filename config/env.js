@@ -184,6 +184,9 @@ module.exports = {
   getOutputDir: () => {
     return getConfigProperty('OUTPUT_DIR') || 'build/app/';
   },
+  isServingStaticIndex: () => {
+    return isTrue(getConfigProperty('SERVE_STATIC_INDEX'));
+  },
   getEnv: key => {
     return getConfigProperty(key);
   },
