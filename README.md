@@ -167,6 +167,10 @@ The last three options are boolean values in `0`(or empty, false) and `1`(true).
 
 > You may need to create/update the `deploy.sh` to meet your own needs.
 
+### Powered By
+
+<a href="https://www.jetbrains.com/?from=koa-web-kit" target="_blank">![powered by jetbrains](https://raw.githubusercontent.com/JasonBoy/koa-web-kit/master/src/assets/static/jetbrains.svg)</a>
+
 ### LICENSE
 
 MIT @ 2016-present [jason](http://blog.lovemily.me)
