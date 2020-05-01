@@ -22,7 +22,9 @@
     "test": "npm run jest:node && npm run jest:client",
     "jest:node": "jest --config=jest.config.node.js --forceExit",
     "jest:client": "jest --config=jest.config.client.js",
-    "lint": "eslint --ignore-path .gitignore --ext .jsx,.js ./"
+    "lint": "eslint --ignore-path .gitignore --ext .jsx,.js ./",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "engines": {
     "node": ">= 10.13"
@@ -92,7 +94,8 @@
     "styled-components": "5.0.1",
     "tailwindcss": "1.2.0",
     "tunnel": "0.0.6",
-    "whatwg-fetch": "3.0.0"
+    "whatwg-fetch": "3.0.0",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@babel/cli": "7.8.4",
@@ -201,5 +204,6 @@
     ".prettierrc",
     "LICENSE",
     "postcss.config.js"
-  ]
+  ],
+  "snyk": true
 }
