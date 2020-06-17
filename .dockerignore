@@ -1,7 +1,14 @@
+.git
 .idea
 node_modules
 npm-debug.log
 build
 logs
-yarn-error.log
-.Ds_Store
+#app-config.js
+.DS_Store
+README.md
+.prettierignore
+.prettierrc
+.gitignore
+deploy.sh
+

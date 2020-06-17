@@ -80,16 +80,16 @@ function initApp(app) {
   app.use(
     mount(
       staticPrefix,
-      serveStatic(path.join(__dirname, 'build/app'), staticOptions)
-    )
+      serveStatic(path.join(__dirname, 'build/app'), staticOptions),
+    ),
   );
   // handle static not found, do not pass further down
   if (!isStaticAssetsInRoot) {
     app.use(
-      mount(staticPrefix, ctx => {
+      mount(staticPrefix, (ctx) => {
         ctx.status = 404;
         ctx.body = 'Not Found';
-      })
+      }),
     );
   }
   // =====serve static end=====
@@ -98,7 +98,7 @@ function initApp(app) {
 
   app.use(index.routes());
 
-  app.on('error', err => {
+  app.on('error', (err) => {
     logger.error(err.stack);
   });
 
@@ -124,6 +124,7 @@ async function initHMR(app) {
   const koaWebpack = require('koa-webpack');
   const historyApiFallback = require('koa-history-api-fallback');
   const webpack = require('webpack');
+  const hmrPort = config.getHMRPort();
   const webpackConfig = require('./config/webpack.config.dev');
   const compiler = webpack(
     Object.assign({}, webpackConfig, {
@@ -131,17 +132,24 @@ async function initHMR(app) {
         modules: false,
         colors: true,
       },
-    })
+    }),
   );
+  const hotClient = {
+    logLevel: 'error',
+    hmr: true,
+    reload: true,
+    host: {
+      client: 'localhost',
+      server: '0.0.0.0',
+    },
+  };
+  if (hmrPort) {
+    hotClient.port = parseInt(hmrPort);
+  }
   return new Promise((resolve, reject) => {
     koaWebpack({
       compiler,
-      hotClient: {
-        port: 0,
-        logLevel: 'error',
-        hmr: true,
-        reload: true,
-      },
+      hotClient,
       devMiddleware: {
         index: 'index.html',
         publicPath: webpackConfig.output.publicPath,
@@ -156,7 +164,7 @@ async function initHMR(app) {
         },
       },
     })
-      .then(middleware => {
+      .then((middleware) => {
         if (!HMRInitialized) {
           HMRInitialized = true;
           app.use(historyApiFallback());
@@ -164,7 +172,7 @@ async function initHMR(app) {
           middleware.devMiddleware.waitUntilValid(resolve);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         logger.error('[koa-webpack]:', err);
         reject();
       });
@@ -196,7 +204,7 @@ module.exports = {
    *
    * @return {Promise<Koa>}
    */
-  create: async function() {
+  create: async function () {
     const app = initAppCommon();
     initProxy(app);
     await initSSR();

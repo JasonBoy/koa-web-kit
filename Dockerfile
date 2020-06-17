@@ -1,13 +1,27 @@
-FROM node:8
-MAINTAINER Jason <jasonlikenfs@gmail.com>
+# install stage
+FROM node:12-alpine3.11 AS install
+WORKDIR /data/app
+COPY package*.json .npmrc ./
+RUN npm ci
 
-# For Production
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+# install production dependence stage
+FROM node:12-alpine3.11 AS install_prod
+WORKDIR /data/app
+COPY package*.json .npmrc ./
+RUN npm ci --production
 
-# Install app dependencies
-COPY . /usr/src/app
+# build stage
+FROM install AS build
+WORKDIR /data/app
+#COPY --from=install /data/app .
+COPY . .
+RUN npm run build:noprogress
 
-EXPOSE 3000
-CMD [ "npm", "run", "deploy" ]
+# run stage
+FROM install_prod AS run
+WORKDIR /data/app
+COPY . .
+COPY --from=build /data/app/build ./build
+RUN rm -rf src Dockerfile app-config.js
+ENV PATH /data/app/node_modules/.bin:$PATH
+CMD [ "pm2-runtime", "pm2.config.js", "--env", "production" ]
