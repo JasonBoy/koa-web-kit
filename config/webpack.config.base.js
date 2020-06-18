@@ -87,12 +87,14 @@ const webpackConfig = {
       chunksSortMode: 'dependency',
       favicon: path.join(__dirname, '../src/assets/static/favicon.ico'),
     }),
-    new CopyWebpackPlugin([
-      {
-        from: utils.resolve('src/assets/static'),
-        to: utils.resolve('build/app/assets/static'),
-      },
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: utils.resolve('src/assets/static'),
+          to: utils.resolve('build/app/assets/static'),
+        },
+      ],
+    }),
     new LoadablePlugin({
       filename: 'loadable-stats.json',
       writeToDisk: {
@@ -110,10 +112,10 @@ function HtmlWebpackCustomPlugin(options) {
   // Configure your plugin with options...
 }
 
-HtmlWebpackCustomPlugin.prototype.apply = function(compiler) {
+HtmlWebpackCustomPlugin.prototype.apply = function (compiler) {
   compiler.hooks.compilation.tap(
     'InsertSSRBundleScriptsPlugin',
-    compilation => {
+    (compilation) => {
       console.log('The compiler is starting a new compilation...');
 
       compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync(
