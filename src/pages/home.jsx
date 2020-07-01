@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import logo from 'assets/static/logo.svg';
-import './Home.css';
 
 const rotate = keyframes`
   from {
@@ -43,7 +42,7 @@ class Home extends React.Component {
 
   componentDidMount() {}
 
-  makeError = e => {
+  makeError = (e) => {
     e.preventDefault();
     this.setState({ error: null });
   };
@@ -64,12 +63,6 @@ class Home extends React.Component {
         <StyledList className="mx-auto">
           <Link className="text-blue-500 hover:text-blue-700" to="/">
             Home
-          </Link>
-          <Link
-            className="text-blue-500 hover:text-blue-700"
-            to="/hello-context"
-          >
-            Hello React Context
           </Link>
           <Link className="text-blue-500 hover:text-blue-700" to="/hello/sync">
             Hello Sync

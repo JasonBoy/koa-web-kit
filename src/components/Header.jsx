@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import logo from '../../logo.svg';
+import logo from '../assets/static/logo.svg';
 import styled, { keyframes } from 'styled-components';
 
 const logoRotate = keyframes`

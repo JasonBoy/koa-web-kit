@@ -26,7 +26,7 @@ const ENTRY_NAME = {
 exports.ENTRY_NAME = ENTRY_NAME;
 exports.LOADER = LOADER;
 
-exports.getName = function(chunkName, ext, hashName, DEV_MODE) {
+exports.getName = function (chunkName, ext, hashName, DEV_MODE) {
   return (
     chunkName +
     (DEV_MODE ? '.' : '-[' + (hashName ? hashName : 'contenthash') + ':9].') +
@@ -34,11 +34,11 @@ exports.getName = function(chunkName, ext, hashName, DEV_MODE) {
   );
 };
 
-exports.getResourceName = function(DEV_MODE) {
+exports.getResourceName = function (DEV_MODE) {
   return exports.getName('[path][name]', '[ext]', 'hash', DEV_MODE);
 };
 
-exports.getStyleLoaders = function(devMode, ...loaders) {
+exports.getStyleLoaders = function (devMode, ...loaders) {
   const temp = [];
   for (let i = 0, length = loaders.length; i < length; i++) {
     let loader = loaders[i];
@@ -62,7 +62,7 @@ exports.getStyleLoaders = function(devMode, ...loaders) {
   return temp;
 };
 
-exports.resolve = function(dir) {
+exports.resolve = function (dir) {
   return path.join(__dirname, '..', dir);
 };
 
@@ -70,10 +70,10 @@ exports.CONTENT_PATH = exports.APP_PATH = exports.resolve('src');
 
 exports.APP_BUILD_PATH = path.resolve(config.getOutputDir());
 
-exports.normalizePublicPath = function(publicPath) {
+exports.normalizePublicPath = function (publicPath) {
   return publicPath === '.' ? '' : publicPath;
 };
-exports.normalizeTailSlash = function(publicPath, withSlash) {
+exports.normalizeTailSlash = function (publicPath, withSlash) {
   if (publicPath.endsWith('/')) {
     publicPath = withSlash
       ? publicPath
@@ -86,13 +86,13 @@ exports.normalizeTailSlash = function(publicPath, withSlash) {
   }
   return publicPath;
 };
-exports.normalizePath = function(publicPath, withSlash) {
+exports.normalizePath = function (publicPath, withSlash) {
   return exports.normalizeTailSlash(
     exports.normalizePublicPath(publicPath),
     withSlash,
   );
 };
-exports.getPublicPath = function() {
+exports.getPublicPath = function () {
   return exports.normalizeTailSlash(
     exports.normalizePublicPath(
       path.join(config.getAppPrefix(), config.getStaticPrefix()),
@@ -100,13 +100,13 @@ exports.getPublicPath = function() {
     config.isPrefixTailSlashEnabled(),
   );
 };
-exports.isWindows = function() {
+exports.isWindows = function () {
   return process.platform === 'win32';
 };
-exports.replaceBackwardSlash = function(str) {
+exports.replaceBackwardSlash = function (str) {
   return str.replace(SLASH_REGEX, '/');
 };
-exports.getCSSLoaderExtract = function(devMode = false) {
+exports.getCSSLoaderExtract = function (devMode = false) {
   return {
     use: exports.getStyleLoaders(
       devMode,
@@ -117,7 +117,7 @@ exports.getCSSLoaderExtract = function(devMode = false) {
   };
 };
 
-exports.getCSSLoader = function(
+exports.getCSSLoader = function (
   modules,
   importLoaders = 1,
   localIdentName = '[name]_[local]-[hash:base64:5]',
@@ -139,7 +139,7 @@ exports.getCSSLoader = function(
   return temp;
 };
 
-exports.getPostCSSLoader = function() {
+exports.getPostCSSLoader = function () {
   return {
     loader: LOADER.POSTCSS_LOADER,
   };
@@ -147,7 +147,7 @@ exports.getPostCSSLoader = function() {
 
 let MiniCssExtractPlugin;
 
-exports.getAllStyleRelatedLoaders = function(
+exports.getAllStyleRelatedLoaders = function (
   DEV_MODE,
   isHMREnabled,
   isCSSModules,
@@ -190,7 +190,7 @@ exports.getAllStyleRelatedLoaders = function(
   ];
 };
 
-exports.getImageLoader = function(devMode, context) {
+exports.getImageLoader = function (devMode, context) {
   return {
     test: /\.(png|jpe?g|gif|svg)$/,
     use: [
@@ -211,7 +211,7 @@ exports.getImageLoader = function(devMode, context) {
     ],
   };
 };
-exports.getMediaLoader = function(devMode, context) {
+exports.getMediaLoader = function (devMode, context) {
   return {
     test: /\.(woff|woff2|eot|ttf|wav|mp3)$/,
     loader: LOADER.FILE_LOADER,
@@ -222,7 +222,7 @@ exports.getMediaLoader = function(devMode, context) {
     },
   };
 };
-exports.getBabelLoader = function(cache) {
+exports.getBabelLoader = function (cache) {
   return {
     test: /\.jsx?$/,
     exclude: /node_modules/,
@@ -234,7 +234,7 @@ exports.getBabelLoader = function(cache) {
     },
   };
 };
-exports.getWebpackResolveConfig = function(customAlias = {}) {
+exports.getWebpackResolveConfig = function (customAlias = {}) {
   const appPath = exports.APP_PATH;
   return {
     modules: [appPath, 'node_modules'],
@@ -245,6 +245,7 @@ exports.getWebpackResolveConfig = function(customAlias = {}) {
       components: exports.resolve('src/components'),
       assets: exports.resolve('src/assets'),
       style: exports.resolve('src/style'),
+      pages: exports.resolve('src/pages'),
       ...customAlias,
     },
   };

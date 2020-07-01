@@ -2,69 +2,36 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import loadable from '@loadable/component';
 import PropTypes from 'prop-types';
-import Home from 'components/Home';
-import Hello from 'components/Hello';
-import Hello2 from 'components/Hello2';
-
-import { AppContext } from 'modules/context';
-
-const Loading = <h3>Loading...</h3>;
-
-/*const Loading = ({ pastDelay, error }) => {
-  if (error) {
-    console.log(error);
-    return error.msg || 'OOPS!';
-  }
-  return pastDelay ? <h3>Loading...</h3> : null;
-};*/
+import Home from './pages/home';
+import Hello from './pages/hello';
+import Loading from 'components/Loading';
 
 const HelloAsyncLoadable = loadable(
   () =>
     import(
-      /* webpackChunkName: "components_Hello_async" */ 'components/HelloAsync'
+      /* webpackChunkName: "components_Hello_async" */ 'pages/hello-async'
     ),
   {
-    fallback: Loading,
+    fallback: <Loading />,
   },
 );
 
 const Github = loadable(
-  () => import(/* webpackChunkName: "components_Github" */ 'components/Github'),
+  () => import(/* webpackChunkName: "components_Github" */ './pages/github'),
   {
-    fallback: Loading,
+    fallback: <Loading />,
   },
 );
 
-function AppRoutes({ context, initialData }) {
-  const { Provider } = AppContext;
+function AppRoutes({ initialData }) {
   return (
     <Switch>
-      <Route
-        exact
-        path="/hello-context"
-        render={props => (
-          <React.Fragment>
-            <Provider value={context}>
-              <Hello2 {...props} />
-            </Provider>
-            <hr />
-            <p className="text-center">
-              Below is default value from AppContext
-            </p>
-            <Hello2 {...props} />
-          </React.Fragment>
-        )}
-      />
+      <Route exact path="/hello/sync" component={Hello} />
+      <Route exact path="/hello/async" component={HelloAsyncLoadable} />
       <Route
         exact
         path="/github"
-        render={props => <Github branches={initialData.github} {...props} />}
-      />
-      <Route exact path="/hello/sync" component={Hello} />
-      <Route
-        exact
-        path="/hello/async"
-        render={props => <HelloAsyncLoadable {...props} />}
+        render={(props) => <Github branches={initialData.github} {...props} />}
       />
       <Route path="/" component={Home} />
     </Switch>
@@ -73,7 +40,6 @@ function AppRoutes({ context, initialData }) {
 
 AppRoutes.propTypes = {
   initialData: PropTypes.object,
-  context: PropTypes.any,
 };
 
 export default AppRoutes;

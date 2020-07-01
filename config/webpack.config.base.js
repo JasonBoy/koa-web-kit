@@ -34,7 +34,7 @@ const prefix = utils.normalizeTailSlash(
 
 const appIndex = path.join(APP_PATH, 'index.js');
 
-let entry = undefined;
+let entry;
 if (isHMREnabled) {
   entry = [appIndex];
 } else {
