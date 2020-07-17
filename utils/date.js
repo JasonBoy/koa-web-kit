@@ -1,14 +1,21 @@
-const format = require('date-fns/format');
-const DEFAULT_FORMAT = 'yyyy-MM-dd HH:mm:ss';
+const moment = require('moment');
+const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+const DATE_FORMAT = 'YYYY-MM-DD';
+const DATE_TIME_FORMAT_NO_SPACE = 'YYYYMMDDHHmmss';
+
+function simpleDate() {
+  return moment().format(DATE_TIME_FORMAT);
+}
 
 module.exports = {
-  simpleDate() {
-    return format(new Date(), DEFAULT_FORMAT);
-  },
+  DATE_FORMAT,
+  DATE_TIME_FORMAT,
+  DATE_TIME_FORMAT_NO_SPACE,
+  simpleDate,
   now() {
-    return this.simpleDate();
+    return simpleDate();
   },
-  format(date = Date.now(), pattern = DEFAULT_FORMAT) {
-    return format(date, pattern);
+  format(date = Date.now(), pattern = DATE_TIME_FORMAT) {
+    return moment(date).format(date, pattern);
   },
 };

@@ -7,6 +7,7 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const LoadablePlugin = require('@loadable/webpack-plugin');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 const config = require('./env');
 const utils = require('./utils');
@@ -79,6 +80,9 @@ const webpackConfig = {
       options: {
         context: CONTENT_PATH,
       },
+    }),
+    new MomentLocalesPlugin({
+      localesToKeep: ['zh-cn'],
     }),
     new HtmlWebpackPlugin({
       template: './views/index.html',
