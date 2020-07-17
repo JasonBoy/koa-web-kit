@@ -50,3 +50,4 @@ bundle*.js
 #package-lock.json
 app.min.js
 app-config.js
+.env*
