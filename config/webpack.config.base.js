@@ -84,7 +84,6 @@ const webpackConfig = {
       template: './views/index.html',
       filename: isSSREnabled ? 'index-backup.html' : 'index.html',
       inject: 'body',
-      chunksSortMode: 'dependency',
       favicon: path.join(__dirname, '../src/assets/static/favicon.ico'),
     }),
     new CopyWebpackPlugin({
@@ -117,8 +116,7 @@ HtmlWebpackCustomPlugin.prototype.apply = function (compiler) {
     'InsertSSRBundleScriptsPlugin',
     (compilation) => {
       console.log('The compiler is starting a new compilation...');
-
-      compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync(
+      HtmlWebpackPlugin.getHooks(compilation).beforeEmit.tapAsync(
         'InsertSSRBundleScriptsPlugin',
         (data, cb) => {
           console.log('data: ', data.assets);

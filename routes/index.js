@@ -23,7 +23,7 @@ const router = new Router({
   prefix: appPrefix,
 });
 
-router.use(async function(ctx, next) {
+router.use(async function (ctx, next) {
   // console.log(`start of index router: ${ctx.path}`);
   ctx.set('Cache-Control', 'no-cache');
   ctx.state = {
@@ -42,7 +42,7 @@ router.post(
     multipart: true,
     keepExtensions: true,
   }),
-  async function(ctx) {
+  async function (ctx) {
     const { body, files } = ctx.request;
     ctx.body = { body, files };
   },
@@ -51,7 +51,7 @@ router.post(
 /**
  * Async request data for initial state demo
  */
-router.get('/github', async function(ctx) {
+router.get('/github', async function (ctx) {
   if (renderer.isCacheMatched(ctx.path)) {
     renderer.renderFromCache(ctx.path, ctx);
     return;
@@ -80,14 +80,14 @@ router.get('/github', async function(ctx) {
   renderer.render(ctx, data);
 });
 
-router.get('/400', async ctx => {
+router.get('/400', async (ctx) => {
   ctx.status = 400;
   ctx.body = {
     msg: '400',
   };
 });
 
-router.post('/400', koaBody(), async ctx => {
+router.post('/400', koaBody(), async (ctx) => {
   ctx.status = 400;
   ctx.set('cache-control', 'no-store');
   ctx.body = {
@@ -96,14 +96,15 @@ router.post('/400', koaBody(), async ctx => {
   };
 });
 
-router.get('/500', async ctx => {
+router.get('/500', async (ctx) => {
   ctx.throw(500);
 });
 
 /**
  * Other default handler
  */
-router.get('*', async function(ctx) {
+router.get('(.*)', async function (ctx) {
+  // console.log('ctx.path: ', ctx.url);
   renderer.render(ctx);
 });
 

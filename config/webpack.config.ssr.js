@@ -2,7 +2,7 @@
 
 const path = require('path');
 const webpack = require('webpack');
-const webpackMerge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const config = require('./env');
 const utils = require('./utils');
 const nodeExternals = require('webpack-node-externals');
@@ -17,7 +17,7 @@ const prefix = utils.normalizeTailSlash(
   config.isPrefixTailSlashEnabled(),
 );
 
-const webpackConfig = webpackMerge(
+const webpackConfig = merge(
   {},
   {
     entry: {
@@ -33,7 +33,7 @@ const webpackConfig = webpackMerge(
     },
     externals: [
       nodeExternals({
-        whitelist: [/\.(?!(?:jsx?|json)$).{1,5}$/i],
+        allowlist: [/\.(?!(?:jsx?|json)$).{1,5}$/i],
       }),
     ],
     resolve: {

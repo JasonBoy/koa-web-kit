@@ -1,6 +1,6 @@
 'use strict';
 
-const webpackMerge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 const baseWebpackConfig = require('./webpack.config.base');
@@ -9,7 +9,7 @@ const utils = require('./utils');
 const isHMREnabled = config.isHMREnabled();
 const isCSSModules = config.isCSSModules();
 
-const webpackConfig = webpackMerge(baseWebpackConfig, {
+const webpackConfig = merge(baseWebpackConfig, {
   output: {
     publicPath: isHMREnabled ? '/' : utils.getPublicPath(),
     filename: '[name].js',

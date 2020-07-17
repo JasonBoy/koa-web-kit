@@ -1,6 +1,6 @@
 'use strict';
 
-const webpackMerge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
@@ -14,7 +14,7 @@ const isBundleAnalyzerEnabled = config.isBundleAnalyzerEnabled();
 const isSSREnabled = config.isSSREnabled();
 const isCSSModules = config.isCSSModules();
 
-const webpackConfig = webpackMerge(baseWebpackConfig, {
+const webpackConfig = merge(baseWebpackConfig, {
   output: {
     publicPath: config.getStaticAssetsEndpoint() + utils.getPublicPath(),
     filename: utils.getName('[name]', 'js', '', false),
