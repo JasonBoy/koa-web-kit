@@ -19,7 +19,7 @@ const CONTENT_PATH = APP_PATH;
 const APP_BUILD_PATH = utils.APP_BUILD_PATH;
 const ENTRY_NAME = utils.ENTRY_NAME;
 
-const defaultPrefix = config.getApiEndPoints().defaultPrefix;
+const defaultPrefix = config.getDefaultApiEndPointPrefix();
 
 const appPrefix = utils.normalizeTailSlash(
   config.getAppPrefix(),

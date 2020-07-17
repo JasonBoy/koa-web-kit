@@ -61,7 +61,7 @@ function initConfig(customConfig) {
     configInfo =
       !nodeBuildEnv || nodeBuildEnv !== 'development' ? prodConfig : devConfig;
     checkMsg += `Using [${chalk.green(
-      !nodeBuildEnv ? 'config.default.prod' : 'config.default.dev'
+      !nodeBuildEnv ? 'config.default.prod' : 'config.default.dev',
     )}] as app configuration`;
   }
   console.log(checkMsg);
@@ -135,8 +135,17 @@ module.exports = {
   isPrefixTailSlashEnabled: () => {
     return !!getConfigProperty('PREFIX_TRAILING_SLASH');
   },
+  getApiEndPointPrefix: () => {
+    return getConfigProperty('API_ENDPOINTS_PREFIX');
+  },
   getApiEndPoints: () => {
     return getConfigProperty('API_ENDPOINTS');
+  },
+  getDefaultApiEndPointPrefix: () => {
+    const obj = getConfigProperty('API_ENDPOINTS');
+    return 'string' === typeof obj
+      ? module.exports.getApiEndPointPrefix() || '/api-proxy'
+      : obj[DEFAULT_PREFIX_KEY];
   },
   getProxyDebugLevel: () => {
     return getConfigProperty('PROXY_DEBUG_LEVEL');
@@ -167,7 +176,7 @@ module.exports = {
   },
   getDefaultApiEndPoint: () => {
     const obj = getConfigProperty('API_ENDPOINTS');
-    return obj[obj[DEFAULT_PREFIX_KEY]];
+    return 'string' === typeof obj ? obj : obj[obj[DEFAULT_PREFIX_KEY]];
   },
   getDefaultApiEndPointKey: () => {
     return DEFAULT_PREFIX_KEY;
@@ -187,7 +196,7 @@ module.exports = {
   isServingStaticIndex: () => {
     return isTrue(getConfigProperty('SERVE_STATIC_INDEX'));
   },
-  getEnv: key => {
+  getEnv: (key) => {
     return getConfigProperty(key);
   },
 };

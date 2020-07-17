@@ -181,20 +181,28 @@ async function initHMR(app) {
 
 function initProxy(app) {
   //api proxy
-  if (config.isNodeProxyEnabled() && !isEmpty(API_ENDPOINTS)) {
-    for (const prefix in API_ENDPOINTS) {
-      if (
-        API_ENDPOINTS.hasOwnProperty(prefix) &&
-        prefix !== DEFAULT_PREFIX_KEY
-      ) {
-        let endPoint = API_ENDPOINTS[prefix];
-        if ('string' !== typeof endPoint) {
-          endPoint = endPoint.endpoint;
-        }
-        app.use(handleApiRequests(prefix, endPoint));
-        logger.info('Node proxy[' + endPoint + '] enabled for path: ' + prefix);
+  if (!(config.isNodeProxyEnabled() && !isEmpty(API_ENDPOINTS))) {
+    return;
+  }
+  if ('string' === typeof API_ENDPOINTS) {
+    const defaultPrefix = config.getDefaultApiEndPointPrefix();
+    app.use(handleApiRequests(defaultPrefix, API_ENDPOINTS));
+    logProxyInfo(API_ENDPOINTS, defaultPrefix);
+    return;
+  }
+  for (const prefix in API_ENDPOINTS) {
+    if (API_ENDPOINTS.hasOwnProperty(prefix) && prefix !== DEFAULT_PREFIX_KEY) {
+      let endPoint = API_ENDPOINTS[prefix];
+      if ('string' !== typeof endPoint) {
+        endPoint = endPoint.endpoint;
       }
+      app.use(handleApiRequests(prefix, endPoint));
+      logProxyInfo(endPoint, prefix);
     }
+  }
+
+  function logProxyInfo(endPoint, prefix) {
+    logger.info('Node proxy[' + endPoint + '] enabled for path: ' + prefix);
   }
 }
 
