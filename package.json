@@ -173,31 +173,5 @@
       "server.js",
       "app.js"
     ]
-  },
-  "files": [
-    "__tests__",
-    "api",
-    "config",
-    "mocks",
-    "routes",
-    "services",
-    "utils",
-    "views",
-    "src",
-    "app.js",
-    "deploy.sh",
-    "package.json",
-    "pm2.config.js",
-    "server.js",
-    ".npmrc",
-    "Dockerfile",
-    ".dockerignore",
-    "jest.config.*.js",
-    "babel.config.js",
-    ".gitignore",
-    ".prettierignore",
-    ".prettierrc",
-    "LICENSE",
-    "postcss.config.js"
-  ]
+  }
 }
