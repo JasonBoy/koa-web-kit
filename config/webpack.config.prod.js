@@ -5,7 +5,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
-const PreloadWebpackPlugin = require('preload-webpack-plugin');
 
 const baseWebpackConfig = require('./webpack.config.base');
 const config = require('./env');
@@ -36,14 +35,6 @@ const webpackConfig = merge(baseWebpackConfig, {
     new MiniCssExtractPlugin({
       filename: utils.getName('[name]', 'css', 'contenthash', false),
     }),
-    new PreloadWebpackPlugin({
-      rel: 'preload',
-      include: 'initial',
-    }),
-    // new PreloadWebpackPlugin({
-    //   rel: 'prefetch',
-    //   include: 'asyncChunks',
-    // }),
   ],
   //new in webpack4
   optimization: {
