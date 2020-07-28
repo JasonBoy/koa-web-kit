@@ -8,7 +8,7 @@ const LOADER = {
   STYLE_LOADER: 'style-loader',
   CSS_LOADER: 'css-loader',
   POSTCSS_LOADER: 'postcss-loader',
-  IGNORE_LOADER: 'ignore-loader',
+  NULL_LOADER: 'null-loader',
   URL_LOADER: 'url-loader',
   FILE_LOADER: 'file-loader',
   BABEL_LOADER: 'babel-loader',
@@ -167,7 +167,7 @@ exports.getAllStyleRelatedLoaders = function (
     }
   }
   if (isSSR) {
-    styleLoader = LOADER.IGNORE_LOADER;
+    styleLoader = LOADER.NULL_LOADER;
   }
   return [
     {
