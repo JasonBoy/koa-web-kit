@@ -46,6 +46,17 @@ if (!isHMREnabled) {
   webpackConfig.optimization = {
     namedModules: true,
     runtimeChunk: 'single',
+    splitChunks: {
+      // name: false,
+      automaticNameMaxLength: 30,
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/i,
+          name: utils.ENTRY_NAME.VENDORS,
+          chunks: 'initial',
+        },
+      },
+    },
   };
 }
 

@@ -74,13 +74,6 @@ const webpackConfig = {
         config.isCustomAPIPrefix() ? defaultPrefix : '',
       ),
     }),
-    new webpack.LoaderOptionsPlugin({
-      debug: DEV_MODE,
-      minimize: !DEV_MODE,
-      options: {
-        context: CONTENT_PATH,
-      },
-    }),
     new MomentLocalesPlugin({
       localesToKeep: ['zh-cn'],
     }),

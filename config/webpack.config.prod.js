@@ -39,11 +39,13 @@ const webpackConfig = merge(baseWebpackConfig, {
   //new in webpack4
   optimization: {
     namedModules: false,
-    runtimeChunk: { name: utils.ENTRY_NAME.VENDORS },
-    // runtimeChunk: 'single',
+    // runtimeChunk: { name: utils.ENTRY_NAME.VENDORS },
+    runtimeChunk: 'single',
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
     concatenateModules: !isSSREnabled, //ModuleConcatenationPlugin
     splitChunks: {
+      // name: false,
+      automaticNameMaxLength: 30,
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/]/i,
@@ -54,8 +56,12 @@ const webpackConfig = merge(baseWebpackConfig, {
     },
     minimizer: [
       new TerserWebpackPlugin({
+        extractComments: false,
+        parallel: true,
+        sourceMap: false,
         terserOptions: {
           warnings: false,
+          // ecma: 2015,
           compress: {
             warnings: false,
             drop_console: true,
@@ -64,12 +70,10 @@ const webpackConfig = merge(baseWebpackConfig, {
           },
           output: {
             comments: false,
-            beautify: false,
+            // beautify: false,
           },
           mangle: true,
         },
-        parallel: true,
-        sourceMap: false,
       }),
     ],
   },
