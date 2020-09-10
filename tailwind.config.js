@@ -10,4 +10,8 @@ module.exports = {
     appearance: [],
   },
   plugins: [],
+  future: {
+    removeDeprecatedGapUtilities: true,
+    purgeLayersByDefault: true,
+  },
 };
