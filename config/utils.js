@@ -274,4 +274,3 @@ exports.getFilesFromDir = function (dir = 'src/pages') {
   // console.log('modulesInfo: ', modulesInfo);
   return modulesInfo;
 };
-exports.getModulesFromPath = function (filesData = []) {};
