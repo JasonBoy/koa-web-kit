@@ -11,7 +11,7 @@
 [Release Notes](https://github.com/JasonBoy/koa-web-kit/releases), 
 [An Introduction for koa-web-kit](https://blog.lovemily.me/koa-web-kit-a-modern-production-ready-and-full-stack-node-web-framework/)
 
-> This readme is for v3, if you need SASS/SCSS support, use [v2.11.x](https://github.com/JasonBoy/koa-web-kit/tree/v2.11.1)
+> This readme is for v3(require node >= 10.13), if you need SASS/SCSS support, use [v2.11.x](https://github.com/JasonBoy/koa-web-kit/tree/v2.11.1)
 
 ## Features
 
