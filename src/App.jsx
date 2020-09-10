@@ -22,4 +22,12 @@ function App() {
   );
 }
 
+getPageModules();
+function getPageModules() {
+  const context = require.context('src/pages', true, /\.jsx?$/);
+  console.log('context.keys(): ', context.keys());
+  const modules = context.keys().map((key) => context(key));
+  console.log('modules: ', modules);
+}
+
 export default App;
