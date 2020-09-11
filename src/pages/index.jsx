@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import logo from 'assets/static/logo.svg';
+import { getRoutes } from 'modules/router';
 
 const rotate = keyframes`
   from {
@@ -31,16 +32,20 @@ const StyledList = styled.div`
   }
 `;
 
-class Home extends React.Component {
+class Index extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       error: { msg: 'Errored' },
+      list: [],
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    const routes = getRoutes(true);
+    this.setState({ list: routes });
+  }
 
   makeError = (e) => {
     e.preventDefault();
@@ -48,6 +53,8 @@ class Home extends React.Component {
   };
 
   render() {
+    const { list } = this.state;
+
     return (
       <StyledHome className="home-page container mx-auto">
         <StyledTitle className="text-center mt-3">
@@ -61,10 +68,21 @@ class Home extends React.Component {
           <span>Home</span>
         </StyledTitle>
         <StyledList className="mx-auto">
-          <Link className="text-blue-500 hover:text-blue-700" to="/">
+          {list.map((route) => {
+            return (
+              <Link
+                key={route.key}
+                className="text-blue-500 hover:text-blue-700"
+                to={route.path}
+              >
+                {route.name}
+              </Link>
+            );
+          })}
+          {/*<Link className="text-blue-500 hover:text-blue-700" to="/">
             Home
           </Link>
-          <Link className="text-blue-500 hover:text-blue-700" to="/hello/sync">
+          <Link className="text-blue-500 hover:text-blue-700" to="/hello">
             Hello Sync
           </Link>
           <Link className="text-blue-500 hover:text-blue-700" to="/hello/async">
@@ -72,7 +90,7 @@ class Home extends React.Component {
           </Link>
           <Link className="text-blue-500 hover:text-blue-700" to="/github">
             Github
-          </Link>
+          </Link>*/}
           <a
             className="text-blue-500 hover:text-blue-700"
             href="#"
@@ -86,4 +104,4 @@ class Home extends React.Component {
   }
 }
 
-export default Home;
+export default Index;
