@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import logo from 'assets/static/logo.svg';
@@ -32,7 +32,7 @@ const StyledList = styled.div`
   }
 `;
 
-class Index extends React.Component {
+class Index extends Component {
   constructor(props) {
     super(props);
 
