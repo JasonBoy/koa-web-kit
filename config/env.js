@@ -197,6 +197,18 @@ module.exports = {
   isServingStaticIndex: () => {
     return isTrue(getConfigProperty('SERVE_STATIC_INDEX'));
   },
+  isDynamicRoutes: () => {
+    let dynamicRoutes = getConfigProperty('DYNAMIC_ROUTES');
+    console.log('dynamicRoutes: ', dynamicRoutes);
+    if (
+      dynamicRoutes === null ||
+      dynamicRoutes === undefined ||
+      dynamicRoutes === ''
+    ) {
+      dynamicRoutes = true;
+    }
+    return isTrue(dynamicRoutes);
+  },
   getEnv: (key) => {
     return getConfigProperty(key);
   },

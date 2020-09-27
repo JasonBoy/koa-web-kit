@@ -22,6 +22,7 @@ module.exports = {
   INLINE_STYLES: false,
   CSS_MODULES: false,
   OUTPUT_DIR: '',
+  DYNAMIC_ROUTES: true,
   API_ENDPOINTS: {
     defaultPrefix: '/api-proxy',
     '/api-proxy': 'http://127.0.0.1:3001',

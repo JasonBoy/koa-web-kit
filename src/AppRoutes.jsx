@@ -1,12 +1,21 @@
 import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
-// import loadable from '@loadable/component';
+import loadable from '@loadable/component';
 // import Index from './pages/index';
 // import Hello from './pages/hello';
 import Loading from 'components/Loading';
 import { getRoutes } from 'modules/router';
 
-const routes = getRoutes();
+console.log('process.env.DYNAMIC_ROUTES: ', process.env.DYNAMIC_ROUTES);
+const routes = process.env.DYNAMIC_ROUTES
+  ? getRoutes()
+  : [
+      {
+        name: 'index',
+        path: '/',
+        component: loadable(() => import('pages/index')),
+      },
+    ];
 console.log('routes: ', routes);
 
 /*
