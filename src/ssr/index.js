@@ -32,7 +32,7 @@ const groupedManifest = {
 };
 
 const manifestKeys = Object.keys(manifest);
-manifestKeys.forEach(key => {
+manifestKeys.forEach((key) => {
   const type = checkSourceType(key) || {};
   if (!groupedManifest.hasOwnProperty(type.name)) {
     groupedManifest[type.name] = [];
@@ -44,7 +44,7 @@ manifestKeys.forEach(key => {
 
 function checkSourceType(sourceKey) {
   let type;
-  const matchedKey = typeKeys.find(t => {
+  const matchedKey = typeKeys.find((t) => {
     const temp = SOURCE_TYPE[t];
     return temp.test.test(sourceKey);
   });

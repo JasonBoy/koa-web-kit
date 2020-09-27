@@ -21,6 +21,11 @@ module.exports = {
     jest: true,
   },
   plugins: ['react', 'react-hooks'],
+  globals: {
+    __SSR__: true,
+    __isBrowser__: true,
+    __HMR__: true,
+  },
   rules: {
     eqeqeq: 'off',
     'no-prototype-builtins': 'off',

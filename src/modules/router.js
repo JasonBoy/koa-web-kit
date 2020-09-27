@@ -8,20 +8,13 @@ let routes = [];
 export function getPageModules() {
   const context = require.context('src/pages', true, /\.jsx?$/, 'lazy');
   console.log('context.keys(): ', context.keys());
-  const modules = context.keys().map((key, index) => {
-    // if (index === 0) {
-    //   context(key);
-    // }
-    // ./sub/sub2/sub3-module.jsx
+  return context.keys().map((key) => {
     return {
       key,
       context,
-      // module: context(key),
       ...normalizeModulePath(key),
     };
   });
-  // console.log('modules: ', modules);
-  return modules;
 }
 
 export function normalizeModulePath(path) {
@@ -62,6 +55,7 @@ export function generateDynamicRoutes() {
 export function getRoutes(plain) {
   let ret;
   if (routesGenerated) {
+    console.log('routes generated, return from cache');
     ret = routes;
   } else {
     ret = generateDynamicRoutes();
