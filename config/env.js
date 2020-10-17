@@ -199,14 +199,14 @@ module.exports = {
   },
   isDynamicRoutes: () => {
     let dynamicRoutes = getConfigProperty('DYNAMIC_ROUTES');
-    console.log('dynamicRoutes: ', dynamicRoutes);
     if (
       dynamicRoutes === null ||
       dynamicRoutes === undefined ||
       dynamicRoutes === ''
     ) {
-      dynamicRoutes = true;
+      dynamicRoutes = false;
     }
+    console.log('dynamicRoutes: ', dynamicRoutes);
     return isTrue(dynamicRoutes);
   },
   getEnv: (key) => {
