@@ -15,7 +15,7 @@ module.exports = function (api) {
         '@babel/preset-react',
         {
           development: DEV_MODE,
-          runtime: 'automatic',
+          // runtime: 'automatic',
         },
       ],
     ],
