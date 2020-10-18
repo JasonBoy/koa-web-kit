@@ -1,3 +1,4 @@
+import React from 'react';
 import 'src/style/index.css';
 import 'modules/env';
 import ReactDOM from 'react-dom';

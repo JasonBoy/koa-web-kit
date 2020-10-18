@@ -20,15 +20,21 @@ export function getPageModules() {
 export function normalizeModulePath(path) {
   const withoutRoot = path.slice(2);
   const parts = withoutRoot.split('/');
+  const paramsParts = parts.filter((item) => item.startsWith(':'));
+  console.log('paramsParts: ', paramsParts);
   const filename = parts[parts.length - 1];
-  const filenameMatch = filename.match(/([\w_-]+)\..+$/);
-  const moduleName = filenameMatch ? filenameMatch[1] : '';
+  const filenameMatch = filename.match(/(.+)\..+$/);
+  const moduleName = filenameMatch
+    ? filenameMatch[1].startsWith(':')
+      ? filenameMatch[1].slice(1)
+      : filenameMatch[1]
+    : '';
   return {
     name: moduleName,
     filename,
     path: isIndexPage(moduleName)
       ? '/'
-      : ['', ...parts.slice(0, parts.length - 1), moduleName].join('/'),
+      : ['', ...parts.slice(0, parts.length - 1), filenameMatch[1]].join('/'),
     dir: withoutRoot,
     fullPath: path,
   };
