@@ -42,20 +42,7 @@ const webpackConfig = {
     //   },
     // ]
   },
-  plugins: [
-    new webpack.LoaderOptionsPlugin({
-      debug: DEV_MODE,
-      minimize: !DEV_MODE,
-      options: {
-        context: APP_PATH,
-      },
-    }),
-    // new webpack.optimize.CommonsChunkPlugin({
-    //   // names: ['vendors', 'manifest'],
-    //   names: ['manifest'],
-    //   minChunks: Infinity
-    // }),
-  ],
+  plugins: [],
 };
 
 if (!DEV_MODE) {

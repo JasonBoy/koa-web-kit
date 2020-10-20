@@ -2,59 +2,29 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
 import loadable from '@loadable/component';
-// import Index from './pages/index';
-// import Hello from './pages/hello';
 import Loading from 'components/Loading';
-import { getRoutes } from 'modules/router';
+import { getRoutes } from 'modules/router-utils';
 
 console.log('process.env.DYNAMIC_ROUTES: ', process.env.DYNAMIC_ROUTES);
 const routes = process.env.DYNAMIC_ROUTES
-  ? getRoutes()
-  : [
+  ? // dynamic routes from src/pages
+    getRoutes()
+  : //manual routes
+    [
       {
         name: 'index',
         path: '/',
         component: loadable(() => import('pages/index')),
       },
+      {
+        name: 'hello',
+        path: '/hello',
+        component: loadable(() => import('pages/hello')),
+      },
     ];
-console.log('routes: ', routes);
-
-/*
-const HelloAsyncLoadable = loadable(
-  () =>
-    import(
-      /!* webpackChunkName: "components_Hello_async" *!/ 'pages/hello-async'
-    ),
-  {
-    fallback: <Loading />,
-  },
-);
-
-const Github = loadable(
-  () => import(/!* webpackChunkName: "components_Github" *!/ './pages/github'),
-  {
-    fallback: <Loading />,
-  },
-);
-
-function AppRoutes({ initialData }) {
-  return (
-    <Switch>
-      <Route exact path="/hello/sync" component={Hello} />
-      <Route exact path="/hello/async" component={HelloAsyncLoadable} />
-      <Route
-        exact
-        path="/github"
-        render={(props) => <Github branches={initialData.github} {...props} />}
-      />
-      <Route path="/" component={Index} />
-    </Switch>
-  );
-}
-*/
+// console.log('routes: ', routes);
 
 function AppRoutes() {
-  // return 'xxx';
   return (
     <Switch>
       {routes.map(({ name, path, component: RouteComponent }) => (

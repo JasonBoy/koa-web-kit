@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env ENABLE_HMR=1 ENABLE_SSR=0 STATIC_PREFIX='' node server.js",
-    "dev:ssr": "cross-env ENABLE_HMR=0 CSS_MODULES=0 ENABLE_SSR=1 npm-run-all -p watch watch:ssr start",
+    "dev:ssr": "cross-env ENABLE_HMR=0 CSS_MODULES=0 ENABLE_SSR=1 npm-run-all -p start watch watch:ssr",
     "dev:watch": "cross-env ENABLE_HMR=0 ENABLE_SSR=0 npm-run-all -p watch start",
     "start": "nodemon --trace-warnings server.js",
     "build": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",

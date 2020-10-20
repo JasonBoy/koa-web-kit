@@ -20,8 +20,8 @@ export function getPageModules() {
 export function normalizeModulePath(path) {
   const withoutRoot = path.slice(2);
   const parts = withoutRoot.split('/');
-  const paramsParts = parts.filter((item) => item.startsWith(':'));
-  console.log('paramsParts: ', paramsParts);
+  // const paramsParts = parts.filter((item) => item.startsWith(':'));
+  // console.log('paramsParts: ', paramsParts);
   const filename = parts[parts.length - 1];
   const filenameMatch = filename.match(/(.+)\..+$/);
   const moduleName = filenameMatch

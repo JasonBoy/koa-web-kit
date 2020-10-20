@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import logo from 'assets/static/logo.svg';
-import { getRoutes } from 'modules/router';
+import { getRoutes } from 'modules/router-utils';
 
 const rotate = keyframes`
   from {
@@ -38,13 +38,30 @@ class Index extends Component {
 
     this.state = {
       error: { msg: 'Errored' },
-      list: [],
+      list: [
+        {
+          key: 1,
+          path: '/hello',
+          name: 'ssr name',
+        },
+      ],
     };
   }
 
   componentDidMount() {
     const routes = getRoutes(true);
     this.setState({ list: routes });
+    const name = 'index';
+    const weakDeps = require.resolveWeak(`src/pages/${name}`);
+    console.log('weakDeps: ', weakDeps);
+    console.log(
+      '__webpack_modules__[weakDeps]: ',
+      __webpack_modules__[weakDeps],
+    );
+    console.log(
+      'require.cache[weakDeps]: ',
+      require.cache[require.resolveWeak(`src/pages/hello`)],
+    );
   }
 
   makeError = (e) => {
@@ -81,11 +98,11 @@ class Index extends Component {
           })}
           {/*<Link className="text-blue-500 hover:text-blue-700" to="/">
             Home
-          </Link>
+          </Link>*/}
           <Link className="text-blue-500 hover:text-blue-700" to="/hello">
-            Hello Sync
+            Hello async
           </Link>
-          <Link className="text-blue-500 hover:text-blue-700" to="/hello/async">
+          {/*<Link className="text-blue-500 hover:text-blue-700" to="/hello/async">
             Hello Async
           </Link>
           <Link className="text-blue-500 hover:text-blue-700" to="/github">
