@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env ENABLE_HMR=1 ENABLE_SSR=0 STATIC_PREFIX='' node server.js",
-    "dev:ssr": "cross-env ENABLE_HMR=0 CSS_MODULES=0 ENABLE_SSR=1 npm-run-all -p watch watch:ssr start",
+    "dev:ssr": "cross-env ENABLE_HMR=0 CSS_MODULES=0 ENABLE_SSR=1 npm-run-all -p start watch watch:ssr",
     "dev:watch": "cross-env ENABLE_HMR=0 ENABLE_SSR=0 npm-run-all -p watch start",
     "start": "nodemon --trace-warnings server.js",
     "build": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
@@ -33,7 +33,10 @@
     }
   },
   "lint-staged": {
-    "**/*.{js,jsx,json,css,html}": [
+    "**/*.{js,jsx}": [
+      "eslint --fix"
+    ],
+    "**/*.{json,css,html}": [
       "prettier --write"
     ]
   },
@@ -85,8 +88,8 @@
     "pino-pretty": "4.2.1",
     "pm2": "4.4.0",
     "prop-types": "15.7.2",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
     "react-router-dom": "5.2.0",
     "slugify": "1.4.5",
     "socks-proxy-agent": "5.0.0",
@@ -126,6 +129,7 @@
     "eslint-plugin-react-hooks": "4.1.0",
     "file-loader": "6.1.0",
     "get-port": "5.1.1",
+    "globby": "11.0.1",
     "html-webpack-plugin": "4.4.1",
     "husky": "4.3.0",
     "jest": "26.4.2",

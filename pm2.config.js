@@ -8,7 +8,9 @@ module.exports = {
     {
       name: process.env.APP_NAME || 'koa-web-kit',
       script: './server.js',
-      instances: 0,
+      instances: process.env.APP_INSTANCES
+        ? parseInt(process.env.APP_INSTANCES)
+        : 0,
       exec_mode: 'cluster_mode',
       watch: false,
       env: {

@@ -142,7 +142,7 @@ class HttpClient {
     let chunks = [];
     let gotOptions = {};
     let gotResponse;
-    requestStream.on('response', response => {
+    requestStream.on('response', (response) => {
       gotResponse = response;
       const request = response.request;
       if (request) {
@@ -161,7 +161,7 @@ class HttpClient {
     });
 
     if (this.debugLevel > DEBUG_LEVEL.PLAIN) {
-      requestStream.on('data', chunk => {
+      requestStream.on('data', (chunk) => {
         chunks.push(chunk);
       });
       requestStream.on('end', () => {

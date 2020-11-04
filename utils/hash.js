@@ -20,6 +20,6 @@ exports.getRandomSHA1 = function getRandomSHA1(byteLength) {
   return crypto.randomBytes(byteLength ? byteLength : 20).toString('hex');
 };
 
-exports.toBase64 = function(input) {
+exports.toBase64 = function (input) {
   return Buffer.from(input).toString('base64');
 };

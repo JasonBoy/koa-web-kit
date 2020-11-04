@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import AppRoutes from './AppRoutes';
@@ -12,7 +11,9 @@ if (initDataScript) {
     console.error(err);
   }
 }
-console.log('SSR initialData: ', initialData);
+if (__SSR__) {
+  console.log('SSR initialData: ', initialData);
+}
 
 function App() {
   return (

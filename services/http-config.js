@@ -20,7 +20,7 @@ exports.BODY_TYPE = {
   FORM_URL_ENCODED: 'application/x-www-form-urlencoded',
 };
 
-exports.getResponseContentType = function(response) {
+exports.getResponseContentType = function (response) {
   if (!response || !response.headers) return;
   const headers = response.headers;
   if (typeof headers.get === 'function') {
@@ -29,7 +29,7 @@ exports.getResponseContentType = function(response) {
   return headers[exports.HEADER.CONTENT_TYPE];
 };
 
-exports.isJSONResponse = function(response) {
+exports.isJSONResponse = function (response) {
   const type = exports.getResponseContentType(response);
   if (!type) return false;
   return type.indexOf(exports.BODY_TYPE.JSON) >= 0;

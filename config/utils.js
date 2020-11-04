@@ -1,7 +1,10 @@
 'use strict';
 
 const path = require('path');
+const globby = require('globby');
+
 const config = require('./env');
+
 const SLASH_REGEX = /[\\]+/g;
 
 const LOADER = {
@@ -249,4 +252,25 @@ exports.getWebpackResolveConfig = function (customAlias = {}) {
       ...customAlias,
     },
   };
+};
+
+exports.getFilesFromDir = function (dir = 'src/pages') {
+  const paths = globby.sync(dir);
+  // console.log('paths: ', paths);
+  const modulesInfo = paths.map((path) => {
+    const withoutRoot = path.slice(dir.length + 1);
+    const parts = withoutRoot.split('/');
+    const filename = parts[parts.length - 1];
+    const filenameMatch = filename.match(/([\w_-]+)\..+$/);
+    const moduleName = filenameMatch ? filenameMatch[1] : '';
+    return {
+      name: moduleName,
+      filename,
+      path: withoutRoot,
+      routePath: [...parts.slice(0, parts.length - 1), moduleName].join('/'),
+      fullPath: path,
+    };
+  });
+  // console.log('modulesInfo: ', modulesInfo);
+  return modulesInfo;
 };

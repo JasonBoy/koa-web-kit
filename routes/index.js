@@ -18,19 +18,15 @@ const utils = require('../config/utils');
 const { logger } = require('../services/logger');
 
 const appPrefix = utils.normalizeTailSlash(config.getAppPrefix());
-
 const router = new Router({
   prefix: appPrefix,
 });
 
 router.use(async function (ctx, next) {
-  // console.log(`start of index router: ${ctx.path}`);
-  ctx.set('Cache-Control', 'no-cache');
   ctx.state = {
     initialData: {},
   };
   await next();
-  // console.log(`end of index router: ${ctx.path}`);
 });
 
 /**
@@ -105,6 +101,9 @@ router.get('/500', async (ctx) => {
  */
 router.get('(.*)', async function (ctx) {
   // console.log('ctx.path: ', ctx.url);
+  if (!config.isSSREnabled()) {
+    ctx.set('Cache-Control', 'no-cache');
+  }
   renderer.render(ctx);
 });
 

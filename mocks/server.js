@@ -26,7 +26,7 @@ server.use(router);
 module.exports = {
   XAccessToken,
   startJSONServer(port) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       server.listen(port, () => {
         console.log(`JSON Server is running on ${port}`);
         resolve(server);

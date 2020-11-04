@@ -1,6 +1,5 @@
 import 'src/style/index.css';
 import 'modules/env';
-import React from 'react';
 import ReactDOM from 'react-dom';
 import { loadableReady } from '@loadable/component';
 import App from './App';
@@ -8,7 +7,7 @@ import AppError from 'components/AppError';
 
 const elRoot = document.getElementById('app');
 
-const render = Component => {
+const render = (Component) => {
   // eslint-disable-next-line no-undef
   if (__SSR__) {
     console.log('in SSR mode');

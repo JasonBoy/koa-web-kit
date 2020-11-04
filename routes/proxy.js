@@ -1,3 +1,4 @@
+/* eslint-disable require-atomic-updates */
 /**
  * Request proxy for backend api
  */

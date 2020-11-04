@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 class AppError extends React.Component {
   constructor(props) {
@@ -7,13 +6,15 @@ class AppError extends React.Component {
 
     this.state = {
       hasError: false,
+      error: null,
+      info: null,
     };
   }
 
   componentDidMount() {}
 
   componentDidCatch(error, info) {
-    this.setState({ hasError: true });
+    this.setState({ hasError: true, error, info });
   }
 
   reload = (e) => {

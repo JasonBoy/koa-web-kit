@@ -115,15 +115,15 @@ describe('normal routes', () => {
 
 describe('request proxying', () => {
   let server;
-  let proxyServer2;
-  let jsonServer;
+  // let proxyServer2;
+  // let jsonServer;
   let profileUrl;
   const newPostId = String(Date.now());
   beforeAll(async () => {
-    jsonServer = await startJSONServer(jsonServerPort);
+    await startJSONServer(jsonServerPort);
     const apps = await Promise.all([app.create(), app.create()]);
     server = supertest.agent(apps[0].callback());
-    proxyServer2 = supertest.agent(app.listen(apps[1], server2Port));
+    supertest.agent(app.listen(apps[1], server2Port));
     profileUrl = `${defaultPrefix}/profile`;
   });
 
@@ -242,7 +242,7 @@ describe('request proxying', () => {
         expect(downloadHash).toBe(originalFileHash);
         resolve();
       });
-      writeStream.on('error', err => {
+      writeStream.on('error', (err) => {
         reject(err);
       });
       server

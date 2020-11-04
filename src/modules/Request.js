@@ -132,11 +132,11 @@ class Request {
     if (isJSONResponse(response)) {
       return response
         .json()
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
           return {};
         })
-        .then(data => this.jsonResponseHandler(data, apiOptions));
+        .then((data) => this.jsonResponseHandler(data, apiOptions));
     }
     return Promise.resolve(response);
   }
@@ -255,7 +255,7 @@ class Request {
         if (!Array.isArray(value)) {
           value = [value];
         }
-        value.forEach(v => formData.append(key, v));
+        value.forEach((v) => formData.append(key, v));
       }
     }
 

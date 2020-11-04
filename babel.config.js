@@ -1,4 +1,4 @@
-module.exports = function(api) {
+module.exports = function (api) {
   const DEV_MODE = api.env('development');
   api.cache(true);
   return {
@@ -15,6 +15,7 @@ module.exports = function(api) {
         '@babel/preset-react',
         {
           development: DEV_MODE,
+          runtime: 'automatic',
         },
       ],
     ],

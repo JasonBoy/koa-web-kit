@@ -73,6 +73,7 @@ const webpackConfig = {
       'process.env.apiPrefix': JSON.stringify(
         config.isCustomAPIPrefix() ? defaultPrefix : '',
       ),
+      'process.env.DYNAMIC_ROUTES': config.isDynamicRoutes(),
     }),
     new MomentLocalesPlugin({
       localesToKeep: ['zh-cn'],
@@ -106,6 +107,7 @@ const webpackConfig = {
 
 function HtmlWebpackCustomPlugin(options) {
   // Configure your plugin with options...
+  console.log('HtmlWebpackCustomPlugin: ', options);
 }
 
 HtmlWebpackCustomPlugin.prototype.apply = function (compiler) {

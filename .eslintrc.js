@@ -21,6 +21,11 @@ module.exports = {
     jest: true,
   },
   plugins: ['react', 'react-hooks'],
+  globals: {
+    __SSR__: true,
+    __isBrowser__: true,
+    __HMR__: true,
+  },
   rules: {
     eqeqeq: 'off',
     'no-prototype-builtins': 'off',
@@ -31,6 +36,10 @@ module.exports = {
     'react/prop-types': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    'react/jsx-uses-react': 'off',
+    'react/react-in-jsx-scope': 'off',
+    //prettier
+    'prettier/prettier': 'warn',
   },
   settings: {
     react: {

@@ -57,18 +57,8 @@ const webpackConfig = merge(
       new webpack.DefinePlugin({
         __isBrowser__: false,
         __pathPrefix__: JSON.stringify(prefix),
+        'process.env.DYNAMIC_ROUTES': config.isDynamicRoutes(),
       }),
-      new webpack.LoaderOptionsPlugin({
-        debug: DEV_MODE,
-        minimize: !DEV_MODE,
-        options: {
-          context: APP_PATH,
-        },
-      }),
-      // new MiniCssExtractPlugin({
-      //   filename: "[name].css",
-      //   chunkFilename: "[id].css"
-      // }),
     ],
   },
 );
