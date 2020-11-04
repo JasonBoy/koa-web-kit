@@ -1,9 +1,9 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
 import loadable from '@loadable/component';
 import Loading from 'components/Loading';
 import { getRoutes } from 'modules/router-utils';
+import NotFound from 'components/NotFound';
 
 console.log('process.env.DYNAMIC_ROUTES: ', process.env.DYNAMIC_ROUTES);
 const routes = process.env.DYNAMIC_ROUTES
@@ -37,6 +37,7 @@ function AppRoutes() {
           }}
         />
       ))}
+      <Route component={NotFound} />
     </Switch>
   );
 }

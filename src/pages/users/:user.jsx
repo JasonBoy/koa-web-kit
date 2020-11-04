@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 function User({ match }) {
   useEffect(() => {
     console.log('match: ', match);
-  }, []);
+  }, [match]);
   return 'user';
 }
 

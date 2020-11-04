@@ -1,5 +1,4 @@
 import path from 'path';
-import React from 'react';
 import { StaticRouter } from 'react-router-dom';
 import ReactDOMServer from 'react-dom/server';
 import { ChunkExtractor } from '@loadable/server';

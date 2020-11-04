@@ -206,7 +206,7 @@ module.exports = {
     ) {
       dynamicRoutes = false;
     }
-    console.log('dynamicRoutes: ', dynamicRoutes);
+    // console.log('dynamicRoutes: ', dynamicRoutes);
     return isTrue(dynamicRoutes);
   },
   getEnv: (key) => {

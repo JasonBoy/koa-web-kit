@@ -107,6 +107,7 @@ const webpackConfig = {
 
 function HtmlWebpackCustomPlugin(options) {
   // Configure your plugin with options...
+  console.log('HtmlWebpackCustomPlugin: ', options);
 }
 
 HtmlWebpackCustomPlugin.prototype.apply = function (compiler) {

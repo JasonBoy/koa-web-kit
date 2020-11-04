@@ -1,3 +1,7 @@
+/**
+ * only for pages dynamic routes
+ */
+
 import loadable from '@loadable/component';
 
 const INDEX_PAGE = 'index';

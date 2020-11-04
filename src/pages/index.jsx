@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import logo from 'assets/static/logo.svg';
-import { getRoutes } from 'modules/router-utils';
+// import { getRoutes } from 'modules/router-utils';
 
 const rotate = keyframes`
   from {
@@ -49,9 +49,9 @@ class Index extends Component {
   }
 
   componentDidMount() {
-    const routes = getRoutes(true);
-    this.setState({ list: routes });
-    const name = 'index';
+    // const routes = getRoutes(true);
+    // this.setState({ list: routes });
+    /*const name = 'index';
     const weakDeps = require.resolveWeak(`src/pages/${name}`);
     console.log('weakDeps: ', weakDeps);
     console.log(
@@ -61,7 +61,7 @@ class Index extends Component {
     console.log(
       'require.cache[weakDeps]: ',
       require.cache[require.resolveWeak(`src/pages/hello`)],
-    );
+    );*/
   }
 
   makeError = (e) => {
