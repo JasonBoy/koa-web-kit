@@ -108,7 +108,7 @@ class Request {
     }
     //normalize query string
     if (!isEmpty(options.qs)) {
-      url = this.addQueryString(url, options.qs);
+      url = this.addQueryString(url, options.qs, undefined, false);
     }
     //normalize headers
     const headers = {};
