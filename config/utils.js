@@ -56,7 +56,10 @@ exports.getStyleLoaders = function (devMode, ...loaders) {
         ...loaderOptions,
       },
     };
-    if (loader === LOADER.STYLE_LOADER) {
+    if (
+      loader === LOADER.STYLE_LOADER ||
+      loader === require('mini-css-extract-plugin').loader
+    ) {
       delete tempLoader.options.sourceMap;
     }
     temp.push(tempLoader);

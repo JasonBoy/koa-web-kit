@@ -4,11 +4,10 @@ module.exports = {
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:prettier/recommended',
-    'prettier/react',
   ],
   parser: 'babel-eslint',
   parserOptions: {
-    ecmaVersion: 2018,
+    ecmaVersion: 2020,
     sourceType: 'module',
     ecmaFeatures: {
       jsx: true,

@@ -35,7 +35,8 @@ function initAppCommon() {
 
   app.use(Logger.createMorganLogger());
   app.use(logger.createRequestsLogger());
-  app.use(helmet());
+  // app.use(helmet());
+  app.use(helmet.xssFilter());
   return app;
 }
 
@@ -71,7 +72,7 @@ function initApp(app) {
     },
   };
   const isStaticAssetsInRoot =
-    !staticPrefixConfig || staticPrefixConfig == ROOT_PATH;
+    !staticPrefixConfig || staticPrefixConfig === ROOT_PATH;
   if (isStaticAssetsInRoot && !servingStaticIndex) {
     //workaround: use a random index to pass through the static middleware
     staticOptions.index = `${Math.random().toString()}.html`;
