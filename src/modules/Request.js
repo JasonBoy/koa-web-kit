@@ -70,14 +70,6 @@ class Request {
     return 'string' === typeof url;
   }
 
-  checkIfFetchAvailable() {
-    return typeof fetch !== 'undefined';
-  }
-
-  async fetchPolyfill() {
-    await import(/* webpackChunkName: "whatwg-fetch" */ 'whatwg-fetch');
-  }
-
   /**
    * Send request now
    * @param {string|object} pathname - if provided object, see demo in "api-config.js"
@@ -93,9 +85,6 @@ class Request {
    * @return {Promise<Response | Object>}
    */
   async sendRequest(pathname, options = {}) {
-    if (!this.checkIfFetchAvailable()) {
-      await this.fetchPolyfill();
-    }
     let url = pathname;
     url = Request.isPlainUrl(url) ? url : url.path;
     const originalUrl = url;
