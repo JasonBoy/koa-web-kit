@@ -11,7 +11,7 @@
 [Release Notes](https://github.com/JasonBoy/koa-web-kit/releases), 
 [An Introduction for koa-web-kit](https://blog.lovemily.me/koa-web-kit-a-modern-production-ready-and-full-stack-node-web-framework/)
 
-> This readme is for v3(require node >= 10.13), if you need SASS/SCSS support, use [v2.11.x](https://github.com/JasonBoy/koa-web-kit/tree/v2.11.1)
+> This readme is for v3(require node >= 10.13), if you need SASS/SCSS support, use [v2.x](https://github.com/JasonBoy/koa-web-kit/tree/v2.x)
 
 ## Features
 
@@ -19,10 +19,11 @@
 - 📦Get all the Node.JS full stack development experience out of the box
 - 🔥Hot Module Replacement support, and bundle size analyzer report
 - 📉Async/Await support for writing neat async code
-- 💖Great style solutions: [Styled-Components](https://www.styled-components.com), [TailwindCSS](https://tailwindcss.com/), CSS Modules, PostCSS
+- 💖Great style solutions: [Styled-Components](https://www.styled-components.com), [TailwindCSS](https://tailwindcss.com/), CSS Modules
 - 🎉Simple API Proxy bundled, no complex extra reverse proxy configuration
 - 🌈Available for generating static site, also with SSR support
 - ⚡️Just one npm command to deploy your app to production
+- 🐳Docker support(dev and prod Dockerfile)
 - 👷Continuously Maintaining🍻
 
 ### Quick Start
@@ -97,6 +98,10 @@ module.exports = {
   "ENABLE_SSR": false,
   //enable CSS Modules, should disable this when SSR is enabled for now
   "CSS_MODULES": false,
+  //simple dynamic routes, based on file structure(like next.js)
+  "DYNAMIC_ROUTES": false,
+  //single endpoint string, multiple see below, type: <string|object>
+  "API_ENDPOINTS": 'http://127.0.0.1:3001',
   //API Proxies for multiple api endpoints with different prefix in router
   "API_ENDPOINTS": {
     //set a default prefix
@@ -108,9 +113,9 @@ module.exports = {
 }
 ```
 
-#### Environment Variables
+#### Environment Variables and Configuration
 
-All the variables in `app-config.js` can be set with Environment Variables(except for `API_ENDPOINTS` for now, since it has nested json structure), which have higher priority than `app-config.js`.
+All the variables in `app-config.js` can be set with Environment Variables, which have higher priority than `app-config.js`.
 e.g:
 `> NODE_ENV=production npm start`
 or
@@ -119,13 +124,13 @@ export PORT=3001
 export NODE_ENV=production
 npm start
 ```
-BTW you can do Everything you can within cli to set your env.
+You can also use `.env` file to config envs
 
 #### Default `config.default.[dev|prod].js` in `config` dir
 
 The project comes with default config files just like `app-config.js.sample`, which will be used if `app-config.js` above is not provided.
 
-> Priority: *Environment Variables* > *app-config.js* > *config.default.[dev|prod].js*
+> Priority: *Environment Variables* > .env > *app-config.js* > *config.default.[dev|prod].js*
 
 ### Logs
 The builtin `services/logger.js` provides some default log functionality for your app.
