@@ -43,8 +43,9 @@ class Hello extends React.Component {
   render() {
     return (
       <StyledHello>
-        <h3>Hello webpack 4</h3>
-        Hello <code>Component: {this.state.name || 'xxx'}</code>
+        <h3 className="color-red">Hello webpack 4</h3>
+        <span className="color-green">Hello</span>{' '}
+        <code>Component: {this.state.name || 'xxx'}</code>
         {/*<p>{this.yyy()}</p>*/}
       </StyledHello>
     );

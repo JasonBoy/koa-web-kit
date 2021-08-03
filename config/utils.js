@@ -11,6 +11,8 @@ const LOADER = {
   STYLE_LOADER: 'style-loader',
   CSS_LOADER: 'css-loader',
   POSTCSS_LOADER: 'postcss-loader',
+  SASS_LOADER: 'sass-loader',
+  LESS_LOADER: 'less-loader',
   NULL_LOADER: 'null-loader',
   URL_LOADER: 'url-loader',
   FILE_LOADER: 'file-loader',
@@ -191,6 +193,29 @@ exports.getAllStyleRelatedLoaders = function (
         styleLoader,
         exports.getCSSLoader(isCSSModules, 1, cssModulesIndent),
         exports.getPostCSSLoader(),
+      ),
+    },
+    {
+      //app scss/sass code should check the CSS MODULES config
+      test: /\.(sa|sc)ss$/,
+      // include: /node_modules|vendors/,
+      use: exports.getStyleLoaders(
+        DEV_MODE,
+        styleLoader,
+        exports.getCSSLoader(false),
+        exports.getPostCSSLoader(),
+        LOADER.SASS_LOADER,
+      ),
+    },
+    {
+      test: /\.less$/,
+      include: [/node_modules/, exports.resolve('src')],
+      use: exports.getStyleLoaders(
+        DEV_MODE,
+        styleLoader,
+        exports.getCSSLoader(false),
+        exports.getPostCSSLoader(),
+        LOADER.LESS_LOADER,
       ),
     },
   ];

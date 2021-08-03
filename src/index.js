@@ -1,4 +1,6 @@
 import 'src/style/index.css';
+import 'src/style/common.scss';
+import 'src/style/common.less';
 import 'modules/env';
 import ReactDOM from 'react-dom';
 import { loadableReady } from '@loadable/component';
