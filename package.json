@@ -9,6 +9,7 @@
     "dev:watch": "cross-env ENABLE_HMR=0 ENABLE_SSR=0 npm-run-all -p watch start",
     "start": "nodemon --trace-warnings server.js",
     "build": "cross-env NODE_ENV=production webpack -p --progress --hide-modules --config config/webpack.config.prod.js",
+    "build:noprogress": "cross-env NODE_ENV=production webpack -p --hide-modules --config config/webpack.config.prod.js",
     "build:dev": "webpack --progress --hide-modules --config config/webpack.config.dev.js",
     "build:tailwindcss": "tailwindcss build ./src/style/index.css -o ./build/built-tailwindcss/style.css",
     "deploy": "./deploy.sh",
