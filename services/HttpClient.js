@@ -89,6 +89,7 @@ class HttpClient {
           ? socksProxy
           : `${socksProtocol}//${socksProxy}`,
       );
+      agent = { http: agent };
     } else if (httpProxy) {
       const parsedUrl = new URL(httpProxy);
       const tunnelOptions = {
@@ -99,8 +100,8 @@ class HttpClient {
       };
       agent =
         this.endPointParsedUrl.protocol === 'https:'
-          ? tunnel.httpsOverHttp(tunnelOptions)
-          : tunnel.httpOverHttp(tunnelOptions);
+          ? { https: tunnel.httpsOverHttp(tunnelOptions) }
+          : { http: tunnel.httpOverHttp(tunnelOptions) };
     }
     return agent;
   }
