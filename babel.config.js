@@ -60,6 +60,8 @@ module.exports = function (api) {
           displayName: DEV_MODE,
         },
       ],
+      '@babel/plugin-proposal-optional-chaining',
+      '@babel/plugin-proposal-nullish-coalescing-operator',
       '@babel/plugin-transform-runtime',
       '@babel/plugin-proposal-object-rest-spread',
       '@babel/plugin-proposal-class-properties',
