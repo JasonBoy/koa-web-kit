@@ -1,5 +1,5 @@
 # install stage
-FROM node:12-alpine3.11 AS install
+FROM lts-alpine AS install
 WORKDIR /data/app
 COPY package*.json .npmrc ./
 RUN npm ci
