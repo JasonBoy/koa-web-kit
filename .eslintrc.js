@@ -5,7 +5,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:prettier/recommended',
   ],
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
@@ -38,7 +38,7 @@ module.exports = {
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
     //prettier
-    'prettier/prettier': 'warn',
+    // 'prettier/prettier': 'warn',
   },
   settings: {
     react: {
