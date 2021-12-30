@@ -1,11 +1,11 @@
 # install stage
-FROM node:12-alpine3.11 AS install
+FROM lts-alpine AS install
 WORKDIR /data/app
 COPY package*.json .npmrc ./
 RUN npm ci
 
 # install production dependence stage
-FROM node:12-alpine3.11 AS install_prod
+FROM lts-alpine AS install_prod
 WORKDIR /data/app
 COPY package*.json .npmrc ./
 RUN npm ci --production
