@@ -150,7 +150,7 @@
     "postcss-loader": "4.3.0",
     "postcss-preset-env": "6.7.0",
     "prettier": "2.5.1",
-    "shelljs": "0.8.4",
+    "shelljs": "0.8.5",
     "style-loader": "2.0.0",
     "supertest": "3.4.2",
     "tailwindcss": "1.8.6",
